@@ -13,7 +13,8 @@
     "./attendance": "./src/attendance.ts",
     "./curriculum": "./src/curriculum.ts",
     "./graduation": "./src/graduation.ts",
-    "./belts": "./src/belts.ts"
+    "./belts": "./src/belts.ts",
+    "./dashboard": "./src/dashboard.ts"
   },
   "scripts": {
     "test": "node --test tests/*.test.ts",

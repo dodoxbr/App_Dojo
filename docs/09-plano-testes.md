@@ -17,6 +17,7 @@
 
 ## E2E
 Cadastro → solicitação → aprovação → aula → presença → diário → visualização de progresso → graduação autorizada.
+Implementado em `scripts/e2e-pilot.mjs` (jornada pela API) e `scripts/smoke-pages.mjs` (renderização das telas por papel); roda no CI. Falta E2E em navegador com cliques.
 
 ## Qualidade
 Lint, TypeScript strict, testes unitários e integração obrigatórios antes de PR; CI com checagem de migrações e scanner de segredos. O SQL inicial é apenas fundação e precisa de testes automatizados antes de liberar uso real.

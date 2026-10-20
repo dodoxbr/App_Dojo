@@ -15,6 +15,8 @@ export default async function TecnicaPage({ params }: { params: Promise<{ id: st
     .eq("id", id)
     .maybeSingle();
   if (!t) notFound();
+  // Aggregate counter only (day, academy, technique): it never records who looked. Failures must not break the page.
+  await supabase.rpc("record_technique_view", { p_technique_id: id });
 
   const canEdit = isPlatformAdmin || (t.academy_id !== null && managedAcademies.some((a) => a.id === t.academy_id));
   const [{ data: aliases }, { data: sources }] = await Promise.all([

@@ -123,3 +123,12 @@
 
 ## Desafios entre alunos (F2)
 - [ ] Decisões abertas em `docs/features/F2-desafios.md` (quem cria, forma do ranking, pontos de registros não verificados, premiação). Depende da US-013 antes de qualquer participação de menores.
+
+## US-012 (painel e indicadores)
+- [ ] Tamanho mínimo de grupo para exibir diário e técnicas mais consultadas = 5 alunos aprovados: premissa de privacidade, a validar (`min_group_size()` em um só lugar).
+- [ ] Sem metas: o painel só mede. Definir com a academia o que é "bom" depois do piloto.
+- [ ] Feedback dos professores (indicador do `docs/01`) não tem coleta; precisa de definição.
+- [ ] A consulta de técnica é contada ao abrir a página (atualizar a página conta de novo); sem deduplicação por pessoa, de propósito (não guarda quem).
+- [ ] Retenção considera presença validada por semana (semana começa na segunda, no fuso da academia).
+- [ ] Sem painel de toda a plataforma para o super admin (cada academia tem o seu); sem exportação.
+- [ ] Testes de tela cobrem renderização e autorização (49 páginas, 5 papéis), não cliques em formulários. Falta E2E em navegador (Playwright), que exigiria dependência e ADR. Pela primeira vez as telas foram renderizadas por um teste automatizado; ainda falta uso humano em navegador e conferência visual.
