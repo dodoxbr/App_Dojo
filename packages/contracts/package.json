@@ -10,7 +10,8 @@
     "./technique": "./src/technique.ts",
     "./diary": "./src/diary.ts",
     "./classes": "./src/classes.ts",
-    "./attendance": "./src/attendance.ts"
+    "./attendance": "./src/attendance.ts",
+    "./curriculum": "./src/curriculum.ts"
   },
   "scripts": {
     "test": "node --test tests/*.test.ts",

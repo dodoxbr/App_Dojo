@@ -55,7 +55,7 @@
 - [ ] Tipo e posição das técnicas foram PROPOSTOS a partir de fontes públicas (Wikipedia, Kingz, BJJ More), sem validação do mestre: `classification_status = 'proposed'`; 127 com tipo, 121 com posição, 4 sem tipo. Validar com o mestre; revisar a técnica na tela marca a classificação como validada.
 - [ ] Vocabulário de tipo e posição é texto livre com valores sugeridos pela própria base; definir lista fechada depois da validação.
 - [ ] Numeração de origem com repetição (nº 45 duplicado em Quedas, nas abas Básico e Intermediário) e salto de 54 para 90 no Avançado: mantida como está em `technique_sources`.
-- [ ] Nível de cada técnica = aba onde aparece primeiro; o vínculo técnica ↔ nível/faixa por trilha será tratado no currículo (US-009), usando `technique_sources`.
+- [x] Vínculo técnica ↔ nível na trilha tratado na US-009: o atalho do currículo usa `technique_sources.level`. O campo `techniques.level` continua sendo o primeiro nível em que a técnica aparece.
 - [ ] Sem fichas técnicas (descrição, passos, vídeo): campo `description` vazio nas técnicas importadas.
 - [ ] Busca sem índice (varredura); reavaliar com volume. Lista de categorias do filtro é calculada a partir das linhas visíveis.
 - [ ] Permissão de uso/reprodução do conteúdo da planilha: decisão do dono do produto de manter no repositório (hoje público).
@@ -88,3 +88,13 @@
 - [ ] O QR abre um link no navegador do celular (aluno precisa estar logado); sem leitura de câmera no app e sem app mobile para o aluno.
 - [ ] Geolocalização no check-in não adotada (não confirmada em `docs/00`). Sem notificação ao professor de novos pedidos.
 - [ ] Telas de presença verificadas por typecheck, lint, build e smoke test do backend; falta uso manual em navegador.
+
+## US-009 (currículo e habilidades)
+- [ ] A matriz de permissões do gestor é por PAPEL: liberar `assess_skills` vale para todos os instrutores da academia. Avaliar se deve haver permissão por pessoa.
+- [ ] Instrutor não propõe técnicas para a trilha (`docs/06`: "propor/avaliar"); só o gestor configura. Definir o fluxo de proposta e aprovação.
+- [ ] Autovalidação bloqueada para todos (inclusive gestor): premissa de conflito de interesse; validar com a academia.
+- [ ] Aluno só registra progresso em técnica de currículo ativo; ao desativar um currículo o progresso fica guardado, mas oculto da trilha.
+- [ ] A "trilha por nível" do atalho depende da planilha importada; a relação nível ↔ faixa não foi definida (a planilha cita BRANCA/AZUL/ROXA, não interpretado como regra).
+- [ ] Sem histórico visível de avaliações por técnica (só auditoria), sem metas por prazo e sem agrupamento por categoria na trilha do aluno.
+- [ ] Lista de alunos para avaliar depende da permissão de ver a lista (`view_roster`).
+- [ ] Telas só no painel web, verificadas por typecheck, lint, build e smoke test do backend; falta uso manual em navegador. Sem tela no app mobile.
