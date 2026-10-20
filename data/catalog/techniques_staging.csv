@@ -1,0 +1,152 @@
+source_sheet,source_row,source_col,source_number,raw_name,category,level,belt
+Básico,6,3,1,Queda de Frente,Fundamentos,Básico,BRANCA
+Básico,6,8,11,Pegada Direta no Pulso,Defesa Pessoal,Básico,BRANCA
+Básico,6,13,19,Postura,Passagem de Guarda,Básico,BRANCA
+Básico,6,19,27,Tesoura,Raspagens,Básico,BRANCA
+Básico,6,25,35,Estrangulamento Cana do Braço,Ataques Laterais (100KG),Básico,BRANCA
+Básico,8,3,2,Queda de Costas,Fundamentos,Básico,BRANCA
+Básico,8,8,12,Pegada Cruzada no Pluso,Defesa Pessoal,Básico,BRANCA
+Básico,8,13,20,Abertura de Guarda,Passagem de Guarda,Básico,BRANCA
+Básico,8,19,28,Segurando o Braço e Perna,Raspagens,Básico,BRANCA
+Básico,8,25,36,Estrangulamento Lapela,Ataques Laterais (100KG),Básico,BRANCA
+Básico,10,3,3,Queda Lateral,Fundamentos,Básico,BRANCA
+Básico,10,8,13,Abraço por trás por Cima dos Braços,Defesa Pessoal,Básico,BRANCA
+Básico,10,13,21,Com a Mão por Dentro,Passagem de Guarda,Básico,BRANCA
+Básico,10,19,29,Nos Calcanhares,Raspagens,Básico,BRANCA
+Básico,10,25,37,Katagatame,Ataques Laterais (100KG),Básico,BRANCA
+Básico,12,3,4,Cambalhota de Frente,Fundamentos,Básico,BRANCA
+Básico,12,8,14,Abraço por trás por Baixo do Braço,Defesa Pessoal,Básico,BRANCA
+Básico,12,13,22,Toreando,Passagem de Guarda,Básico,BRANCA
+Básico,12,19,30,Abraçando,Raspagens,Básico,BRANCA
+Básico,12,25,38,Estrangulamento Com Joelho na Barriga,Ataques Laterais (100KG),Básico,BRANCA
+Básico,14,3,5,Cambalhota de Costas,Fundamentos,Básico,BRANCA
+Básico,16,3,6,Rolamento,Fundamentos,Básico,BRANCA
+Básico,16,8,15,Estrangulamento Clássico,Ataques na Montada,Básico,BRANCA
+Básico,16,13,23,Mata Leão,Ataques nas Costas,Básico,BRANCA
+Básico,16,19,31,Estragulamento Cruzado,Ataques na Guarda,Básico,BRANCA
+Básico,16,25,39,Barrigada,Saídas de Baixo,Básico,BRANCA
+Básico,18,3,7,Saida de Quadril,Fundamentos,Básico,BRANCA
+Básico,18,8,16,Estrangulamento de Polegar,Ataques na Montada,Básico,BRANCA
+Básico,18,13,24,Estrangulamento OSS,Ataques nas Costas,Básico,BRANCA
+Básico,18,19,32,Triangulo,Ataques na Guarda,Básico,BRANCA
+Básico,18,25,40,Saída de Cotovelos,Saídas de Baixo,Básico,BRANCA
+Básico,20,3,8,Entrada de Quadril,Fundamentos,Básico,BRANCA
+Básico,20,8,17,ArmLock,Ataques na Montada,Básico,BRANCA
+Básico,20,13,25,Relógio,Ataques nas Costas,Básico,BRANCA
+Básico,20,19,33,Kimura,Ataques na Guarda,Básico,BRANCA
+Básico,20,25,41,Reposição de Guarda,Saídas de Baixo,Básico,BRANCA
+Básico,22,3,9,Levantada Técnica,Fundamentos,Básico,BRANCA
+Básico,22,8,18,Americana,Ataques na Montada,Básico,BRANCA
+Básico,22,13,26,Arco e Flecha,Ataques nas Costas,Básico,BRANCA
+Básico,22,19,34,ArmLock,Ataques na Guarda,Básico,BRANCA
+Básico,22,25,42,Saída de Costas,Saídas de Baixo,Básico,BRANCA
+Básico,24,3,10,Joelho na Barriga,Fundamentos,Básico,BRANCA
+Básico,28,3,43,O Soto Gari,Quedas,Básico,BRANCA
+Básico,30,3,44,De Ashi Barai,Quedas,Básico,BRANCA
+Básico,32,3,45,Single Leg,Quedas,Básico,BRANCA
+Básico,34,3,45,Double Leg,Quedas,Básico,BRANCA
+Intermediário,6,3,1,Queda de Frente,Fundamentos,Intermediário,AZUL
+Intermediário,6,8,11,Gravata Puxando por Trás,Defesa Pessoal,Intermediário,AZUL
+Intermediário,6,13,19,Meia Guarda,Passagem de Guarda,Intermediário,AZUL
+Intermediário,6,19,27,Meia Guarda,Raspagens,Intermediário,AZUL
+Intermediário,6,25,35,Armlok Girando,Ataques Laterais (100KG),Intermediário,AZUL
+Intermediário,8,3,2,Queda de Costas,Fundamentos,Intermediário,AZUL
+Intermediário,8,8,12,GravataTécnica,Defesa Pessoal,Intermediário,AZUL
+Intermediário,8,13,20,Meia Guarda Canela da Coxa,Passagem de Guarda,Intermediário,AZUL
+Intermediário,8,19,28,Pé na Virilia e Gancho,Raspagens,Intermediário,AZUL
+Intermediário,8,25,36,Chave de Braço Invertida,Ataques Laterais (100KG),Intermediário,AZUL
+Intermediário,10,3,3,Queda Lateral,Fundamentos,Intermediário,AZUL
+Intermediário,10,8,13,Tapa da Rosto,Defesa Pessoal,Intermediário,AZUL
+Intermediário,10,13,21,Emborcando com a mão,Passagem de Guarda,Intermediário,AZUL
+Intermediário,10,19,29,Com Gancho por trás e Balão,Raspagens,Intermediário,AZUL
+Intermediário,10,25,37,Estrangulamento com o Braço enrolado,Ataques Laterais (100KG),Intermediário,AZUL
+Intermediário,12,3,4,Cambalhota de Frente,Fundamentos,Intermediário,AZUL
+Intermediário,12,8,14,Enforcamento em Pé,Defesa Pessoal,Intermediário,AZUL
+Intermediário,12,13,22,Por fora com mão na perna,Passagem de Guarda,Intermediário,AZUL
+Intermediário,12,19,30,Tesoura com gancho por trás,Raspagens,Intermediário,AZUL
+Intermediário,12,25,38,Guilhotina,Ataques Laterais (100KG),Intermediário,AZUL
+Intermediário,14,3,5,Cambalhota de Costas,Fundamentos,Intermediário,AZUL
+Intermediário,16,3,6,Rolamento,Fundamentos,Intermediário,AZUL
+Intermediário,16,8,15,Armlok Invertido,Ataques na Montada,Intermediário,AZUL
+Intermediário,16,13,23,Crucifixo,Ataques nas Costas,Intermediário,AZUL
+Intermediário,16,19,31,Estrangulamento mão na gola,Ataques na Guarda,Intermediário,AZUL
+Intermediário,16,25,39,Barrigada com a cabeça presa,Saídas de Baixo,Intermediário,AZUL
+Intermediário,18,3,7,Saida de Quadril,Fundamentos,Intermediário,AZUL
+Intermediário,18,8,16,Ezequiel,Ataques na Montada,Intermediário,AZUL
+Intermediário,18,13,24,Raspagem para as costas,Ataques nas Costas,Intermediário,AZUL
+Intermediário,18,19,32,Estrang. Enrolando o Braço,Ataques na Guarda,Intermediário,AZUL
+Intermediário,18,25,40,Defesa do Relógio pra Guarda,Saídas de Baixo,Intermediário,AZUL
+Intermediário,20,3,8,Entrada de Quadril,Fundamentos,Intermediário,AZUL
+Intermediário,20,8,17,Destravada para Armlock,Ataques na Montada,Intermediário,AZUL
+Intermediário,20,13,25,Ataque com gancho por cima,Ataques nas Costas,Intermediário,AZUL
+Intermediário,20,19,33,Omoplata,Ataques na Guarda,Intermediário,AZUL
+Intermediário,20,25,41,Raspagem pras Costas quando de 4 apoios,Saídas de Baixo,Intermediário,AZUL
+Intermediário,22,3,9,Levantada Técnica,Fundamentos,Intermediário,AZUL
+Intermediário,22,8,18,Estrangulamento com Polegar,Ataques na Montada,Intermediário,AZUL
+Intermediário,22,13,26,Cambalhota e pegada das,Ataques nas Costas,Intermediário,AZUL
+Intermediário,22,19,34,Chave de Braço Invertida,Ataques na Guarda,Intermediário,AZUL
+Intermediário,22,25,42,Virada de 4 apoios/pra fora,Saídas de Baixo,Intermediário,AZUL
+Intermediário,24,3,10,Joelho na Barriga,Fundamentos,Intermediário,AZUL
+Intermediário,28,3,43,Ippon Seoi Nage,Quedas,Intermediário,AZUL
+Intermediário,30,3,44,Koshi Guruma,Quedas,Intermediário,AZUL
+Intermediário,32,3,45,Tai Otoshi,Quedas,Intermediário,AZUL
+Intermediário,34,3,45,Uchi Mata,Quedas,Intermediário,AZUL
+Avançado,6,3,1,Queda de Frente,Fundamentos,Avançado,ROXA
+Avançado,6,8,11,Defesa de Jab,Defesa Pessoal,Avançado,ROXA
+Avançado,6,13,21,Amassando as Pernas,Passagem de Guarda,Avançado,ROXA
+Avançado,6,19,31,Gancho,Raspagens,Avançado,ROXA
+Avançado,6,25,41,Estrangulamento com Lapela,Ataques Laterais (100KG),Avançado,ROXA
+Avançado,8,3,2,Queda de Costas,Fundamentos,Avançado,ROXA
+Avançado,8,8,12,Defesa de Pisão de Frente,Defesa Pessoal,Avançado,ROXA
+Avançado,8,13,22,Cruzando o Joelho,Passagem de Guarda,Avançado,ROXA
+Avançado,8,19,32,Ganchos Cruzados,Raspagens,Avançado,ROXA
+Avançado,8,25,42,Kimura e Quebra Nozes,Ataques Laterais (100KG),Avançado,ROXA
+Avançado,10,3,3,Queda Lateral,Fundamentos,Avançado,ROXA
+Avançado,10,8,13,Gravata Girando,Defesa Pessoal,Avançado,ROXA
+Avançado,10,13,23,Alta com a Mão na Canela,Passagem de Guarda,Avançado,ROXA
+Avançado,10,19,33,Enterrada Subindo 100KG,Raspagens,Avançado,ROXA
+Avançado,10,25,43,Armlock Joelhos Juntos,Ataques Laterais (100KG),Avançado,ROXA
+Avançado,12,3,4,Cambalhota de Frente,Fundamentos,Avançado,ROXA
+Avançado,12,8,14,Pegada nas Duas Golas,Defesa Pessoal,Avançado,ROXA
+Avançado,12,13,24,Estrela,Passagem de Guarda,Avançado,ROXA
+Avançado,12,19,34,Com o Braço Cruzado,Raspagens,Avançado,ROXA
+Avançado,12,25,44,Triângulo,Ataques Laterais (100KG),Avançado,ROXA
+Avançado,14,3,5,Cambalhota de Costas,Fundamentos,Avançado,ROXA
+Avançado,14,8,15,Double Nelson,Defesa Pessoal,Avançado,ROXA
+Avançado,14,13,25,Ganchos Abraçando Costas,Passagem de Guarda,Avançado,ROXA
+Avançado,14,19,35,Pés no Biceps,Raspagens,Avançado,ROXA
+Avançado,14,25,45,Baratoplata,Ataques Laterais (100KG),Avançado,ROXA
+Avançado,18,3,6,Rolamento,Fundamentos,Avançado,ROXA
+Avançado,18,8,16,Arlock Mão nas Axilas,Ataques na Montada,Avançado,ROXA
+Avançado,18,13,26,Rolamento Ganchos (MataLeão),Ataques nas Costas,Avançado,ROXA
+Avançado,18,19,36,Armlock usando Lapela,Ataques na Guarda,Avançado,ROXA
+Avançado,18,25,46,Capotada com a Cabeça Presa,Saídas de Baixo,Avançado,ROXA
+Avançado,20,3,7,Saida de Quadril,Fundamentos,Avançado,ROXA
+Avançado,20,8,17,Mão de Vaca no Ataque Duplo,Ataques na Montada,Avançado,ROXA
+Avançado,20,13,27,Relógio com Cotovelo no Chão,Ataques nas Costas,Avançado,ROXA
+Avançado,20,19,37,Estrang. Lapela Cruzando Braço,Ataques na Guarda,Avançado,ROXA
+Avançado,20,25,47,Escrima e Passagem para as Costas,Saídas de Baixo,Avançado,ROXA
+Avançado,22,3,8,Entrada de Quadril,Fundamentos,Avançado,ROXA
+Avançado,22,8,18,Troca de Braço no Armlock,Ataques na Montada,Avançado,ROXA
+Avançado,22,13,28,Estrangulamento Própria Gola,Ataques nas Costas,Avançado,ROXA
+Avançado,22,19,38,Chave de Pé,Ataques na Guarda,Avançado,ROXA
+Avançado,22,25,48,Escrima e Capotada,Saídas de Baixo,Avançado,ROXA
+Avançado,24,3,9,Levantada Técnica,Fundamentos,Avançado,ROXA
+Avançado,24,8,19,Chave de Braço com Joelho no Peito,Ataques na Montada,Avançado,ROXA
+Avançado,24,13,29,Triângulo nas Costas,Ataques nas Costas,Avançado,ROXA
+Avançado,24,19,39,Leg Lock com ganchos cruzados,Ataques na Guarda,Avançado,ROXA
+Avançado,24,25,49,Saída com a Cabeça por Baixo da Axial,Saídas de Baixo,Avançado,ROXA
+Avançado,26,3,10,Joelho na Barriga,Fundamentos,Avançado,ROXA
+Avançado,26,8,20,Omoplata no Armlock,Ataques na Montada,Avançado,ROXA
+Avançado,26,13,30,Chave de Ombro Defesa Ganchos,Ataques nas Costas,Avançado,ROXA
+Avançado,26,19,40,Estrang. Com Mão Invertida,Ataques na Guarda,Avançado,ROXA
+Avançado,26,25,50,Saída do Norte Sul com Pé no Bíceps e Crucifixo,Saídas de Baixo,Avançado,ROXA
+Avançado,30,3,51,Kataguruma,Quedas,Avançado,ROXA
+Avançado,30,11,90,Chave Botinha,Chaves Membros Inferiores,Avançado,ROXA
+Avançado,32,3,52,Oshi Gari,Quedas,Avançado,ROXA
+Avançado,32,11,91,Americana de Pé,Chaves Membros Inferiores,Avançado,ROXA
+Avançado,34,3,53,Tani Otochi,Quedas,Avançado,ROXA
+Avançado,34,11,92,Leg Lock,Chaves Membros Inferiores,Avançado,ROXA
+Avançado,36,3,54,Entrada na Perna com Cabeça pra Fora,Quedas,Avançado,ROXA
+Avançado,36,11,93,Chave de Joelho,Chaves Membros Inferiores,Avançado,ROXA
+Avançado,38,11,94,Chave de Panturrilha,Chaves Membros Inferiores,Avançado,ROXA

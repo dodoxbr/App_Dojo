@@ -46,3 +46,14 @@
 - [ ] Telas de filiação só no painel web (o link abre no navegador); app mobile fica sem fluxo de entrada por ora.
 - [ ] Telas novas (`/entrar/[slug]`, membros) verificadas por typecheck, lint, build e smoke test do backend; falta uso manual em navegador.
 - [ ] Menores continuam sem tratamento (US-013): hoje qualquer conta pode pedir entrada.
+
+## US-005 (catálogo)
+- [x] Planilha importada (abas Básico, Intermediário, Avançado) após revisão declarada pelo dono do produto em 2026-10-20. Falta, se desejado, confirmação formal do mestre sobre categorias, descrição e posição de cada técnica.
+- [ ] Abas ocultas não importadas: `Tempo de Faixa` (parece regra de graduação; nenhuma regra foi definida), `Avaliação`, `Planilha2`, `Planilha3` (listas soltas). Decidir se alguma entra no catálogo ou no currículo (US-009/US-010).
+- [ ] Erros de digitação aparentes mantidos como na planilha (por exemplo `Pluso`, `Estragulamento`, `Armlok`, `Virilia`) e 2 pares de grafia parecida não fundidos (`Estrangulamento Lapela`/`com Lapela`, `de Polegar`/`com Polegar`); corrigir por edição no catálogo (ver `data/catalog/IMPORT_REPORT.md`).
+- [ ] Numeração de origem com repetição (nº 45 duplicado em Quedas, nas abas Básico e Intermediário) e salto de 54 para 90 no Avançado: mantida como está em `technique_sources`.
+- [ ] Nível de cada técnica = aba onde aparece primeiro; o vínculo técnica ↔ nível/faixa por trilha será tratado no currículo (US-009), usando `technique_sources`.
+- [ ] Sem fichas técnicas (descrição, passos, vídeo): campo `description` vazio nas técnicas importadas.
+- [ ] Busca sem índice (varredura); reavaliar com volume. Lista de categorias do filtro é calculada a partir das linhas visíveis.
+- [ ] Permissão de uso/reprodução do conteúdo da planilha: decisão do dono do produto de manter no repositório (hoje público).
+- [ ] Telas do catálogo verificadas por typecheck, lint, build e smoke test do backend; falta uso manual em navegador. Sem tela no app mobile.

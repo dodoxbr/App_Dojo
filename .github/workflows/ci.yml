@@ -41,6 +41,7 @@ jobs:
           node scripts/smoke-auth.mjs
           node scripts/smoke-academy.mjs
           node scripts/smoke-membership.mjs
+          node scripts/smoke-catalog.mjs
       - run: npx supabase stop --no-backup
         if: always()
 
@@ -53,3 +54,15 @@ jobs:
       - uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  catalog:
+    # The committed seed must be exactly what the scripts generate from the spreadsheet.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -I scripts/catalog/extract_catalog.py
+      - run: python -I scripts/catalog/generate_seed.py
+      - run: git diff --exit-code -- data supabase/migrations

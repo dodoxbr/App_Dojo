@@ -40,18 +40,17 @@ export default async function PerfilPage() {
         )}
       </section>
 
-      {(isPlatformAdmin || canCreateAcademy || managedAcademies.length > 0) && (
-        <nav aria-label="Atalhos">
-          <h2>Atalhos</h2>
-          <ul>
-            {isPlatformAdmin && <li><Link href="/plataforma">Plataforma (super admin)</Link></li>}
-            {canCreateAcademy && <li><Link href="/academias/nova">Criar academia</Link></li>}
-            {managedAcademies.map((a) => (
-              <li key={a.id}><Link href={`/academia/${a.id}`}>Gerenciar: {a.name}</Link></li>
-            ))}
-          </ul>
-        </nav>
-      )}
+      <nav aria-label="Atalhos">
+        <h2>Atalhos</h2>
+        <ul>
+          <li><Link href="/tecnicas">Catálogo de técnicas</Link></li>
+          {isPlatformAdmin && <li><Link href="/plataforma">Plataforma (super admin)</Link></li>}
+          {canCreateAcademy && <li><Link href="/academias/nova">Criar academia</Link></li>}
+          {managedAcademies.map((a) => (
+            <li key={a.id}><Link href={`/academia/${a.id}`}>Gerenciar: {a.name}</Link></li>
+          ))}
+        </ul>
+      </nav>
 
       <form action={signOut}><button type="submit">Sair</button></form>
     </main>

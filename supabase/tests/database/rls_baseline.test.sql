@@ -30,7 +30,7 @@ select throws_ok($$select * from public.academies$$, '42501', null, 'anon nao le
 set local role authenticated;
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000a1","role":"authenticated"}', true);
 select is((select count(*)::int from public.training_logs), 1, 'A le apenas o proprio diario');
-select is((select count(*)::int from public.techniques), 2, 'A ve global + tecnicas da propria academia, nao da academia 2');
+select is((select count(*)::int from public.techniques where name like 'Tecnica % Teste'), 2, 'A ve global + tecnicas da propria academia, nao da academia 2');
 select throws_ok($$insert into public.memberships (academy_id,user_id,role,status) values ('00000000-0000-0000-0000-00000000ac02','00000000-0000-0000-0000-0000000000a1','manager','pending')$$, '42501', null, 'A nao se filia como manager');
 select throws_ok($$insert into public.memberships (academy_id,user_id,status) values ('00000000-0000-0000-0000-00000000ac02','00000000-0000-0000-0000-0000000000a1','approved')$$, '42501', null, 'A nao se auto-aprova');
 select throws_ok($$update public.memberships set role = 'manager'$$, '42501', null, 'A nao promove papel por UPDATE');
@@ -42,7 +42,7 @@ select is_empty($$update public.training_logs set notes = 'x' where id = '000000
 
 -- Acting as user B (pending membership)
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000b1","role":"authenticated"}', true);
-select is((select count(*)::int from public.techniques), 1, 'Filiacao pendente nao concede tecnicas internas');
+select is((select count(*)::int from public.techniques where name like 'Tecnica % Teste'), 1, 'Filiacao pendente nao concede tecnicas internas');
 select is((select count(*)::int from public.memberships), 1, 'B ve apenas a propria filiacao');
 
 -- Acting as user C (academy 2)
