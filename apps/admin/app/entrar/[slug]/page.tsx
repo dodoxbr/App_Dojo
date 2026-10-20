@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { dependentRowSchema } from "@dojo/contracts/guardians";
 import { membershipStatusLabels } from "@dojo/contracts/membership";
 import { getCaller } from "@/lib/context";
+import { RequestForDependentForm } from "../../dependentes/forms";
 import { RequestButton } from "./request-button";
 
 // Link shared by the academy: /entrar/{slug}. Shows the academy and lets the signed-in person ask to join.
@@ -17,6 +19,10 @@ export default async function EntrarPage({ params }: { params: Promise<{ slug: s
   if (!academy) notFound();
 
   const { data: ageStatus } = await supabase.rpc("my_age_status");
+  const { data: depsRaw } = await supabase.rpc("list_my_dependents");
+  const minors = ((depsRaw ?? []) as unknown[])
+    .map((x) => dependentRowSchema.safeParse(x))
+    .flatMap((r) => (r.success && r.data.kind === "legal" && !r.data.minor_is_adult ? [r.data] : []));
   const { data: mine } = await supabase
     .from("memberships")
     .select("status")
@@ -34,9 +40,23 @@ export default async function EntrarPage({ params }: { params: Promise<{ slug: s
         <p role="alert">
           {ageStatus === "unknown"
             ? "Para pedir entrada é preciso informar a data de nascimento no seu perfil."
-            : "O cadastro de menores de 18 anos ainda não está disponível: ele exige um responsável."}{" "}
+            : "Menores de 18 anos não têm login: o responsável cadastra o menor e pede a vaga em nome dele."}{" "}
           <Link href="/perfil">Ir para o perfil</Link>
         </p>
+      )}
+      {ageStatus === "adult" && minors.length > 0 && (
+        <section>
+          <h2>Pedir vaga para um menor</h2>
+          {minors.map((d) => (
+            <div key={d.minor_user_id}>
+              <h3>{d.minor_name}</h3>
+              <RequestForDependentForm minorId={d.minor_user_id} academyId={academy.id} />
+            </div>
+          ))}
+        </section>
+      )}
+      {ageStatus === "adult" && minors.length === 0 && (
+        <p><small>Quer matricular um filho ou dependente menor de idade? <Link href="/dependentes/novo">Cadastre o menor primeiro</Link>.</small></p>
       )}
       {!mine && ageStatus === "adult" && (
         <>

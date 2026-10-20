@@ -15,7 +15,8 @@
     "./graduation": "./src/graduation.ts",
     "./belts": "./src/belts.ts",
     "./dashboard": "./src/dashboard.ts",
-    "./challenges": "./src/challenges.ts"
+    "./challenges": "./src/challenges.ts",
+    "./guardians": "./src/guardians.ts"
   },
   "scripts": {
     "test": "node --test tests/*.test.ts",

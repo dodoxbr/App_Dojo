@@ -31,9 +31,14 @@ export function isAdultOn(birthDate: string, today: Date = new Date()): boolean 
   return years >= ADULT_AGE;
 }
 
+// The checkbox "Esta conta é para cuidar de um menor": the adult fills in the minor's data, which is only a prefill for the
+// dependent registration after the e-mail is confirmed (the database validates everything again).
 export const signUpSchema = signInSchema.extend({
   displayName: displayNameSchema,
   birthDate: birthDateSchema,
+  forMinor: z.preprocess((v) => v === 'on' || v === true, z.boolean()),
+  dependentName: z.string().trim().max(120).optional().transform((v) => (v ? v : undefined)),
+  dependentBirthDate: z.union([birthDateSchema, z.literal('')]).optional().transform((v) => (v ? v : undefined)),
 });
 
 // Post-login redirect target: internal paths only (prevents open redirects).

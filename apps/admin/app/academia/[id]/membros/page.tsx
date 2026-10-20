@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import { ageFlagSchema } from "@dojo/contracts/guardians";
 import { membershipRoleLabels, membershipStatusLabels } from "@dojo/contracts/membership";
 import { getCaller } from "@/lib/context";
 import { errorFromCode } from "@/lib/rpc-errors";
@@ -31,6 +32,15 @@ export default async function MembrosPage({
     ? await supabase.from("profiles").select("id, display_name").in("id", userIds)
     : { data: [] as { id: string; display_name: string }[] };
   const nameOf = new Map((profiles ?? []).map((p) => [p.id, p.display_name]));
+  // Minors are only marked as "menor"; the birth date itself is never shown.
+  const { data: flagsRaw } = await supabase.rpc("member_age_flags", { p_academy_id: id });
+  const flags = new Map(
+    ((flagsRaw ?? []) as unknown[]).map((x) => ageFlagSchema.safeParse(x)).flatMap((r) => (r.success ? [[r.data.user_id, r.data] as const] : [])),
+  );
+  const minorTag = (userId: string) => {
+    const f = flags.get(userId);
+    return f?.is_minor ? (f.guardian_ready ? " (menor · responsável conferido)" : " (menor · falta conferir o responsável)") : "";
+  };
 
   const pending = (members ?? []).filter((m) => m.status === "pending");
   const active = (members ?? []).filter((m) => m.status === "approved" || m.status === "suspended");
@@ -52,7 +62,7 @@ export default async function MembrosPage({
             {pending.map((m) => (
               <li key={m.id as string}>
                 <form action={decide.bind(null, id)}>
-                  <strong>{nameOf.get(m.user_id as string) ?? "Pessoa"}</strong>
+                  <strong>{nameOf.get(m.user_id as string) ?? "Pessoa"}</strong>{minorTag(m.user_id as string)}
                   <input type="hidden" name="membershipId" value={m.id as string} />
                   <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
                   <label> Justificativa (opcional) <input name="reason" maxLength={500} /></label>
@@ -78,7 +88,7 @@ export default async function MembrosPage({
           <ul>
             {active.map((m) => (
               <li key={m.id as string}>
-                {nameOf.get(m.user_id as string) ?? "Pessoa"} — {membershipRoleLabels[m.role as string]} ·{" "}
+                {nameOf.get(m.user_id as string) ?? "Pessoa"}{minorTag(m.user_id as string)} — {membershipRoleLabels[m.role as string]} ·{" "}
                 {membershipStatusLabels[m.status as string]}
                 {m.role !== "manager" && (
                   <form action={endMembership.bind(null, id)} style={{ display: "inline", marginLeft: 8 }}>

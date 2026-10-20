@@ -16,7 +16,7 @@ Cada história deve ter migration, política RLS, testes negativos e interface m
 | US-010 | Configurar regras e calcular progresso | 008 | Regras versionadas e histórico imutável |
 | US-011 | Aprovar grau e auditar | 010 | Mestre concede com evento atômico |
 | US-012 | Painel de frequência e piloto | 011 | Indicadores e testes E2E |
-| US-013 | Fluxo responsável/menores | 004 | Parte 1 feita (idade e bloqueio de menores); parte 2 (responsável verificável, consentimento) pendente. Obrigatório antes de aceitar menores |
+| US-013 | Fluxo responsável/menores | 004 | Feito: parte 1 (idade) e parte 2 (responsável cria a conta do menor, consentimento verificado pelo gestor, responsável financeiro), ver `docs/features/US-013b.md` |
 
 | US-014 | Desafios entre alunos (presença, treino e golpe) com ativação por mínimo e ranking completo | 012, 013a | Feito, ver `docs/features/US-014.md` |
 | US-015 | Foto da aula no calendário para facilitar a confirmação de presença (armazenamento privado, sem metadados, consentimento) | 013b, 014 | Proposta |

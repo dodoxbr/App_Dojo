@@ -15,7 +15,13 @@ export function rpcErrorMessage(
       if (m.includes("contrast")) return "Contraste insuficiente entre as cores (mínimo 4,5:1).";
       if (m.includes("instructor")) return "O instrutor precisa ser instrutor ou gestor aprovado desta academia.";
       if (m.includes("class inactive")) return "Esta turma está inativa. Ative-a para agendar aulas.";
-      if (m.includes("adult required")) return "Para entrar em uma academia é preciso informar a data de nascimento e ter 18 anos ou mais. O cadastro de menores será liberado quando existir o fluxo de responsável.";
+      if (m.includes("adult required")) return "Esta ação é só para maiores de 18 anos. Para um menor, o responsável cadastra o menor em \"Meus dependentes\".";
+      if (m.includes("guardian required")) return "Para aprovar um menor, o responsável precisa ter dado o consentimento e o gestor precisa ter conferido o documento dele pessoalmente.";
+      if (m.includes("dependents limit")) return "Limite de 10 menores por responsável atingido.";
+      if (m.includes("invalid code")) return "Código inválido, já usado ou vencido.";
+      if (m.includes("document must be checked")) return "Confirme que o documento do responsável foi conferido pessoalmente.";
+      if (m.includes("birth_date")) return "Informe uma data de nascimento válida de alguém com menos de 18 anos.";
+      if (m.includes("relationship")) return "Informe o parentesco (2 a 40 caracteres).";
       if (m.includes("effective_from must be after")) return "A nova versão deve começar depois da data da versão atual.";
       if (m.includes("criteria")) return "Revise os critérios da regra (tipos, valores e nomes diferentes).";
       if (m.includes("no such manual criterion")) return "Esse critério manual não existe na regra vigente da academia.";

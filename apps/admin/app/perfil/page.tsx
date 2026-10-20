@@ -28,7 +28,7 @@ export default async function PerfilPage() {
 
       {ageStatus === "unknown" && <section><h2>Data de nascimento</h2><BirthDateForm /></section>}
       {ageStatus === "minor" && (
-        <p role="note">Você é menor de 18 anos. O cadastro de menores em academias será liberado quando existir o fluxo de responsável.</p>
+        <p role="note">Você é menor de 18 anos. Menores não usam o app sozinhos: o responsável cadastra o menor e usa o app em nome dele.</p>
       )}
 
       <section>
@@ -50,6 +50,7 @@ export default async function PerfilPage() {
       <nav aria-label="Atalhos">
         <h2>Atalhos</h2>
         <ul>
+          <li><Link href="/dependentes">Meus dependentes (menores de idade)</Link></li>
           <li><Link href="/desafios">Desafios</Link></li>
           <li><Link href="/graduacao">Minha graduação</Link></li>
           <li><Link href="/trilha">Minha trilha</Link></li>

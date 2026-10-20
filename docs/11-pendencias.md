@@ -134,7 +134,7 @@
 - [ ] Testes de tela cobrem renderização e autorização (49 páginas, 5 papéis), não cliques em formulários. Falta E2E em navegador (Playwright), que exigiria dependência e ADR. Pela primeira vez as telas foram renderizadas por um teste automatizado; ainda falta uso humano em navegador e conferência visual.
 
 ## US-013 parte 1 (idade e bloqueio de menores)
-- [ ] **Menores de 18 anos não podem entrar em academias** até a parte 2 (responsável verificável, consentimento e proteção reforçada). Se a academia tem alunos menores, isso precisa ser priorizado.
+- [x] Menores de 18 anos não entram sozinhos; a parte 2 (abaixo) criou o fluxo do responsável.
 - [ ] Maioridade = 18 anos é premissa; confirmar com o jurídico, junto com as regras de consentimento (LGPD art. 14).
 - [ ] A data de nascimento declarada pela pessoa não é verificada com documento; a conferência presencial pelo gestor fica para a parte 2.
 - [ ] Conta antiga sem data não entra em academia até declarar; a declaração é única e só muda por correção manual do administrador.
@@ -145,6 +145,17 @@
 - [ ] Registros do aluno contam sem confirmação (decisão do dono do produto); o selo "confirmado" depende de presença validada (aula ± 1 hora, premissa). Não há revisão individual pelo professor além de anular.
 - [ ] Sem foto da aula no calendário (US-015), sem reações/comentários/medalhas (US-016) e sem notificações.
 - [ ] Sem desafios por equipe nem sequências semanais.
-- [ ] Menores continuam fora (parte 2 da US-013). Se a academia tem alunos menores, eles não participam.
+- [ ] Menores seguem fora dos desafios e rankings de propósito (regra da US-013b); incluir só com regra explícita e revisão jurídica.
 - [ ] Desafio já ativado antes da data de início fica "ativado, começa em breve"; o desafio não é reaberto se terminar sem o mínimo (expira).
 - [ ] Telas só no painel web, verificadas pelo teste de renderização; falta uso humano em navegador. Sem tela no app mobile.
+
+## US-013 parte 2 (responsável e menor)
+- [ ] **Texto do consentimento é rascunho** (`rascunho-2026-10`); precisa de revisão jurídica (LGPD art. 14) antes de qualquer menor real. Definir também prazo de retenção e como o responsável pede exclusão dos dados do menor.
+- [ ] **Dados financeiros** (CPF, endereço de cobrança, mensalidade, pagamento) não foram criados: não há módulo de cobrança no backlog e a decisão de LGPD está aberta. Hoje só se registra **quem é** o responsável financeiro (por código).
+- [ ] **Aos 18 anos** o acesso do responsável cessa, mas o jovem **ainda não consegue assumir a conta** (definir e-mail próprio e senha). Exige Admin API ou fluxo de convite (ADR própria). Até lá, o dependente que fez 18 anos fica sem acesso.
+- [ ] A conferência do documento é **presencial e declarada pelo gestor**; o sistema não valida o documento nem o parentesco (premissa). Confirmar com a academia se isso basta.
+- [ ] O dependente é criado inserindo em `auth.users` por função do banco (ADR-018). Acompanhar atualizações do Supabase Auth; os testes de banco e o smoke detectam quebra. Nunca foi testado em um projeto Supabase hospedado, só no stack local.
+- [ ] Limite de 10 dependentes por responsável é premissa antiabuso. Ainda não há troca de responsável legal (separação, tutela) nem mais de um responsável legal por menor.
+- [ ] O pré-preenchimento do cadastro do menor usa o metadado da conta (editável pela própria pessoa); o servidor valida tudo de novo. Sem notificação ao responsável (e-mail/push).
+- [ ] Sem tela no app mobile; telas do painel verificadas só pelo teste de renderização (63 páginas), sem uso humano em navegador.
+- [ ] Foto de menor (US-015) só com o consentimento específico `consent_photos`; a regra ainda não é consumida por nenhuma tela.

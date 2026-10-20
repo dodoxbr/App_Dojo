@@ -11,7 +11,7 @@ Desafios entre os alunos de uma academia, com pontuação e ranking, para estimu
 3. **Fonte verificável.** Presença validada (US-008) e domínio validado (US-009) pontuam automaticamente. Registros informados pelo próprio aluno (treino extra, repetições de golpe) ficam como **não verificados** até um professor/gestor confirmar, e a pontuação mostra a diferença.
 4. **Regras dos pontos são da academia.** Nenhum valor padrão: quem cria define período, tipo e pontos (como nas regras de graduação).
 5. **Ranking só entre participantes** (e o gestor). Mostra nome de exibição e pontos; nunca anotações, e-mail ou dados de menores.
-6. **Crianças só depois da US-013** (responsável, consentimento e proteção reforçada). Sem fotos nesta fase (Storage privado e moderação ficam para depois).
+6. **Menores ficam fora dos desafios e rankings** mesmo após a US-013b (decisão de proteção; só entram com regra explícita e revisão jurídica). Sem fotos nesta fase (Storage privado e moderação ficam para depois).
 7. **Tudo no servidor:** entradas idempotentes, auditoria, sem escrita direta (como o resto do sistema).
 
 ## Possível divisão em histórias

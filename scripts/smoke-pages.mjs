@@ -27,6 +27,7 @@ const owner = await newUser('dono', run);
 const master = await newUser('mestre', run);
 const teacher = await newUser('professor', run);
 const student = await newUser('aluno', run);
+const guardian = await newUser('responsavel', run);
 makePlatformAdmin(owner.email);
 assert.equal((await owner.client.rpc('grant_academy_creator', { p_email: master.email })).error, null);
 const slug = `paginas-${run}`;
@@ -68,6 +69,11 @@ await teacher.client.rpc('join_challenge', { p_challenge_id: challengeId });
 await master.client.rpc('join_challenge', { p_challenge_id: challengeId });
 await student.client.rpc('add_challenge_entry', { p_challenge_id: challengeId, p_local_date: localDate(0), p_local_time: '00:01', p_units: null, p_note: 'treino de páginas', p_client_key: crypto.randomUUID() });
 
+// A guardian with a dependent whose consent is still waiting for the manager to check the document
+const minorId = (await guardian.client.rpc('create_dependent', { p_display_name: 'Menor de páginas', p_birth_date: localDate(365 * 9), p_relationship: 'mãe', p_idempotency_key: crypto.randomUUID() })).data;
+assert(minorId, 'dependente criado');
+assert((await guardian.client.rpc('request_dependent_membership', { p_minor_id: minorId, p_academy_id: academyId, p_photos: false })).data, 'vaga do dependente pedida');
+
 // ---- sessions as the Next app expects them (cookies written by @supabase/ssr) ---------------------------------------
 async function cookieHeader(email) {
   const jar = new Map();
@@ -83,6 +89,7 @@ const cookies = {
   teacher: await cookieHeader(teacher.email),
   manager: await cookieHeader(master.email),
   owner: await cookieHeader(owner.email),
+  guardian: await cookieHeader(guardian.email),
 };
 
 // ---- start the real app ---------------------------------------------------------------------------------------------
@@ -124,7 +131,8 @@ try {
 
   // Not signed in
   await check(null, '/', { has: 'Painel' });
-  await check(null, '/login', { has: 'Entrar' });
+  await check(null, '/login', { has: ['Entrar', 'cuidar de um menor de idade'] });
+  await check(null, '/dependentes', { redirect: '/login?next=%2Fdependentes' });
   await check(null, '/perfil', { redirect: '/login?next=%2Fperfil' });
   await check(null, `/entrar/${slug}`, { redirect: '/login?next=' });
 
@@ -149,6 +157,14 @@ try {
   await check('student', `${A}/membros`, { redirect: '/perfil' });
   await check('student', '/academias/nova', { redirect: '/perfil' });
 
+  // Guardian (adult account that answers for the minor)
+  await check('guardian', '/dependentes', { has: ['Meus dependentes', 'Menor de páginas', 'Responsável legal', 'Sou o responsável financeiro'] });
+  await check('guardian', '/dependentes/novo', { has: ['Cadastrar um menor', 'Seu parentesco'] });
+  await check('guardian', `/dependentes/${minorId}`, { has: ['Menor de páginas', 'Academia Páginas', 'Aguardando o gestor conferir', 'Revogar consentimento', 'Responsável financeiro'] });
+  await check('guardian', `/entrar/${slug}`, { has: ['Pedir vaga para um menor', 'Menor de páginas', 'termo de consentimento'] });
+  await check('guardian', '/perfil', { has: ['Meus dependentes (menores de idade)'] });
+  await check('guardian', `${A}/responsaveis`, { redirect: '/perfil' });
+
   // Teacher (permissions granted by the manager)
   await check('teacher', '/aulas', { has: ['Agenda de aulas', 'Turmas sob minha responsabilidade'] });
   await check('teacher', `/turmas/${classId}`, { has: ['Turma de páginas', 'Agendar aula'] });
@@ -163,6 +179,8 @@ try {
   await check('manager', '/perfil', { has: ['Meu perfil', 'Gerenciar: Academia Páginas', 'Criar academia'] });
   await check('manager', A, { has: ['Academia Páginas', 'Identidade visual', 'O que o instrutor pode fazer'] });
   await check('manager', `${A}/membros`, { has: ['Membros', 'Cadastrar aluno ou colaborador'] });
+  await check('manager', `${A}/membros`, { has: ['Menor de páginas', 'menor · falta conferir o responsável'] });
+  await check('manager', `${A}/responsaveis`, { has: ['Menores e responsáveis', 'Aguardando conferência', 'Menor de páginas', 'Smoke responsavel', 'Confirmar conferência'] });
   await check('manager', `${A}/turmas`, { has: ['Turmas', 'Turma de páginas', 'Nova turma'] });
   await check('manager', `/turmas/${classId}`, { has: ['Turma de páginas', 'Editar turma'] });
   await check('manager', `/turmas/${classId}/aulas/${sessionId}`, { has: ['Presenças', 'Smoke aluno'] });
