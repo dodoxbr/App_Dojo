@@ -80,7 +80,7 @@ select throws_ok($$select public.set_instructor_permission((select id from publi
 select is((select public.has_academy_permission((select id from public.academies where slug = 'academia-teste'), 'assess_skills')), true, 'instrutor tem permissao habilitada');
 select is((select public.has_academy_permission((select id from public.academies where slug = 'academia-teste'), 'recommend_graduation')), false, 'instrutor nao tem permissao nao habilitada');
 select is((select count(*)::int from public.audit_events), 0, 'instrutor nao le auditoria');
-select is((select count(*)::int from public.memberships), 1, 'instrutor ve apenas o proprio vinculo');
+select is((select count(*)::int from public.memberships), 2, 'instrutor com view_roster (padrao) ve os membros aprovados da academia: gestor e ele mesmo');
 
 -- Manager reads own academy only
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000b0","role":"authenticated"}', true);

@@ -48,6 +48,7 @@ export default async function TurmaPage({
     <li key={s.id as string}>
       {formatSessionRange(s.starts_at as string, s.ends_at as string, tz)} — {sessionStatusLabels[s.status as string]}
       {s.cancelled_reason ? ` (${s.cancelled_reason})` : ""}
+      {canManageSessions && <> · <Link href={`/turmas/${classId}/aulas/${s.id}`}>Presenças</Link></>}
       {canManageSessions && s.status === "scheduled" && (
         <form action={cancelSession.bind(null, classId)} style={{ display: "inline", marginLeft: 8 }}>
           <input type="hidden" name="sessionId" value={s.id as string} />

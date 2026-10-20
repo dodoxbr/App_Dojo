@@ -8,7 +8,7 @@
 - [ ] Aluno sem filiação pode registrar treinos pessoais? Proposta: sim.
 - [ ] Quais dados são necessários para menores e responsável?
 - [ ] Privacidade de fotos e duração de armazenamento.
-- [ ] Check-in apenas manual inicialmente ou QR no MVP?
+- [x] Check-in manual e por QR no MVP, com o mesmo núcleo (decisão do dono do produto, US-008).
 - [ ] Regras de contagem: duas aulas no mesmo dia, treinos externos, treinos No-Gi, faltas e retificações.
 - [ ] Regras de elegibilidade para grau após troca de academia.
 - [ ] Termos, privacidade, propriedade intelectual dos vídeos e política de moderação.
@@ -78,3 +78,13 @@
 - [ ] Sem lotação máxima, lista de espera, tipo de aula (gi/no-gi) nem local; não definidos na especificação.
 - [ ] Turma sem horário fixo: o dia/horário recorrente da turma não é modelado, só as aulas.
 - [ ] Telas de turmas e agenda só no painel web, verificadas por typecheck, lint, build e smoke test do backend; falta uso manual em navegador.
+
+## US-008 (presença)
+- [ ] Janela de check-in (1 h antes até 1 h depois da aula) e validade do QR (15 min) são premissas; validar com a academia.
+- [ ] Presença revogada é definitiva (o aluno não pede de novo e o professor não reverte). Definir se o gestor pode reabrir uma revogação feita por engano.
+- [ ] Regras de contagem em aberto (duas aulas no mesmo dia, treino externo, No-Gi, faltas e retificações) ficam para a US-010.
+- [ ] Não há matrícula do aluno em turma: qualquer membro aprovado pode fazer check-in em qualquer aula da academia. Avaliar vínculo aluno-turma.
+- [ ] A lista de alunos para lançamento manual e os nomes dependem da permissão `view_roster` do instrutor (nível da academia, não da turma).
+- [ ] O QR abre um link no navegador do celular (aluno precisa estar logado); sem leitura de câmera no app e sem app mobile para o aluno.
+- [ ] Geolocalização no check-in não adotada (não confirmada em `docs/00`). Sem notificação ao professor de novos pedidos.
+- [ ] Telas de presença verificadas por typecheck, lint, build e smoke test do backend; falta uso manual em navegador.
