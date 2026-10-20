@@ -33,7 +33,7 @@ export default async function AcademiaPage({ params }: { params: Promise<{ id: s
       <p>Link para os alunos: <code>/entrar/{academy.slug}</code> (use o endereço do painel antes dele)</p>
       <p><Link href={`/academia/${academy.id}/membros`}>Membros e pedidos de entrada</Link></p>
       <p><Link href={`/academia/${academy.id}/turmas`}>Turmas e aulas</Link></p>
-      <p><Link href={`/academia/${academy.id}/curriculos`}>Currículos (trilhas)</Link> · <Link href={`/academia/${academy.id}/avaliacoes`}>Avaliações de domínio</Link></p>
+      <p><Link href={`/academia/${academy.id}/curriculos`}>Currículos (trilhas)</Link> · <Link href={`/academia/${academy.id}/avaliacoes`}>Avaliações de domínio</Link> · <Link href={`/academia/${academy.id}/graduacao`}>Graduação</Link></p>
 
       <section>
         <h2>Identidade visual</h2>

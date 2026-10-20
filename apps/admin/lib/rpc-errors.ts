@@ -15,6 +15,12 @@ export function rpcErrorMessage(
       if (m.includes("contrast")) return "Contraste insuficiente entre as cores (mínimo 4,5:1).";
       if (m.includes("instructor")) return "O instrutor precisa ser instrutor ou gestor aprovado desta academia.";
       if (m.includes("class inactive")) return "Esta turma está inativa. Ative-a para agendar aulas.";
+      if (m.includes("effective_from must be after")) return "A nova versão deve começar depois da data da versão atual.";
+      if (m.includes("criteria")) return "Revise os critérios da regra (tipos, valores e nomes diferentes).";
+      if (m.includes("no such manual criterion")) return "Esse critério manual não existe na regra vigente da academia.";
+      if (m.includes("rank")) return "Informe a faixa (até 40 caracteres) e o grau (0 a 20).";
+      if (m.includes("effective_date")) return "A data da graduação não pode estar no futuro.";
+      if (m.includes("not a member")) return "A pessoa precisa ser membro aprovado da academia.";
       if (m.includes("time")) return "O horário final deve ser depois do inicial.";
       if (m.includes("date")) return "A data deve estar dentro de 1 ano a partir de hoje.";
       return "Dados inválidos. Revise os campos.";

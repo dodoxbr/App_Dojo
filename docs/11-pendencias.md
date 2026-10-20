@@ -1,7 +1,7 @@
 # Lacunas a validar com a academia piloto
 
 - [ ] Nome do produto e identidade visual própria.
-- [ ] Regras oficiais da academia para faixa/grau e exigências técnicas.
+- [x] Regras de faixa/grau: cada academia cadastra as suas (critérios combináveis); o sistema não traz regra oficial (decisão do dono do produto, US-010). Falta cada academia cadastrar a sua.
 - [ ] Currículo da planilha revisado pelo mestre; permissões de reprodução.
 - [x] Quem pode criar academias e quem se torna gestor inicial: o super admin libera usuários; quem cria vira gestor (decisão do dono do produto, `docs/00`).
 - [ ] Instrutor pode aprovar filiação? O gestor cadastra colaboradores e alunos; falta definir se o instrutor também aprova (hoje fora do catálogo de permissões).
@@ -9,7 +9,7 @@
 - [ ] Quais dados são necessários para menores e responsável?
 - [ ] Privacidade de fotos e duração de armazenamento.
 - [x] Check-in manual e por QR no MVP, com o mesmo núcleo (decisão do dono do produto, US-008).
-- [ ] Regras de contagem: duas aulas no mesmo dia, treinos externos, treinos No-Gi, faltas e retificações.
+- [ ] Regras de contagem: duas aulas no mesmo dia (resolvido por regra: opção "dias diferentes"), treinos externos, treinos No-Gi, faltas e retificações.
 - [ ] Regras de elegibilidade para grau após troca de academia.
 - [ ] Termos, privacidade, propriedade intelectual dos vídeos e política de moderação.
 
@@ -97,4 +97,15 @@
 - [ ] A "trilha por nível" do atalho depende da planilha importada; a relação nível ↔ faixa não foi definida (a planilha cita BRANCA/AZUL/ROXA, não interpretado como regra).
 - [ ] Sem histórico visível de avaliações por técnica (só auditoria), sem metas por prazo e sem agrupamento por categoria na trilha do aluno.
 - [ ] Lista de alunos para avaliar depende da permissão de ver a lista (`view_roster`).
+- [ ] Telas só no painel web, verificadas por typecheck, lint, build e smoke test do backend; falta uso manual em navegador. Sem tela no app mobile.
+
+## US-010 (regras de graduação)
+- [ ] **Cada academia precisa cadastrar a sua regra.** O sistema nasce sem regras; sem regra não há recomendação. Nada da aba oculta "Tempo de Faixa" foi usado.
+- [ ] Rótulos de faixa e grau são texto livre da academia (faixa até 40 caracteres, grau 0 a 20); não há escada de graduações nem sugestão de "próxima faixa".
+- [ ] A graduação atual de cada membro é registrada pelo gestor uma única vez (evento inicial). Mudanças futuras dependem da US-011 (promoção/correção). Graduação declarada pelo aluno com confirmação (regra 7) não foi implementada.
+- [ ] Critério de nível técnico usa a validação **atual** das técnicas (não exige que tenham sido validadas depois da última graduação). Avaliar se deve contar só o que foi validado após o marco.
+- [ ] Critério manual ("comprometimento" etc.) é binário (atende / não atende) com observação; sem escala. Permissão `recommend_graduation` vale por papel.
+- [ ] Sem regras por idade, kids ou federação (`docs/04`: exigem confirmação com a academia). Menores seguem sem tratamento (US-013).
+- [ ] Não há como encerrar uma regra sem substituí-la por outra versão.
+- [ ] Novos tipos de critério exigem migration (a validação fica no banco).
 - [ ] Telas só no painel web, verificadas por typecheck, lint, build e smoke test do backend; falta uso manual em navegador. Sem tela no app mobile.
