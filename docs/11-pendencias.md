@@ -15,7 +15,7 @@
 
 ## Técnicas (US-001)
 - [ ] 30 vulnerabilidades reportadas por `npm audit` (8 moderate, 22 high), em dependências transitivas do Expo (`@expo/config-plugins` etc.). Reavaliar quando o Expo publicar correções; não rodar `npm audit fix --force`.
-- [ ] `packageManager` fixa npm@10.9.0, mas o ambiente local usa npm 11 e Node 24. Alinhar versão ou ajustar o campo.
+- [x] `packageManager` alinhado para npm@11.17.0 e Node >=24.
 - [ ] Assets em `apps/mobile/assets` são placeholders do template Expo; substituir pela identidade visual (item de nome/identidade acima).
 - [ ] Testes de RLS cobrem só as 6 tabelas da migration inicial; cada história nova deve ampliar `supabase/tests/database/`.
 - [ ] `academies` legível por qualquer autenticado (diretório); revisar se ganhar colunas sensíveis.

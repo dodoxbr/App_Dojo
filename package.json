@@ -2,8 +2,8 @@
   "name": "dojo-platform",
   "private": true,
   "version": "0.1.0",
-  "packageManager": "npm@10.9.0",
-  "engines": { "node": ">=22" },
+  "packageManager": "npm@11.17.0",
+  "engines": { "node": ">=24" },
   "workspaces": ["packages/*", "apps/*"],
   "scripts": {
     "lint": "npm run lint --workspaces --if-present",
