@@ -13,6 +13,8 @@ insert into auth.users (id, email) values
  ('00000000-0000-0000-0000-0000000000d3', 'rejeitado@example.test'),
  ('00000000-0000-0000-0000-0000000000d4', 'encerrado@example.test'),
  ('00000000-0000-0000-0000-0000000000f1', 'semvinculo@example.test');
+-- the fixtures are adults (age gate, migration 019)
+insert into public.profile_private (user_id, birth_date) select id, date '1990-01-01' from auth.users where email like '%@example.test' on conflict (user_id) do nothing;
 insert into public.academies (id, name, slug, owner_user_id) values
  ('00000000-0000-0000-0000-00000000ac01', 'Academia Um', 'academia-um', '00000000-0000-0000-0000-0000000000a1'),
  ('00000000-0000-0000-0000-00000000ac02', 'Academia Dois', 'academia-dois', '00000000-0000-0000-0000-0000000000b2');

@@ -1,12 +1,14 @@
 import Link from "next/link";
 import { membershipRoleLabels, membershipStatusLabels } from "@dojo/contracts/membership";
 import { getCaller } from "@/lib/context";
+import { BirthDateForm } from "./birth-date-form";
 import { ProfileForm } from "./profile-form";
 import { signOut } from "./actions";
 
 export default async function PerfilPage() {
   const { supabase, userId, isPlatformAdmin, canCreateAcademy, managedAcademies } = await getCaller();
   const { data: profile, error } = await supabase.from("profiles").select("display_name").eq("id", userId).single();
+  const { data: ageStatus } = await supabase.rpc("my_age_status");
 
   const { data: mine } = await supabase.from("memberships").select("academy_id, role, status").eq("user_id", userId);
   const ids = (mine ?? []).map((m) => m.academy_id as string);
@@ -22,6 +24,11 @@ export default async function PerfilPage() {
         <p role="alert">Não foi possível carregar o perfil.</p>
       ) : (
         <ProfileForm displayName={profile.display_name} />
+      )}
+
+      {ageStatus === "unknown" && <section><h2>Data de nascimento</h2><BirthDateForm /></section>}
+      {ageStatus === "minor" && (
+        <p role="note">Você é menor de 18 anos. O cadastro de menores em academias será liberado quando existir o fluxo de responsável.</p>
       )}
 
       <section>

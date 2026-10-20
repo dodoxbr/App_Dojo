@@ -132,3 +132,10 @@
 - [ ] Retenção considera presença validada por semana (semana começa na segunda, no fuso da academia).
 - [ ] Sem painel de toda a plataforma para o super admin (cada academia tem o seu); sem exportação.
 - [ ] Testes de tela cobrem renderização e autorização (49 páginas, 5 papéis), não cliques em formulários. Falta E2E em navegador (Playwright), que exigiria dependência e ADR. Pela primeira vez as telas foram renderizadas por um teste automatizado; ainda falta uso humano em navegador e conferência visual.
+
+## US-013 parte 1 (idade e bloqueio de menores)
+- [ ] **Menores de 18 anos não podem entrar em academias** até a parte 2 (responsável verificável, consentimento e proteção reforçada). Se a academia tem alunos menores, isso precisa ser priorizado.
+- [ ] Maioridade = 18 anos é premissa; confirmar com o jurídico, junto com as regras de consentimento (LGPD art. 14).
+- [ ] A data de nascimento declarada pela pessoa não é verificada com documento; a conferência presencial pelo gestor fica para a parte 2.
+- [ ] Conta antiga sem data não entra em academia até declarar; a declaração é única e só muda por correção manual do administrador.
+- [ ] O app mobile pede a data de nascimento no cadastro (texto AAAA-MM-DD); falta seletor de data e a tela de perfil com a declaração única.

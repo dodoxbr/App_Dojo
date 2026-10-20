@@ -16,6 +16,7 @@ export default async function EntrarPage({ params }: { params: Promise<{ slug: s
     .maybeSingle();
   if (!academy) notFound();
 
+  const { data: ageStatus } = await supabase.rpc("my_age_status");
   const { data: mine } = await supabase
     .from("memberships")
     .select("status")
@@ -29,7 +30,15 @@ export default async function EntrarPage({ params }: { params: Promise<{ slug: s
         <h1 style={{ margin: 0 }}>{academy.name}</h1>
       </header>
 
-      {!mine && (
+      {!mine && ageStatus !== "adult" && (
+        <p role="alert">
+          {ageStatus === "unknown"
+            ? "Para pedir entrada é preciso informar a data de nascimento no seu perfil."
+            : "O cadastro de menores de 18 anos ainda não está disponível: ele exige um responsável."}{" "}
+          <Link href="/perfil">Ir para o perfil</Link>
+        </p>
+      )}
+      {!mine && ageStatus === "adult" && (
         <>
           <p>Você foi convidado(a) a entrar nesta academia. O gestor precisa aprovar o seu pedido.</p>
           <RequestButton academyId={academy.id} />

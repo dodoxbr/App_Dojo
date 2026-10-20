@@ -28,7 +28,7 @@ export async function newUser(label, run = Date.now()) {
   const { url, anonKey, mailpit } = localEnv();
   const email = `${label}-${run}@example.test`;
   const client = createClient(url, anonKey, { auth: { persistSession: false } });
-  const up = await client.auth.signUp({ email, password: PASSWORD, options: { data: { display_name: `Smoke ${label}` } } });
+  const up = await client.auth.signUp({ email, password: PASSWORD, options: { data: { display_name: `Smoke ${label}`, birth_date: '1990-01-01' } } });
   assert.equal(up.error, null, `cadastro ${label}`);
   let link;
   for (let i = 0; i < 20 && !link; i++) {

@@ -15,6 +15,7 @@ export function rpcErrorMessage(
       if (m.includes("contrast")) return "Contraste insuficiente entre as cores (mínimo 4,5:1).";
       if (m.includes("instructor")) return "O instrutor precisa ser instrutor ou gestor aprovado desta academia.";
       if (m.includes("class inactive")) return "Esta turma está inativa. Ative-a para agendar aulas.";
+      if (m.includes("adult required")) return "Para entrar em uma academia é preciso informar a data de nascimento e ter 18 anos ou mais. O cadastro de menores será liberado quando existir o fluxo de responsável.";
       if (m.includes("effective_from must be after")) return "A nova versão deve começar depois da data da versão atual.";
       if (m.includes("criteria")) return "Revise os critérios da regra (tipos, valores e nomes diferentes).";
       if (m.includes("no such manual criterion")) return "Esse critério manual não existe na regra vigente da academia.";

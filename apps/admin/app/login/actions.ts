@@ -18,11 +18,11 @@ export async function signIn(_prev: FormState, formData: FormData): Promise<Form
 
 export async function signUp(_prev: FormState, formData: FormData): Promise<FormState> {
   const parsed = signUpSchema.safeParse(Object.fromEntries(formData));
-  if (!parsed.success) return { error: "Informe nome (2 a 120 caracteres), e-mail válido e senha com 8 ou mais caracteres." };
+  if (!parsed.success) return { error: "Informe nome (2 a 120 caracteres), data de nascimento válida, e-mail válido e senha com 8 ou mais caracteres." };
 
   const supabase = await createClient();
-  const { email, password, displayName } = parsed.data;
-  const { error } = await supabase.auth.signUp({ email, password, options: { data: { display_name: displayName } } });
+  const { email, password, displayName, birthDate } = parsed.data;
+  const { error } = await supabase.auth.signUp({ email, password, options: { data: { display_name: displayName, birth_date: birthDate } } });
   if (error) return { error: "Não foi possível concluir o cadastro. Tente novamente." };
   // Same message whether or not the e-mail already exists.
   return { message: "Cadastro recebido. Confira seu e-mail para confirmar a conta." };

@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase';
 export default function Login() {
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
   const [displayName, setDisplayName] = useState('');
+  const [birthDate, setBirthDate] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
@@ -24,13 +25,13 @@ export default function Login() {
       if (err) setError('E-mail ou senha inválidos, ou e-mail ainda não confirmado.');
       return;
     }
-    const parsed = signUpSchema.safeParse({ email, password, displayName });
-    if (!parsed.success) return setError('Informe nome (2 a 120 caracteres), e-mail válido e senha com 8 ou mais caracteres.');
+    const parsed = signUpSchema.safeParse({ email, password, displayName, birthDate });
+    if (!parsed.success) return setError('Informe nome (2 a 120 caracteres), data de nascimento (AAAA-MM-DD), e-mail válido e senha com 8 ou mais caracteres.');
     setBusy(true);
     const { error: err } = await supabase.auth.signUp({
       email: parsed.data.email,
       password: parsed.data.password,
-      options: { data: { display_name: parsed.data.displayName } },
+      options: { data: { display_name: parsed.data.displayName, birth_date: parsed.data.birthDate } },
     });
     setBusy(false);
     if (err) setError('Não foi possível concluir o cadastro. Tente novamente.');
@@ -42,6 +43,9 @@ export default function Login() {
       <Text style={styles.title}>{mode === 'signin' ? 'Entrar' : 'Criar conta'}</Text>
       {mode === 'signup' && (
         <TextInput style={styles.input} placeholder="Nome" value={displayName} onChangeText={setDisplayName} autoComplete="name" />
+      )}
+      {mode === 'signup' && (
+        <TextInput style={styles.input} placeholder="Data de nascimento (AAAA-MM-DD)" value={birthDate} onChangeText={setBirthDate} keyboardType="numbers-and-punctuation" />
       )}
       <TextInput
         style={styles.input}

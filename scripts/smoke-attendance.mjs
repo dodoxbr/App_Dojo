@@ -17,7 +17,7 @@ const TZ = 'America/Sao_Paulo';
 async function newUser(label) {
   const email = `${label}-${run}@example.test`;
   const client = createClient(url, anonKey, { auth: { persistSession: false } });
-  const up = await client.auth.signUp({ email, password, options: { data: { display_name: `Smoke ${label}` } } });
+  const up = await client.auth.signUp({ email, password, options: { data: { display_name: `Smoke ${label}`, birth_date: '1990-01-01' } } });
   assert.equal(up.error, null, `cadastro ${label}`);
   let link;
   for (let i = 0; i < 20 && !link; i++) {

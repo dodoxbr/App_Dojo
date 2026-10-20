@@ -14,7 +14,7 @@ const email = `smoke-${Date.now()}@example.test`;
 const password = 'senha-sintetica-123';
 const supabase = createClient(url, anonKey, { auth: { persistSession: false } });
 
-const up = await supabase.auth.signUp({ email, password, options: { data: { display_name: 'Smoke Teste' } } });
+const up = await supabase.auth.signUp({ email, password, options: { data: { display_name: 'Smoke Teste', birth_date: '1990-01-01' } } });
 assert.equal(up.error, null, 'cadastro');
 assert.equal(up.data.session, null, 'sem sessão antes de confirmar o e-mail');
 

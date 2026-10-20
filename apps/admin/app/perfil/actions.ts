@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { displayNameSchema } from "@dojo/contracts/auth";
+import { birthDateSchema, displayNameSchema } from "@dojo/contracts/auth";
 import { createClient } from "@/lib/supabase/server";
 import type { FormState } from "../login/actions";
 
@@ -25,4 +25,18 @@ export async function signOut() {
   const supabase = await createClient();
   await supabase.auth.signOut();
   redirect("/login");
+}
+
+export async function declareBirthDate(_prev: FormState, formData: FormData): Promise<FormState> {
+  const parsed = birthDateSchema.safeParse(formData.get("birthDate"));
+  if (!parsed.success) return { error: "Informe uma data de nascimento válida (não pode ser futura)." };
+
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("set_my_birth_date", { p_birth_date: parsed.data });
+  if (error) {
+    if (error.code === "23505") return { error: "A data de nascimento já foi informada e não pode ser alterada." };
+    return { error: "Não foi possível salvar a data de nascimento." };
+  }
+  revalidatePath("/perfil");
+  return { message: "Data de nascimento registrada." };
 }

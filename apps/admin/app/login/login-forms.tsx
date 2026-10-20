@@ -28,6 +28,8 @@ export function LoginForms({ next }: { next: string }) {
       <form action={upAction}>
         <h2>Criar conta</h2>
         <label>Nome <input name="displayName" autoComplete="name" minLength={2} maxLength={120} required /></label>
+        <label>Data de nascimento <input name="birthDate" type="date" autoComplete="bday" min="1900-01-01" required /></label>
+        <p><small>Usada só para saber se você é maior de idade. Quem tem menos de 18 anos ainda não pode entrar em uma academia: o cadastro de menores exige um responsável.</small></p>
         <label>E-mail <input name="email" type="email" autoComplete="email" required /></label>
         <label>Senha <input name="password" type="password" autoComplete="new-password" minLength={8} required /></label>
         <button type="submit" disabled={upPending}>{upPending ? "Enviando…" : "Cadastrar"}</button>
