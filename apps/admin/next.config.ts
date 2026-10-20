@@ -1,9 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
-  cacheComponents: true,
-  partialPrefetching: true,
+  // @dojo/contracts exports TypeScript sources directly (ADR-010).
+  transpilePackages: ["@dojo/contracts"],
 };
 
 export default nextConfig;

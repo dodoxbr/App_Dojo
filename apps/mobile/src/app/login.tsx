@@ -1,0 +1,83 @@
+import { signInSchema, signUpSchema } from '@dojo/contracts/auth';
+import { useState } from 'react';
+import { ActivityIndicator, Button, StyleSheet, Text, TextInput, View } from 'react-native';
+import { supabase } from '@/lib/supabase';
+
+export default function Login() {
+  const [mode, setMode] = useState<'signin' | 'signup'>('signin');
+  const [displayName, setDisplayName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
+
+  async function submit() {
+    setError(null);
+    setMessage(null);
+    if (mode === 'signin') {
+      const parsed = signInSchema.safeParse({ email, password });
+      if (!parsed.success) return setError('Informe um e-mail válido e senha com 8 ou mais caracteres.');
+      setBusy(true);
+      const { error: err } = await supabase.auth.signInWithPassword(parsed.data);
+      setBusy(false);
+      if (err) setError('E-mail ou senha inválidos, ou e-mail ainda não confirmado.');
+      return;
+    }
+    const parsed = signUpSchema.safeParse({ email, password, displayName });
+    if (!parsed.success) return setError('Informe nome (2 a 120 caracteres), e-mail válido e senha com 8 ou mais caracteres.');
+    setBusy(true);
+    const { error: err } = await supabase.auth.signUp({
+      email: parsed.data.email,
+      password: parsed.data.password,
+      options: { data: { display_name: parsed.data.displayName } },
+    });
+    setBusy(false);
+    if (err) setError('Não foi possível concluir o cadastro. Tente novamente.');
+    else setMessage('Cadastro recebido. Confira seu e-mail para confirmar a conta.');
+  }
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>{mode === 'signin' ? 'Entrar' : 'Criar conta'}</Text>
+      {mode === 'signup' && (
+        <TextInput style={styles.input} placeholder="Nome" value={displayName} onChangeText={setDisplayName} autoComplete="name" />
+      )}
+      <TextInput
+        style={styles.input}
+        placeholder="E-mail"
+        value={email}
+        onChangeText={setEmail}
+        autoCapitalize="none"
+        keyboardType="email-address"
+        autoComplete="email"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Senha (mínimo 8 caracteres)"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+        autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
+      />
+      {busy ? <ActivityIndicator accessibilityLabel="Enviando" /> : <Button title={mode === 'signin' ? 'Entrar' : 'Cadastrar'} onPress={submit} />}
+      {error && <Text accessibilityRole="alert" style={styles.error}>{error}</Text>}
+      {message && <Text accessibilityRole="alert">{message}</Text>}
+      <Button
+        title={mode === 'signin' ? 'Criar uma conta' : 'Já tenho conta'}
+        onPress={() => {
+          setMode(mode === 'signin' ? 'signup' : 'signin');
+          setError(null);
+          setMessage(null);
+        }}
+      />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: 'center', padding: 16, gap: 12 },
+  title: { fontSize: 24, fontWeight: '600' },
+  input: { borderWidth: 1, borderColor: '#999', borderRadius: 6, padding: 10, minHeight: 44 },
+  error: { color: '#B00020' },
+});

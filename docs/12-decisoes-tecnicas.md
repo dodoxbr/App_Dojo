@@ -27,3 +27,6 @@
 ## ADR-009 — Privilégios mínimos no banco
 **Status:** aceita (US-001). **Decisão:** migration dedicada revoga privilégios padrão de `anon`/`authenticated` e concede por tabela só o que as políticas RLS usam; novas tabelas não herdam grants. **Consequência:** cada história que cria tabela deve declarar seus grants.
 
+
+## ADR-010 — Dependências de autenticação (US-002)
+**Status:** aceita (US-002). **Decisão:** `zod` em `packages/contracts` (esquemas compartilhados, `docs/02`/`docs/07`); `@supabase/supabase-js` nos dois apps; `@supabase/ssr` no admin (sessão por cookies); `expo-secure-store` no mobile (token fora de armazenamento em texto puro). Sem `service_role` em nenhum cliente. **Consequência:** `packages/contracts` exporta TypeScript direto (sem build); o admin precisa de `transpilePackages`. SecureStore limita ~2 KB por valor, então o adaptador de sessão divide em partes.

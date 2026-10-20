@@ -32,9 +32,13 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
-      - run: npx supabase start -x studio,imgproxy,edge-runtime,logflare,vector,mailpit
+      - run: npx supabase start -x studio,imgproxy,edge-runtime,logflare,vector
       - run: npx supabase db reset
       - run: npx supabase test db
+      - name: Smoke test do fluxo de auth
+        run: |
+          eval "$(npx supabase status -o env | grep -E "^(API_URL|ANON_KEY)=" | sed "s/^API_URL=/export SUPABASE_URL=/; s/^ANON_KEY=/export SUPABASE_ANON_KEY=/")"
+          node scripts/smoke-auth.mjs
       - run: npx supabase stop --no-backup
         if: always()
 

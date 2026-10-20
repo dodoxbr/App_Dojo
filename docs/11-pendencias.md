@@ -20,3 +20,11 @@
 - [ ] Testes de RLS cobrem só as 6 tabelas da migration inicial; cada história nova deve ampliar `supabase/tests/database/`.
 - [ ] `academies` legível por qualquer autenticado (diretório); revisar se ganhar colunas sensíveis.
 - [ ] CI (`.github/workflows/ci.yml`) escrito mas ainda não executado (pasta sem remoto Git).
+
+## US-002 (autenticação e perfil)
+- [ ] Recuperação de senha, OAuth, MFA e exclusão de conta: fora do escopo da US-002.
+- [ ] Idade/`birth_date` e cadastro de menores: bloqueado até a US-013; hoje qualquer pessoa pode criar conta.
+- [ ] Login do mobile verificado só por typecheck, lint e bundle web; falta testar em dispositivo/emulador (SecureStore, `10.0.2.2` no Android).
+- [ ] Telas do admin e do mobile não foram exercitadas em navegador; o fluxo foi validado por `scripts/smoke-auth.mjs` contra o Supabase local.
+- [ ] E-mails de confirmação em produção exigem SMTP próprio e `site_url`/redirects definidos.
+- [ ] Texto do nome padrão ("Novo usuário") e política de senha (mínimo 8) a validar com o produto.
