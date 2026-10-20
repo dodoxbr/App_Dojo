@@ -58,6 +58,15 @@ assert(sessionId, 'sessão criada');
 await student.client.rpc('request_check_in', { p_session_id: sessionId });
 const logId = (await student.client.rpc('save_training_log', { p_academy_id: academyId, p_trained_at: new Date().toISOString(), p_notes: 'nota de páginas', p_technique_ids: [tesoura], p_client_key: crypto.randomUUID() })).data;
 assert(logId, 'registro do diário criado');
+// A challenge that is already active (3 participants) with one entry
+const challengeId = (await student.client.rpc('create_challenge', {
+  p_academy_id: academyId, p_title: 'Desafio de páginas', p_description: null, p_metric: 'training', p_points_per_unit: 5, p_technique_id: null,
+  p_max_units_per_day: null, p_starts_on: localDate(0), p_ends_on: localDate(-7), p_min_participants: 3, p_join: true, p_idempotency_key: crypto.randomUUID(),
+})).data;
+assert(challengeId, 'desafio criado');
+await teacher.client.rpc('join_challenge', { p_challenge_id: challengeId });
+await master.client.rpc('join_challenge', { p_challenge_id: challengeId });
+await student.client.rpc('add_challenge_entry', { p_challenge_id: challengeId, p_local_date: localDate(0), p_local_time: '00:01', p_units: null, p_note: 'treino de páginas', p_client_key: crypto.randomUUID() });
 
 // ---- sessions as the Next app expects them (cookies written by @supabase/ssr) ---------------------------------------
 async function cookieHeader(email) {
@@ -132,6 +141,9 @@ try {
   await check('student', '/trilha', { has: ['Minha trilha', 'Tesoura'] });
   await check('student', '/graduacao', { has: ['Minha graduação', 'Faixa Teste A', 'Histórico de graduações'] });
   await check('student', `/entrar/${slug}`, { has: 'Academia Páginas' });
+  await check('student', '/desafios', { has: ['Desafios', 'Desafio de páginas', 'Em andamento'] });
+  await check('student', '/desafios/novo', { has: ['Criar desafio', 'Mínimo de participantes'] });
+  await check('student', `/desafios/${challengeId}`, { has: ['Desafio de páginas', 'Ranking', 'Registrar treino', 'Meus registros', 'Smoke aluno'] });
   await check('student', '/plataforma', { redirect: '/perfil' });
   await check('student', `${A}/painel`, { redirect: '/perfil' });
   await check('student', `${A}/membros`, { redirect: '/perfil' });
@@ -164,6 +176,8 @@ try {
   await check('manager', `${A}/graduacao/alunos/${student.id}`, { has: ['Conceder graduação', 'Retificar o último registro', 'Histórico de graduações'] });
   await check('manager', `${A}/painel`, { has: ['Painel de frequência', 'Ativação', 'Retenção semanal'] });
   await check('manager', `${A}/painel?dias=7`, { has: ['Painel de frequência', '7 dias'] });
+  await check('manager', `/desafios/${challengeId}`, { has: ['Desafio de páginas', 'Ranking', 'Moderação'] });
+  await check('manager', '/desafios', { has: ['Desafios', 'Desafio de páginas'] });
   await check('manager', '/tecnicas/nova', { has: 'Cadastrar técnica' });
   await check('manager', '/academias/nova', { has: 'Criar academia' });
 

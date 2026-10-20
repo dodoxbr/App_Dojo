@@ -139,3 +139,12 @@
 - [ ] A data de nascimento declarada pela pessoa não é verificada com documento; a conferência presencial pelo gestor fica para a parte 2.
 - [ ] Conta antiga sem data não entra em academia até declarar; a declaração é única e só muda por correção manual do administrador.
 - [ ] O app mobile pede a data de nascimento no cadastro (texto AAAA-MM-DD); falta seletor de data e a tela de perfil com a declaração única.
+
+## US-014 (desafios)
+- [ ] Limite de 3 desafios em aberto por criador e de 20 registros por pessoa por dia são premissas antiabuso; validar com a academia.
+- [ ] Registros do aluno contam sem confirmação (decisão do dono do produto); o selo "confirmado" depende de presença validada (aula ± 1 hora, premissa). Não há revisão individual pelo professor além de anular.
+- [ ] Sem foto da aula no calendário (US-015), sem reações/comentários/medalhas (US-016) e sem notificações.
+- [ ] Sem desafios por equipe nem sequências semanais.
+- [ ] Menores continuam fora (parte 2 da US-013). Se a academia tem alunos menores, eles não participam.
+- [ ] Desafio já ativado antes da data de início fica "ativado, começa em breve"; o desafio não é reaberto se terminar sem o mínimo (expira).
+- [ ] Telas só no painel web, verificadas pelo teste de renderização; falta uso humano em navegador. Sem tela no app mobile.

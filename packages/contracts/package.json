@@ -14,7 +14,8 @@
     "./curriculum": "./src/curriculum.ts",
     "./graduation": "./src/graduation.ts",
     "./belts": "./src/belts.ts",
-    "./dashboard": "./src/dashboard.ts"
+    "./dashboard": "./src/dashboard.ts",
+    "./challenges": "./src/challenges.ts"
   },
   "scripts": {
     "test": "node --test tests/*.test.ts",
