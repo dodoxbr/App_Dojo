@@ -21,6 +21,8 @@ export function CreateTechniqueForm({ scopes }: { scopes: Scope[] }) {
       <label>Nome <input name="name" minLength={2} maxLength={160} required /></label>
       <label>Categoria <input name="category" minLength={2} maxLength={80} required /></label>
       <label>Nível (opcional) <input name="level" maxLength={40} /></label>
+      <label>Tipo (opcional) <input name="type" maxLength={60} placeholder="ex.: Estrangulamento" /></label>
+      <label>Posição (opcional) <input name="position" maxLength={60} placeholder="ex.: Montada" /></label>
       <label>Descrição (opcional) <textarea name="description" maxLength={4000} rows={4} /></label>
       <button type="submit" disabled={pending}>{pending ? "Cadastrando…" : "Cadastrar técnica"}</button>
       {state.error && <p role="alert">{state.error}</p>}

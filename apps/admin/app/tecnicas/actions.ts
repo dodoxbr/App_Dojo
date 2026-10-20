@@ -22,6 +22,8 @@ export async function createTechnique(_prev: FormState, formData: FormData): Pro
     p_level: parsed.data.level ?? null,
     p_description: parsed.data.description ?? null,
     p_idempotency_key: parsed.data.idempotencyKey,
+    p_type: parsed.data.type ?? null,
+    p_position: parsed.data.position ?? null,
   });
   if (error || !data) return { error: rpcErrorMessage(error ?? {}, { conflict: CONFLICT }) };
   redirect(`/tecnicas/${data}`);
@@ -38,6 +40,8 @@ export async function updateTechnique(techniqueId: string, _prev: FormState, for
     p_category: parsed.data.category,
     p_level: parsed.data.level ?? null,
     p_description: parsed.data.description ?? null,
+    p_type: parsed.data.type ?? null,
+    p_position: parsed.data.position ?? null,
   });
   if (error) return { error: rpcErrorMessage(error, { conflict: CONFLICT }) };
   revalidatePath(`/tecnicas/${techniqueId}`);

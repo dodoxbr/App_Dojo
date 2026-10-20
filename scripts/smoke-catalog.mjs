@@ -52,7 +52,7 @@ assert.equal((await manager.client.rpc('add_member', { p_academy_id: academyId, 
 
 // Imported catalog is visible to everyone signed in, even without an academy.
 let r = await outsider.client.rpc('search_techniques', { p_query: 'SAÍDA de quadril' });
-assert.equal(r.data?.[0]?.name, 'Saida de Quadril', 'busca sem acento/caixa encontra a técnica importada');
+assert.equal(r.data?.[0]?.name, 'Saída de Quadril', 'busca sem acento/caixa encontra a técnica importada');
 r = await outsider.client.rpc('search_techniques', { p_category: 'Fundamentos', p_limit: 100 });
 assert.equal(r.data?.length, 10, '10 técnicas de Fundamentos');
 r = await outsider.client.from('technique_sources').select('id');
@@ -84,16 +84,23 @@ r = await student.client.rpc('review_technique', { p_technique_id: techniqueId }
 assert.equal(r.error?.code, '42501', 'aluno não revisa');
 
 // Global content: only the platform admin edits it; editing invalidates the review.
-const globalId = (await outsider.client.rpc('search_techniques', { p_query: 'Tesoura' })).data[0].id;
+// Never mutate the imported seed: the smoke test creates its own global technique.
+const importedId = (await outsider.client.rpc('search_techniques', { p_query: 'Tesoura' })).data[0].id;
+r = await admin.client.rpc('create_technique', {
+  p_academy_id: null, p_name: `Global Smoke ${run}`, p_category: 'Teste', p_level: null, p_description: null,
+  p_idempotency_key: crypto.randomUUID(), p_type: null, p_position: null,
+});
+assert.equal(r.error, null, 'super admin cria técnica global');
+const globalId = r.data;
 r = await manager.client.rpc('update_technique', { p_technique_id: globalId, p_name: 'Hack', p_category: 'Raspagens', p_level: null, p_description: null });
 assert.equal(r.error?.code, '42501', 'gestor não edita técnica global');
-r = await admin.client.rpc('update_technique', { p_technique_id: globalId, p_name: 'Tesoura', p_category: 'Raspagens', p_level: 'Básico', p_description: 'Descrição sintética' });
+r = await admin.client.rpc('update_technique', { p_technique_id: globalId, p_name: `Global Smoke ${run}`, p_category: 'Teste', p_level: 'Básico', p_description: 'Descrição sintética', p_type: 'Raspagem', p_position: 'Guarda fechada' });
 assert.equal(r.error, null, 'super admin edita técnica global');
 r = await admin.client.from('techniques').select('reviewed_at').eq('id', globalId).single();
 assert.equal(r.data.reviewed_at, null, 'edição invalida a revisão');
 assert.equal((await admin.client.rpc('review_technique', { p_technique_id: globalId })).error, null, 'super admin revisa');
 
-r = await admin.client.from('technique_sources').select('sheet').eq('technique_id', globalId);
+r = await admin.client.from('technique_sources').select('sheet').eq('technique_id', importedId);
 assert((r.data?.length ?? 0) >= 1, 'super admin lê a proveniência');
 
 console.log('smoke-catalog: OK');

@@ -1,6 +1,6 @@
 -- US-005: technique catalog, search, aliases and review. Synthetic users; the seed comes from the real migration.
 begin;
-select plan(47);
+select plan(64);
 
 -- Fixtures (as postgres)
 -- a1 platform admin | b1 manager ac01 | b2 manager ac02 | c1 student ac01 | c2 pending ac01 | d1 plain user
@@ -33,6 +33,15 @@ select is((select name from public.techniques where id = 'f0085f40-8d58-5777-aac
 select is((select count(*)::int from public.technique_sources where technique_id = 'f0085f40-8d58-5777-aac6-01c39cd03890'), 3, 'seed: tecnica nos tres niveis guarda as tres origens');
 select is(public.normalize_text('  Ação   Ç  '), 'acao c', 'normalize_text remove acento, caixa e espacos extras');
 
+-- Corrections and classification (migration 009)
+select is((select count(*)::int from public.techniques where source is not null and name = 'Pegada Cruzada no Pulso'), 1, 'correcao aplicada: Pluso -> Pulso');
+select is((select count(*)::int from public.techniques where name = 'Pegada Cruzada no Pluso'), 0, 'nome com erro nao existe mais');
+select is((select t.name from public.techniques t join public.technique_sources s on s.technique_id = t.id where s.raw_name = 'Pegada Cruzada no Pluso'), 'Pegada Cruzada no Pulso', 'nome original preservado na origem e ligado a tecnica corrigida');
+select is((select count(*)::int from public.techniques where source is not null and reviewed_at is null), 0, 'correcoes de digitacao nao invalidam a revisao');
+select is((select count(*)::int from public.techniques where source is not null and classification_status = 'proposed'), 131, 'classificacao importada e apenas proposta');
+select is((select count(*)::int from public.techniques where source is not null and technique_type is not null), 127, 'seed: 127 tecnicas com tipo');
+select is((select count(*)::int from public.techniques where source is not null and technique_position is not null), 121, 'seed: 121 tecnicas com posicao');
+
 set local role authenticated;
 
 -- Search (plain user sees the global catalog only) --------------------------------------------
@@ -44,6 +53,9 @@ select is((select count(*)::int from public.search_techniques(null, 'FUNDAMENTOS
 select is((select count(*)::int from public.search_techniques('%')), 0, 'curinga % nao casa tudo');
 select is((select count(*)::int from public.search_techniques('_')), 0, 'curinga _ nao casa tudo');
 select is((select count(*)::int from public.search_techniques(null, null, 1000, 0)), 100, 'limite maximo de 100 por pagina');
+select is((select count(*)::int from public.search_techniques('pulso')), 2, 'busca encontra as duas tecnicas de pulso (incluindo a corrigida)');
+select is((select count(*)::int from public.search_techniques(null, null, 100, 0, 'QUEDA', null)), 12, 'filtro por tipo');
+select is((select count(*)::int from public.search_techniques(null, null, 100, 0, null, 'montada')), 14, 'filtro por posicao');
 select is((select count(*)::int from public.search_techniques('interna')), 0, 'usuario comum nao ve tecnica de academia');
 select is((select count(*)::int from public.technique_sources), 0, 'usuario comum nao le proveniencia');
 
@@ -65,6 +77,9 @@ select is((select public.create_technique('00000000-0000-0000-0000-00000000ac01'
           (select id from public.techniques where name = 'Raspagem Teste' and academy_id = '00000000-0000-0000-0000-00000000ac01'), 'criacao idempotente');
 select throws_ok($$select public.create_technique('00000000-0000-0000-0000-00000000ac01', 'RASPAGEM  téste', 'raspagens', null, null, gen_random_uuid())$$, '23505', null, 'nome duplicado (ignorando acento/caixa) na mesma academia = CONFLICT');
 select lives_ok($$select public.create_technique('00000000-0000-0000-0000-00000000ac01', 'Postura', 'Passagem de Guarda', null, null, gen_random_uuid())$$, 'mesmo nome de uma global e permitido em escopo de academia');
+select lives_ok($$select public.create_technique('00000000-0000-0000-0000-00000000ac01', 'Passagem Classificada', 'Passagem de Guarda', null, null, gen_random_uuid(), 'Passagem de guarda', 'Meia guarda')$$, 'gestor cria tecnica ja classificada');
+select is((select classification_status from public.techniques where name = 'Passagem Classificada'), 'validated', 'classificacao informada por pessoa nasce validada');
+select throws_ok($$select public.create_technique('00000000-0000-0000-0000-00000000ac01', 'Tipo Curto', 'Teste', null, null, gen_random_uuid(), 'x', null)$$, '22023', null, 'tipo invalido = VALIDATION_ERROR');
 select throws_ok($$select public.create_technique('00000000-0000-0000-0000-00000000ac01', 'x', 'Teste', null, null, gen_random_uuid())$$, '22023', null, 'nome curto = VALIDATION_ERROR');
 select throws_ok($$select public.create_technique('00000000-0000-0000-0000-00000000ac01', 'Longa', 'Teste', null, repeat('a', 4001), gen_random_uuid())$$, '22023', null, 'descricao longa = VALIDATION_ERROR');
 
@@ -93,8 +108,12 @@ select throws_ok($$select public.remove_technique_alias((select id from public.t
 
 -- Platform admin: global catalog management
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000a1","role":"authenticated"}', true);
-select lives_ok($$select public.update_technique('f0085f40-8d58-5777-aac6-01c39cd03890', 'Queda de Frente', 'Fundamentos', 'Básico', 'descricao sintetica')$$, 'super admin edita tecnica global');
+select lives_ok($$select public.update_technique('f0085f40-8d58-5777-aac6-01c39cd03890', 'Queda de Frente', 'Fundamentos', 'Básico', 'descricao sintetica', 'Fundamento', 'Em pé')$$, 'super admin edita tecnica global');
+select is((select classification_status from public.techniques where id = 'f0085f40-8d58-5777-aac6-01c39cd03890'), 'proposed', 'editar sem mudar a classificacao mantem o status proposto');
 select lives_ok($$select public.review_technique('f0085f40-8d58-5777-aac6-01c39cd03890')$$, 'super admin revisa tecnica global');
+select is((select classification_status from public.techniques where id = 'f0085f40-8d58-5777-aac6-01c39cd03890'), 'validated', 'revisar valida a classificacao proposta');
+select lives_ok($$select public.update_technique('00000000-0000-0000-0000-0000000000f2', 'Tecnica Interna Dois', 'Interna', null, null, 'Fuga', 'Montada')$$, 'super admin classifica tecnica de academia');
+select is((select technique_position from public.techniques where id = '00000000-0000-0000-0000-0000000000f2'), 'Montada', 'posicao gravada');
 select lives_ok($$select public.create_technique(null, 'Global de Teste', 'Teste', null, null, gen_random_uuid())$$, 'super admin cria tecnica global');
 select ok((select count(*) from public.technique_sources) >= 151, 'super admin le a proveniencia');
 select is((select count(*)::int from public.search_techniques('tecnica interna')), 2, 'super admin ve tecnicas de todas as academias');

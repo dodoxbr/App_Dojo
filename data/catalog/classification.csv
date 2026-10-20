@@ -1,0 +1,132 @@
+category,name,technique_type,position,confidence,basis,reference
+Fundamentos,Queda de Frente,Fundamento,Em pé,media,categoria da planilha (Fundamentos); posição inferida do nome,
+Defesa Pessoal,Pegada Direta no Pulso,Defesa pessoal,Em pé,media,categoria da planilha; posição inicial em pé é inferência,
+Passagem de Guarda,Postura,Passagem de guarda,Guarda fechada,media,categoria da planilha (Passagem de Guarda); guarda inferida do nome,
+Raspagens,Tesoura,Raspagem,Guarda fechada,media,categoria da planilha (Raspagens); guarda inferida do nome,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques
+Ataques Laterais (100KG),Estrangulamento Cana do Braço,Estrangulamento,Cem quilos,alta,posição pela categoria da planilha (Ataques Laterais (100KG)); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Fundamentos,Queda de Costas,Fundamento,Em pé,media,categoria da planilha (Fundamentos); posição inferida do nome,
+Defesa Pessoal,Pegada Cruzada no Pluso,Defesa pessoal,Em pé,media,categoria da planilha; posição inicial em pé é inferência,
+Passagem de Guarda,Abertura de Guarda,Passagem de guarda,Guarda fechada,media,categoria da planilha (Passagem de Guarda); guarda inferida do nome,
+Raspagens,Segurando o Braço e Perna,Raspagem,Guarda (geral),alta,categoria da planilha (Raspagens),
+Ataques Laterais (100KG),Estrangulamento Lapela,Estrangulamento,Cem quilos,alta,posição pela categoria da planilha (Ataques Laterais (100KG)); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Fundamentos,Queda Lateral,Fundamento,Em pé,media,categoria da planilha (Fundamentos); posição inferida do nome,
+Defesa Pessoal,Abraço por trás por Cima dos Braços,Defesa pessoal,Em pé,media,categoria da planilha; posição inicial em pé é inferência,
+Passagem de Guarda,Com a Mão por Dentro,Passagem de guarda,Guarda (geral),alta,categoria da planilha (Passagem de Guarda),
+Raspagens,Nos Calcanhares,Raspagem,Guarda aberta,media,categoria da planilha (Raspagens); guarda inferida do nome,
+Ataques Laterais (100KG),Katagatame,Estrangulamento,Cem quilos,alta,posição pela categoria da planilha (Ataques Laterais (100KG)); tipo pelo nome da técnica,https://www.kingz.com/pages/jiu-jitsu-dictionary
+Fundamentos,Cambalhota de Frente,Fundamento,Em pé,media,categoria da planilha (Fundamentos); posição inferida do nome,
+Defesa Pessoal,Abraço por trás por Baixo do Braço,Defesa pessoal,Em pé,media,categoria da planilha; posição inicial em pé é inferência,
+Passagem de Guarda,Toreando,Passagem de guarda,Guarda aberta,media,categoria da planilha (Passagem de Guarda); guarda inferida do nome,https://www.kingz.com/pages/jiu-jitsu-dictionary https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques
+Raspagens,Abraçando,Raspagem,Guarda (geral),alta,categoria da planilha (Raspagens),
+Ataques Laterais (100KG),Estrangulamento Com Joelho na Barriga,Estrangulamento,Cem quilos,alta,posição pela categoria da planilha (Ataques Laterais (100KG)); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Fundamentos,Cambalhota de Costas,Fundamento,Em pé,media,categoria da planilha (Fundamentos); posição inferida do nome,
+Fundamentos,Rolamento,Fundamento,Em pé,media,categoria da planilha (Fundamentos); posição inferida do nome,
+Ataques na Montada,Estrangulamento Clássico,Estrangulamento,Montada,alta,posição pela categoria da planilha (Ataques na Montada); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Ataques nas Costas,Mata Leão,Estrangulamento,Costas,alta,posição pela categoria da planilha (Ataques nas Costas); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Ataques na Guarda,Estragulamento Cruzado,Estrangulamento,Guarda (geral),alta,posição pela categoria da planilha (Ataques na Guarda); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Saídas de Baixo,Barrigada,Fuga,Joelho na barriga,media,categoria da planilha (Saídas de Baixo); posição inferida do nome,
+Fundamentos,Saida de Quadril,Fundamento,No solo,media,categoria da planilha (Fundamentos); posição inferida do nome,https://www.kingz.com/pages/jiu-jitsu-dictionary
+Ataques na Montada,Estrangulamento de Polegar,Estrangulamento,Montada,alta,posição pela categoria da planilha (Ataques na Montada); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Ataques nas Costas,Estrangulamento OSS,Estrangulamento,Costas,alta,posição pela categoria da planilha (Ataques nas Costas); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Ataques na Guarda,Triangulo,Estrangulamento,Guarda (geral),alta,posição pela categoria da planilha (Ataques na Guarda); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Saídas de Baixo,Saída de Cotovelos,Fuga,Montada,media,categoria da planilha (Saídas de Baixo); posição inferida do nome,https://www.kingz.com/pages/jiu-jitsu-dictionary
+Fundamentos,Entrada de Quadril,Fundamento,,alta,categoria da planilha (Fundamentos),
+Ataques na Montada,ArmLock,Chave de braço e ombro,Montada,alta,posição pela categoria da planilha (Ataques na Montada); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Ataques nas Costas,Relógio,Estrangulamento,Costas,alta,posição pela categoria da planilha (Ataques nas Costas); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Ataques na Guarda,Kimura,Chave de braço e ombro,Guarda (geral),alta,posição pela categoria da planilha (Ataques na Guarda); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Saídas de Baixo,Reposição de Guarda,Fuga,,alta,categoria da planilha (Saídas de Baixo),
+Fundamentos,Levantada Técnica,Fundamento,No solo,media,categoria da planilha (Fundamentos); posição inferida do nome,https://www.kingz.com/pages/jiu-jitsu-dictionary
+Ataques na Montada,Americana,Chave de braço e ombro,Montada,alta,posição pela categoria da planilha (Ataques na Montada); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Ataques nas Costas,Arco e Flecha,Estrangulamento,Costas,alta,posição pela categoria da planilha (Ataques nas Costas); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Ataques na Guarda,ArmLock,Chave de braço e ombro,Guarda (geral),alta,posição pela categoria da planilha (Ataques na Guarda); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Saídas de Baixo,Saída de Costas,Fuga,Costas,media,categoria da planilha (Saídas de Baixo); posição inferida do nome,
+Fundamentos,Joelho na Barriga,Fundamento,Joelho na barriga,media,categoria da planilha (Fundamentos); posição inferida do nome,https://www.kingz.com/pages/jiu-jitsu-dictionary
+Quedas,O Soto Gari,Queda,Em pé,alta,categoria da planilha (Quedas); queda parte da posição em pé,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques
+Quedas,De Ashi Barai,Queda,Em pé,alta,categoria da planilha (Quedas); queda parte da posição em pé,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques
+Quedas,Single Leg,Queda,Em pé,alta,categoria da planilha (Quedas); queda parte da posição em pé,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques
+Quedas,Double Leg,Queda,Em pé,alta,categoria da planilha (Quedas); queda parte da posição em pé,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques
+Defesa Pessoal,Gravata Puxando por Trás,Defesa pessoal,Em pé,media,categoria da planilha; posição inicial em pé é inferência,
+Passagem de Guarda,Meia Guarda,Passagem de guarda,Meia guarda,media,categoria da planilha (Passagem de Guarda); guarda inferida do nome,
+Raspagens,Meia Guarda,Raspagem,Meia guarda,media,categoria da planilha (Raspagens); guarda inferida do nome,
+Ataques Laterais (100KG),Armlok Girando,Chave de braço e ombro,Cem quilos,alta,posição pela categoria da planilha (Ataques Laterais (100KG)); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Defesa Pessoal,GravataTécnica,Defesa pessoal,Em pé,media,categoria da planilha; posição inicial em pé é inferência,
+Passagem de Guarda,Meia Guarda Canela da Coxa,Passagem de guarda,Meia guarda,media,categoria da planilha (Passagem de Guarda); guarda inferida do nome,
+Raspagens,Pé na Virilia e Gancho,Raspagem,Guarda aberta,media,categoria da planilha (Raspagens); guarda inferida do nome,
+Ataques Laterais (100KG),Chave de Braço Invertida,Chave de braço e ombro,Cem quilos,alta,posição pela categoria da planilha (Ataques Laterais (100KG)); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Defesa Pessoal,Tapa da Rosto,Defesa pessoal,Em pé,media,categoria da planilha; posição inicial em pé é inferência,
+Passagem de Guarda,Emborcando com a mão,Passagem de guarda,Guarda (geral),alta,categoria da planilha (Passagem de Guarda),
+Raspagens,Com Gancho por trás e Balão,Raspagem,Guarda (geral),alta,categoria da planilha (Raspagens),
+Ataques Laterais (100KG),Estrangulamento com o Braço enrolado,Estrangulamento,Cem quilos,alta,posição pela categoria da planilha (Ataques Laterais (100KG)); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Defesa Pessoal,Enforcamento em Pé,Defesa pessoal,Em pé,media,categoria da planilha; posição inicial em pé é inferência,
+Passagem de Guarda,Por fora com mão na perna,Passagem de guarda,Guarda (geral),alta,categoria da planilha (Passagem de Guarda),
+Raspagens,Tesoura com gancho por trás,Raspagem,Guarda (geral),alta,categoria da planilha (Raspagens),
+Ataques Laterais (100KG),Guilhotina,Estrangulamento,Cem quilos,alta,posição pela categoria da planilha (Ataques Laterais (100KG)); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Ataques na Montada,Armlok Invertido,Chave de braço e ombro,Montada,alta,posição pela categoria da planilha (Ataques na Montada); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Ataques nas Costas,Crucifixo,,Costas,baixa,posição pela categoria da planilha (Ataques nas Costas); tipo ambíguo no nome; não classificado,
+Ataques na Guarda,Estrangulamento mão na gola,Estrangulamento,Guarda (geral),alta,posição pela categoria da planilha (Ataques na Guarda); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Saídas de Baixo,Barrigada com a cabeça presa,Fuga,Joelho na barriga,media,categoria da planilha (Saídas de Baixo); posição inferida do nome,
+Ataques na Montada,Ezequiel,Estrangulamento,Montada,alta,posição pela categoria da planilha (Ataques na Montada); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Ataques nas Costas,Raspagem para as costas,Raspagem,Costas,media,posição pela categoria da planilha (Ataques nas Costas),
+Ataques na Guarda,Estrang. Enrolando o Braço,Estrangulamento,Guarda (geral),alta,posição pela categoria da planilha (Ataques na Guarda); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Saídas de Baixo,Defesa do Relógio pra Guarda,Fuga,Quatro apoios,media,categoria da planilha (Saídas de Baixo); posição inferida do nome,https://www.kingz.com/pages/jiu-jitsu-dictionary
+Ataques na Montada,Destravada para Armlock,Chave de braço e ombro,Montada,alta,posição pela categoria da planilha (Ataques na Montada); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Ataques nas Costas,Ataque com gancho por cima,,Costas,baixa,posição pela categoria da planilha (Ataques nas Costas); tipo ambíguo no nome; não classificado,
+Ataques na Guarda,Omoplata,Chave de braço e ombro,Guarda (geral),alta,posição pela categoria da planilha (Ataques na Guarda); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Saídas de Baixo,Raspagem pras Costas quando de 4 apoios,Fuga,Quatro apoios,media,categoria da planilha (Saídas de Baixo); posição inferida do nome,
+Ataques na Montada,Estrangulamento com Polegar,Estrangulamento,Montada,alta,posição pela categoria da planilha (Ataques na Montada); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Ataques nas Costas,Cambalhota e pegada das,,Costas,baixa,posição pela categoria da planilha (Ataques nas Costas); tipo ambíguo no nome; não classificado,
+Ataques na Guarda,Chave de Braço Invertida,Chave de braço e ombro,Guarda (geral),alta,posição pela categoria da planilha (Ataques na Guarda); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Saídas de Baixo,Virada de 4 apoios/pra fora,Fuga,Quatro apoios,media,categoria da planilha (Saídas de Baixo); posição inferida do nome,
+Quedas,Ippon Seoi Nage,Queda,Em pé,alta,categoria da planilha (Quedas); queda parte da posição em pé,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques
+Quedas,Koshi Guruma,Queda,Em pé,alta,categoria da planilha (Quedas); queda parte da posição em pé,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques
+Quedas,Tai Otoshi,Queda,Em pé,alta,categoria da planilha (Quedas); queda parte da posição em pé,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques
+Quedas,Uchi Mata,Queda,Em pé,alta,categoria da planilha (Quedas); queda parte da posição em pé,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques
+Defesa Pessoal,Defesa de Jab,Defesa pessoal,Em pé,media,categoria da planilha; posição inicial em pé é inferência,
+Passagem de Guarda,Amassando as Pernas,Passagem de guarda,Guarda (geral),alta,categoria da planilha (Passagem de Guarda),
+Raspagens,Gancho,Raspagem,Guarda aberta,media,categoria da planilha (Raspagens); guarda inferida do nome,
+Ataques Laterais (100KG),Estrangulamento com Lapela,Estrangulamento,Cem quilos,alta,posição pela categoria da planilha (Ataques Laterais (100KG)); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Defesa Pessoal,Defesa de Pisão de Frente,Defesa pessoal,Em pé,media,categoria da planilha; posição inicial em pé é inferência,
+Passagem de Guarda,Cruzando o Joelho,Passagem de guarda,Guarda (geral),alta,categoria da planilha (Passagem de Guarda),
+Raspagens,Ganchos Cruzados,Raspagem,Guarda aberta,media,categoria da planilha (Raspagens); guarda inferida do nome,
+Ataques Laterais (100KG),Kimura e Quebra Nozes,Chave de braço e ombro,Cem quilos,alta,posição pela categoria da planilha (Ataques Laterais (100KG)); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Defesa Pessoal,Gravata Girando,Defesa pessoal,Em pé,media,categoria da planilha; posição inicial em pé é inferência,
+Passagem de Guarda,Alta com a Mão na Canela,Passagem de guarda,Guarda (geral),alta,categoria da planilha (Passagem de Guarda),
+Raspagens,Enterrada Subindo 100KG,Raspagem,Guarda (geral),alta,categoria da planilha (Raspagens),
+Ataques Laterais (100KG),Armlock Joelhos Juntos,Chave de braço e ombro,Cem quilos,alta,posição pela categoria da planilha (Ataques Laterais (100KG)); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Defesa Pessoal,Pegada nas Duas Golas,Defesa pessoal,Em pé,media,categoria da planilha; posição inicial em pé é inferência,
+Passagem de Guarda,Estrela,Passagem de guarda,Guarda (geral),alta,categoria da planilha (Passagem de Guarda),
+Raspagens,Com o Braço Cruzado,Raspagem,Guarda (geral),alta,categoria da planilha (Raspagens),
+Ataques Laterais (100KG),Triângulo,Estrangulamento,Cem quilos,alta,posição pela categoria da planilha (Ataques Laterais (100KG)); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Defesa Pessoal,Double Nelson,Defesa pessoal,Em pé,media,categoria da planilha; posição inicial em pé é inferência,
+Passagem de Guarda,Ganchos Abraçando Costas,Passagem de guarda,Guarda (geral),alta,categoria da planilha (Passagem de Guarda),
+Raspagens,Pés no Biceps,Raspagem,Guarda aberta,alta,categoria da planilha (Raspagens); guarda inferida do nome; confirmado pela aba oculta Planilha2: 'Guarda Aberta: Pé no Bíceps e Raspagem',
+Ataques Laterais (100KG),Baratoplata,Chave de braço e ombro,Cem quilos,alta,posição pela categoria da planilha (Ataques Laterais (100KG)); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Ataques na Montada,Arlock Mão nas Axilas,Chave de braço e ombro,Montada,alta,posição pela categoria da planilha (Ataques na Montada); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Ataques nas Costas,Rolamento Ganchos (MataLeão),Estrangulamento,Costas,alta,posição pela categoria da planilha (Ataques nas Costas); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Ataques na Guarda,Armlock usando Lapela,Chave de braço e ombro,Guarda (geral),alta,posição pela categoria da planilha (Ataques na Guarda); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Saídas de Baixo,Capotada com a Cabeça Presa,Fuga,,alta,categoria da planilha (Saídas de Baixo),
+Ataques na Montada,Mão de Vaca no Ataque Duplo,,Montada,baixa,posição pela categoria da planilha (Ataques na Montada); tipo ambíguo no nome; não classificado,
+Ataques nas Costas,Relógio com Cotovelo no Chão,Estrangulamento,Costas,alta,posição pela categoria da planilha (Ataques nas Costas); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Ataques na Guarda,Estrang. Lapela Cruzando Braço,Estrangulamento,Guarda (geral),alta,posição pela categoria da planilha (Ataques na Guarda); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Saídas de Baixo,Escrima e Passagem para as Costas,Fuga,,alta,categoria da planilha (Saídas de Baixo),
+Ataques na Montada,Troca de Braço no Armlock,Chave de braço e ombro,Montada,alta,posição pela categoria da planilha (Ataques na Montada); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Ataques nas Costas,Estrangulamento Própria Gola,Estrangulamento,Costas,alta,posição pela categoria da planilha (Ataques nas Costas); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Ataques na Guarda,Chave de Pé,Chave de perna,Guarda (geral),alta,posição pela categoria da planilha (Ataques na Guarda); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Saídas de Baixo,Escrima e Capotada,Fuga,,alta,categoria da planilha (Saídas de Baixo),
+Ataques na Montada,Chave de Braço com Joelho no Peito,Chave de braço e ombro,Montada,alta,posição pela categoria da planilha (Ataques na Montada); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Ataques nas Costas,Triângulo nas Costas,Estrangulamento,Costas,alta,posição pela categoria da planilha (Ataques nas Costas); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Ataques na Guarda,Leg Lock com ganchos cruzados,Chave de perna,Guarda (geral),alta,posição pela categoria da planilha (Ataques na Guarda); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Saídas de Baixo,Saída com a Cabeça por Baixo da Axial,Fuga,,alta,categoria da planilha (Saídas de Baixo),
+Ataques na Montada,Omoplata no Armlock,Chave de braço e ombro,Montada,alta,posição pela categoria da planilha (Ataques na Montada); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Ataques nas Costas,Chave de Ombro Defesa Ganchos,Chave de braço e ombro,Costas,alta,posição pela categoria da planilha (Ataques nas Costas); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Ataques na Guarda,Estrang. Com Mão Invertida,Estrangulamento,Guarda (geral),alta,posição pela categoria da planilha (Ataques na Guarda); tipo pelo nome da técnica,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Saídas de Baixo,Saída do Norte Sul com Pé no Bíceps e Crucifixo,Fuga,Norte-sul,media,categoria da planilha (Saídas de Baixo); posição inferida do nome,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques
+Quedas,Kataguruma,Queda,Em pé,alta,categoria da planilha (Quedas); queda parte da posição em pé,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques
+Chaves Membros Inferiores,Chave Botinha,Chave de perna,,alta,"categoria da planilha e nome (leg lock, kneebar, calf slicer)",https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Quedas,Oshi Gari,Queda,Em pé,alta,categoria da planilha (Quedas); queda parte da posição em pé,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques
+Chaves Membros Inferiores,Americana de Pé,Chave de braço e ombro,Em pé,media,nome: americana (chave de ombro) aplicada em pé,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Quedas,Tani Otochi,Queda,Em pé,alta,categoria da planilha (Quedas); queda parte da posição em pé,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques
+Chaves Membros Inferiores,Leg Lock,Chave de perna,,alta,"categoria da planilha e nome (leg lock, kneebar, calf slicer)",https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Quedas,Entrada na Perna com Cabeça pra Fora,Queda,Em pé,alta,categoria da planilha (Quedas); queda parte da posição em pé,https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques
+Chaves Membros Inferiores,Chave de Joelho,Chave de perna,,alta,"categoria da planilha e nome (leg lock, kneebar, calf slicer)",https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/
+Chaves Membros Inferiores,Chave de Panturrilha,Chave de perna,,alta,"categoria da planilha e nome (leg lock, kneebar, calf slicer)",https://en.wikipedia.org/wiki/List_of_Brazilian_jiu-jitsu_techniques https://bjjmore.com/brazilian-jiu-jitsu-submissions/

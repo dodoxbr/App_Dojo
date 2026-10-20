@@ -7,6 +7,9 @@ test('technique input is trimmed and bounded', () => {
   assert.equal(ok.name, 'Raspagem Teste');
   assert.equal(ok.level, undefined);
   assert.equal(ok.description, undefined);
+  assert.equal(techniqueInputSchema.parse({ name: 'Raspagem', category: 'Raspagens', type: ' Raspagem ', position: '' }).type, 'Raspagem');
+  assert.equal(techniqueInputSchema.parse({ name: 'Raspagem', category: 'Raspagens', position: '' }).position, undefined);
+  assert.equal(techniqueInputSchema.safeParse({ name: 'Raspagem', category: 'Raspagens', type: 'x'.repeat(61) }).success, false);
   assert.equal(techniqueInputSchema.safeParse({ name: 'x', category: 'Raspagens' }).success, false);
   assert.equal(techniqueInputSchema.safeParse({ name: 'Raspagem', category: 'R' }).success, false);
   assert.equal(techniqueInputSchema.safeParse({ name: 'Raspagem', category: 'Raspagens', description: 'a'.repeat(4001) }).success, false);

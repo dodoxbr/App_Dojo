@@ -50,7 +50,10 @@
 ## US-005 (catálogo)
 - [x] Planilha importada (abas Básico, Intermediário, Avançado) após revisão declarada pelo dono do produto em 2026-10-20. Falta, se desejado, confirmação formal do mestre sobre categorias, descrição e posição de cada técnica.
 - [ ] Abas ocultas não importadas: `Tempo de Faixa` (parece regra de graduação; nenhuma regra foi definida), `Avaliação`, `Planilha2`, `Planilha3` (listas soltas). Decidir se alguma entra no catálogo ou no currículo (US-009/US-010).
-- [ ] Erros de digitação aparentes mantidos como na planilha (por exemplo `Pluso`, `Estragulamento`, `Armlok`, `Virilia`) e 2 pares de grafia parecida não fundidos (`Estrangulamento Lapela`/`com Lapela`, `de Polegar`/`com Polegar`); corrigir por edição no catálogo (ver `data/catalog/IMPORT_REPORT.md`).
+- [x] 18 erros de digitação corrigidos (migration `202610200009`; o nome original fica em `technique_sources.raw_name`).
+- [ ] Itens duvidosos NÃO alterados, aguardando confirmação (`data/catalog/flagged_for_confirmation.csv`): `Escrima` (Esgrima?), `Axial` (Axila?), `Cambalhota e pegada das` (nome incompleto), `Oshi Gari` e termos locais não identificados. Também 3 pares de grafia parecida não fundidos.
+- [ ] Tipo e posição das técnicas foram PROPOSTOS a partir de fontes públicas (Wikipedia, Kingz, BJJ More), sem validação do mestre: `classification_status = 'proposed'`; 127 com tipo, 121 com posição, 4 sem tipo. Validar com o mestre; revisar a técnica na tela marca a classificação como validada.
+- [ ] Vocabulário de tipo e posição é texto livre com valores sugeridos pela própria base; definir lista fechada depois da validação.
 - [ ] Numeração de origem com repetição (nº 45 duplicado em Quedas, nas abas Básico e Intermediário) e salto de 54 para 90 no Avançado: mantida como está em `technique_sources`.
 - [ ] Nível de cada técnica = aba onde aparece primeiro; o vínculo técnica ↔ nível/faixa por trilha será tratado no currículo (US-009), usando `technique_sources`.
 - [ ] Sem fichas técnicas (descrição, passos, vídeo): campo `description` vazio nas técnicas importadas.
