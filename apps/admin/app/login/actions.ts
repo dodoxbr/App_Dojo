@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { signInSchema, signUpSchema } from "@dojo/contracts/auth";
+import { safeRedirectPath, signInSchema, signUpSchema } from "@dojo/contracts/auth";
 import { createClient } from "@/lib/supabase/server";
 
 export type FormState = { error?: string; message?: string };
@@ -13,7 +13,7 @@ export async function signIn(_prev: FormState, formData: FormData): Promise<Form
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword(parsed.data);
   if (error) return { error: "E-mail ou senha inválidos, ou e-mail ainda não confirmado." };
-  redirect("/perfil");
+  redirect(safeRedirectPath(formData.get("next")));
 }
 
 export async function signUp(_prev: FormState, formData: FormData): Promise<FormState> {

@@ -11,7 +11,7 @@ function Status({ state }: { state: FormState }) {
   return null;
 }
 
-export function LoginForms() {
+export function LoginForms({ next }: { next: string }) {
   const [inState, inAction, inPending] = useActionState(signIn, initial);
   const [upState, upAction, upPending] = useActionState(signUp, initial);
 
@@ -19,6 +19,7 @@ export function LoginForms() {
     <>
       <form action={inAction}>
         <h2>Entrar</h2>
+        <input type="hidden" name="next" value={next} />
         <label>E-mail <input name="email" type="email" autoComplete="email" required /></label>
         <label>Senha <input name="password" type="password" autoComplete="current-password" minLength={8} required /></label>
         <button type="submit" disabled={inPending}>{inPending ? "Entrando…" : "Entrar"}</button>

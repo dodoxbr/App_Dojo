@@ -12,15 +12,14 @@ export default function Profile() {
   const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    supabase
-      .from('profiles')
-      .select('display_name')
-      .single()
-      .then(({ data, error: err }) => {
-        if (err || !data) setError('Não foi possível carregar o perfil.');
-        else setName(data.display_name);
-        setLoading(false);
-      });
+    supabase.auth.getUser().then(async ({ data: userData }) => {
+      const { data, error: err } = userData.user
+        ? await supabase.from('profiles').select('display_name').eq('id', userData.user.id).single()
+        : { data: null, error: new Error('sem sessão') };
+      if (err || !data) setError('Não foi possível carregar o perfil.');
+      else setName(data.display_name);
+      setLoading(false);
+    });
   }, []);
 
   async function save() {

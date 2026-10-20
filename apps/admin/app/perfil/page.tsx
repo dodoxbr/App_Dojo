@@ -1,11 +1,19 @@
 import Link from "next/link";
+import { membershipRoleLabels, membershipStatusLabels } from "@dojo/contracts/membership";
 import { getCaller } from "@/lib/context";
 import { ProfileForm } from "./profile-form";
 import { signOut } from "./actions";
 
 export default async function PerfilPage() {
-  const { supabase, isPlatformAdmin, canCreateAcademy, managedAcademies } = await getCaller();
-  const { data: profile, error } = await supabase.from("profiles").select("display_name").single();
+  const { supabase, userId, isPlatformAdmin, canCreateAcademy, managedAcademies } = await getCaller();
+  const { data: profile, error } = await supabase.from("profiles").select("display_name").eq("id", userId).single();
+
+  const { data: mine } = await supabase.from("memberships").select("academy_id, role, status").eq("user_id", userId);
+  const ids = (mine ?? []).map((m) => m.academy_id as string);
+  const { data: academies } = ids.length
+    ? await supabase.from("academies").select("id, name, slug").in("id", ids)
+    : { data: [] as { id: string; name: string; slug: string }[] };
+  const nameOf = new Map((academies ?? []).map((a) => [a.id, a.name]));
 
   return (
     <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 420 }}>
@@ -15,6 +23,22 @@ export default async function PerfilPage() {
       ) : (
         <ProfileForm displayName={profile.display_name} />
       )}
+
+      <section>
+        <h2>Minhas academias</h2>
+        {(mine ?? []).length === 0 ? (
+          <p>Você ainda não faz parte de nenhuma academia. Peça o link ao gestor da sua academia.</p>
+        ) : (
+          <ul>
+            {(mine ?? []).map((m) => (
+              <li key={m.academy_id as string}>
+                {nameOf.get(m.academy_id as string) ?? "Academia"} — {membershipRoleLabels[m.role as string]} ·{" "}
+                {membershipStatusLabels[m.status as string]}
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
 
       {(isPlatformAdmin || canCreateAcademy || managedAcademies.length > 0) && (
         <nav aria-label="Atalhos">

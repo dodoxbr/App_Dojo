@@ -40,6 +40,7 @@ jobs:
           eval "$(npx supabase status -o env | grep -E "^(API_URL|ANON_KEY)=" | sed "s/^API_URL=/export SUPABASE_URL=/; s/^ANON_KEY=/export SUPABASE_ANON_KEY=/")"
           node scripts/smoke-auth.mjs
           node scripts/smoke-academy.mjs
+          node scripts/smoke-membership.mjs
       - run: npx supabase stop --no-backup
         if: always()
 

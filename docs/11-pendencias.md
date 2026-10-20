@@ -37,3 +37,12 @@
 - [ ] A lista de criadores mostra só o início do ID, pois `profiles` é privado; avaliar exibir nome/e-mail por operação própria do super admin.
 - [ ] Super admin é criado por `scripts/make-platform-admin.mjs` (banco local). Em homologação/produção, definir o procedimento seguro.
 - [ ] Telas novas (plataforma, criar academia, gerenciar academia) verificadas por typecheck, lint, build e smoke test do backend; falta uso manual em navegador.
+
+## US-004 (filiação)
+- [ ] Regra para quem foi rejeitado/suspenso pedir de novo (hoje bloqueado; o gestor pode cadastrar a pessoa) e para quem teve o vínculo encerrado (hoje volta a pendente como aluno). Validar com a academia.
+- [ ] Instrutor aprovar filiação: fora por ora; se necessário, entra como permissão do catálogo (`approve_members`).
+- [ ] Convite para quem ainda não tem conta; o cadastro direto exige conta existente. O gestor consegue saber se um e-mail tem conta (enumeração limitada a gestores/super admin); avaliar quando houver convite por e-mail.
+- [ ] Troca de papel pelo cadastro direto (aluno vira instrutor) sem tela própria de "alterar papel"; suspender/reativar vínculo não tem operação ainda.
+- [ ] Telas de filiação só no painel web (o link abre no navegador); app mobile fica sem fluxo de entrada por ora.
+- [ ] Telas novas (`/entrar/[slug]`, membros) verificadas por typecheck, lint, build e smoke test do backend; falta uso manual em navegador.
+- [ ] Menores continuam sem tratamento (US-013): hoje qualquer conta pode pedir entrada.

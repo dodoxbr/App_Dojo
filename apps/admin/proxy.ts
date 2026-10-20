@@ -2,6 +2,8 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { supabaseEnv } from "@/lib/supabase/env";
 
+const PROTECTED = ["/perfil", "/plataforma", "/academia", "/academias", "/entrar"];
+
 // Refreshes the session cookie and does an optimistic redirect. Authorization is enforced by RLS.
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
@@ -18,8 +20,11 @@ export async function proxy(request: NextRequest) {
   });
 
   const { data } = await supabase.auth.getClaims();
-  if (!data?.claims && request.nextUrl.pathname.startsWith("/perfil")) {
-    return NextResponse.redirect(new URL("/login", request.url));
+  const { pathname, search } = request.nextUrl;
+  if (!data?.claims && PROTECTED.some((p) => pathname === p || pathname.startsWith(`${p}/`))) {
+    const login = new URL("/login", request.url);
+    login.searchParams.set("next", `${pathname}${search}`);
+    return NextResponse.redirect(login);
   }
   return response;
 }

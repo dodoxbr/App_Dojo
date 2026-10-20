@@ -1,0 +1,109 @@
+import Link from "next/link";
+import { notFound, redirect } from "next/navigation";
+import { membershipRoleLabels, membershipStatusLabels } from "@dojo/contracts/membership";
+import { getCaller } from "@/lib/context";
+import { errorFromCode } from "@/lib/rpc-errors";
+import { AddMemberForm } from "./add-member-form";
+import { decide, endMembership } from "./actions";
+
+export default async function MembrosPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ erro?: string }>;
+}) {
+  const { id } = await params;
+  const { erro } = await searchParams;
+  const { supabase, isPlatformAdmin, managedAcademies } = await getCaller();
+  if (!isPlatformAdmin && !managedAcademies.some((a) => a.id === id)) redirect("/perfil");
+
+  const { data: academy } = await supabase.from("academies").select("id, name, slug").eq("id", id).maybeSingle();
+  if (!academy) notFound();
+
+  const { data: members } = await supabase
+    .from("memberships")
+    .select("id, user_id, role, status")
+    .eq("academy_id", id)
+    .order("created_at", { ascending: true });
+  const userIds = (members ?? []).map((m) => m.user_id as string);
+  const { data: profiles } = userIds.length
+    ? await supabase.from("profiles").select("id, display_name").in("id", userIds)
+    : { data: [] as { id: string; display_name: string }[] };
+  const nameOf = new Map((profiles ?? []).map((p) => [p.id, p.display_name]));
+
+  const pending = (members ?? []).filter((m) => m.status === "pending");
+  const active = (members ?? []).filter((m) => m.status === "approved" || m.status === "suspended");
+  const closed = (members ?? []).filter((m) => m.status === "rejected" || m.status === "ended");
+  const message = errorFromCode(erro);
+
+  return (
+    <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 640 }}>
+      <p><Link href={`/academia/${id}`}>← {academy.name}</Link></p>
+      <h1>Membros</h1>
+      {message && <p role="alert">{message}</p>}
+
+      <section>
+        <h2>Pedidos de entrada</h2>
+        {pending.length === 0 ? (
+          <p>Nenhum pedido pendente.</p>
+        ) : (
+          <ul>
+            {pending.map((m) => (
+              <li key={m.id as string}>
+                <form action={decide.bind(null, id)}>
+                  <strong>{nameOf.get(m.user_id as string) ?? "Pessoa"}</strong>
+                  <input type="hidden" name="membershipId" value={m.id as string} />
+                  <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
+                  <label> Justificativa (opcional) <input name="reason" maxLength={500} /></label>
+                  <button type="submit" name="decision" value="approved">Aprovar</button>
+                  <button type="submit" name="decision" value="rejected">Rejeitar</button>
+                </form>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section>
+        <h2>Cadastrar aluno ou colaborador</h2>
+        <AddMemberForm academyId={id} />
+      </section>
+
+      <section>
+        <h2>Membros</h2>
+        {active.length === 0 ? (
+          <p>Nenhum membro ainda.</p>
+        ) : (
+          <ul>
+            {active.map((m) => (
+              <li key={m.id as string}>
+                {nameOf.get(m.user_id as string) ?? "Pessoa"} — {membershipRoleLabels[m.role as string]} ·{" "}
+                {membershipStatusLabels[m.status as string]}
+                {m.role !== "manager" && (
+                  <form action={endMembership.bind(null, id)} style={{ display: "inline", marginLeft: 8 }}>
+                    <input type="hidden" name="membershipId" value={m.id as string} />
+                    <button type="submit">Encerrar vínculo</button>
+                  </form>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      {closed.length > 0 && (
+        <section>
+          <h2>Encerrados e rejeitados</h2>
+          <ul>
+            {closed.map((m) => (
+              <li key={m.id as string}>
+                {nameOf.get(m.user_id as string) ?? "Pessoa"} — {membershipStatusLabels[m.status as string]}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+    </main>
+  );
+}

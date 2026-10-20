@@ -16,6 +16,6 @@ export async function createAcademy(_prev: FormState, formData: FormData): Promi
     p_slug: parsed.data.slug,
     p_idempotency_key: parsed.data.idempotencyKey,
   });
-  if (error || !data) return { error: rpcErrorMessage(error ?? {}) };
+  if (error || !data) return { error: rpcErrorMessage(error ?? {}, { conflict: "Esse endereço (slug) já está em uso." }) };
   redirect(`/academia/${data}`);
 }
