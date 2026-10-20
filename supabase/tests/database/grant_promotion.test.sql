@@ -1,6 +1,6 @@
 -- US-011: granting a promotion and rectification. All belt names and numbers are FICTITIOUS test data.
 begin;
-select plan(59);
+select plan(61);
 
 -- Fixtures (as postgres)
 -- a1 platform admin | m1 manager ac01 | i1 instructor (recommend_graduation, view_progress) | s1, s2, s3 students
@@ -62,7 +62,9 @@ select throws_ok($$update public.promotions set degree = 9$$, '42501', null, 'se
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000e1","role":"authenticated"}', true);
 select throws_ok($$select public.grant_promotion('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000d1', 'Faixa Teste A', 2, current_date, 'outra academia', gen_random_uuid())$$, '42501', null, 'gestor de outra academia nao concede');
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000b1","role":"authenticated"}', true);
-select throws_ok($$select public.grant_promotion('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000b1', 'Faixa Teste Z', 2, current_date, 'auto promocao', gen_random_uuid())$$, '42501', null, 'gestor nao promove a si mesmo');
+select lives_ok($$select public.grant_promotion('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000b1', 'Faixa Teste Z', 2, current_date - 10, 'o mestre se gradua (teste)', gen_random_uuid())$$, 'o mestre da academia pode se graduar');
+select is((select degree from public.current_ranks where user_id = '00000000-0000-0000-0000-0000000000b1'), 2, 'e a graduacao do mestre foi atualizada');
+select ok((select count(*) from public.audit_events where action = 'promotion.grant' and metadata ->> 'user_id' = '00000000-0000-0000-0000-0000000000b1') = 1, 'a autopromocao do mestre fica auditada');
 
 -- Validation -------------------------------------------------------------------------------------------------
 select throws_ok($$select public.grant_promotion('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000d2', 'Faixa Teste A', 2, current_date, 'sem rank atual', gen_random_uuid())$$, '22023', null, 'sem graduacao atual registrada: nao promove');
@@ -118,7 +120,7 @@ select is((select public.correct_promotion((select corrects_promotion_id from pu
 select throws_ok($$select public.correct_promotion((select corrects_promotion_id from public.promotions where event_type = 'correction'), 'Faixa Teste C', 1, current_date, 'segunda retificacao do mesmo evento', gen_random_uuid())$$, '23505', null, 'um evento ja retificado nao pode ser retificado de novo');
 select lives_ok($$select public.correct_promotion((select id from public.promotions where event_type = 'correction'), 'Faixa Teste B', 1, current_date, 'retificando a retificacao (teste)', gen_random_uuid())$$, 'a retificacao pode ser retificada');
 select is((select degree from public.current_ranks where user_id = '00000000-0000-0000-0000-0000000000d1'), 1, 'vale a ultima retificacao');
-select throws_ok($$select public.correct_promotion((select id from public.promotions where event_type = 'promotion' and user_id = '00000000-0000-0000-0000-0000000000b1' limit 1), 'X', 1, current_date, 'inexistente de verdade', gen_random_uuid())$$, '42501', null, 'sem evento nao ha o que retificar');
+select throws_ok($$select public.correct_promotion((select id from public.promotions where event_type = 'promotion' and user_id = '00000000-0000-0000-0000-0000000000d2' limit 1), 'X', 1, current_date, 'inexistente de verdade', gen_random_uuid())$$, '42501', null, 'sem evento nao ha o que retificar');
 
 -- Reads: history for the person and for those who follow progress
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000d1","role":"authenticated"}', true);

@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
+import { beltSuggestions } from "@dojo/contracts/belts";
 import { criterionKindLabels, criterionKinds, type CriterionKind } from "@dojo/contracts/graduation";
 import { createRule } from "./actions";
 import type { FormState } from "../../../login/actions";
@@ -55,7 +56,8 @@ export function RuleBuilder({ academyId, curricula, initial }: Props) {
       <input type="hidden" name="idempotencyKey" value={key} />
       <input type="hidden" name="criteria" value={JSON.stringify(toPayload(rows))} />
 
-      <label>Faixa de partida <input name="beltCode" defaultValue={initial?.beltCode} maxLength={40} required placeholder="como a academia chama" /></label>
+      <label>Faixa de partida <input name="beltCode" list="belt-suggestions" defaultValue={initial?.beltCode} maxLength={40} required placeholder="como a academia chama" /></label>
+      <datalist id="belt-suggestions">{beltSuggestions.map((b) => <option key={b} value={b} />)}</datalist>
       <label>Grau de partida <input name="degree" type="number" min={0} max={20} defaultValue={initial?.degree ?? 0} required /></label>
       <label>Nome da regra (opcional) <input name="title" defaultValue={initial?.title} maxLength={120} /></label>
       <label>Vale a partir de <input name="effectiveFrom" type="date" defaultValue={today} required /></label>

@@ -112,8 +112,14 @@
 
 ## US-011 (conceder graduação)
 - [ ] Fluxo em uma etapa: o gestor concede direto. Se a academia quiser "professor recomenda → gestor aprova" como etapas registradas, é uma evolução (hoje a recomendação é calculada e fica na auditoria).
-- [ ] Autopromoção bloqueada para todos, exceto o super admin (premissa para o caso do mestre da academia); definir quem gradua o próprio mestre.
+- [x] O mestre se gradua: permitido (decisão do dono do produto, migration 017); a auditoria mostra quem concedeu.
 - [ ] A data de vigência pode ser retroativa até a graduação atual; não há validação contra a idade mínima de cada grau (regras por idade/kids/federação não definidas).
 - [ ] Sem notificação ao aluno, sem certificado e sem promoção em lote.
 - [ ] A retificação só alcança o último registro pela tela; retificar um registro mais antigo exige a operação direta (a regra no banco permite).
 - [ ] Telas só no painel web, verificadas por typecheck, lint, build e smoke test do backend; falta uso manual em navegador. Sem tela no app mobile.
+
+## Referência de faixas e idades (docs/14)
+- [ ] A fonte indicada é um blog com tempos "médio" e "IBJJF" divergentes e sem a faixa etária de cada faixa infantil. Não foi usada como regra. Confirmar com a academia se haverá critério de idade (exige data de nascimento e o fluxo de menores, US-013).
+
+## Desafios entre alunos (F2)
+- [ ] Decisões abertas em `docs/features/F2-desafios.md` (quem cria, forma do ranking, pontos de registros não verificados, premiação). Depende da US-013 antes de qualquer participação de menores.

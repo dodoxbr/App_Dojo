@@ -14,6 +14,12 @@
 - **Instrutor**: não tem acesso total. O gestor liga/desliga as permissões do instrutor da sua academia.
 - **Aluno**: acessa o próprio diário e a própria evolução.
 
+## Decisões adicionais do dono do produto (2026-10-20)
+- **O mestre da academia pode se graduar** (sem bloqueio de autopromoção); toda concessão e retificação continua auditada e imutável.
+- **Pode-se medir as técnicas mais consultadas**, de forma agregada e sem identificar a pessoa (US-012).
+- **Desafios entre alunos (estilo Gymrats)** de treino e de golpes: aprovado como direção de produto; entram no backlog depois do painel e do fluxo de menores (`docs/features/F2-desafios.md`).
+- **Faixas e idades:** o link https://www.meukimono.com.br/faixas-do-jiu-jitsu-guia-completo-atualizado-e-otimizado-2026 é referência de consulta (`docs/14`); as regras continuam sendo definidas por cada academia.
+
 ## Premissas de engenharia (a validar)
 - Stack: Expo/React Native + Next.js + Supabase/Postgres + TypeScript.
 - Cada usuário pode integrar mais de uma academia; uma academia pode integrar uma equipe e ter unidades futuras.

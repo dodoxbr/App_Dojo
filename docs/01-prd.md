@@ -25,7 +25,7 @@ Alunos anotam técnicas em WhatsApp ou notas isoladas; professores planejam cont
 | RF-11 | Responsável por menor | P0 para operação com menores | Sem exposição pública, vinculação verificável |
 
 ## Fora do MVP
-Feed social, competições/pódios, pagamentos, cobrança automática, reconhecimento facial, IA generativa, marketplace e apps white-label publicados individualmente.
+Feed social (os **desafios entre alunos** foram aprovados como evolução F2, ver `docs/features/F2-desafios.md`), competições/pódios, pagamentos, cobrança automática, reconhecimento facial, IA generativa, marketplace e apps white-label publicados individualmente.
 
 ## Requisitos não funcionais
 - **Segurança:** RLS, mínimo privilégio, logs auditáveis, tokens efêmeros e revogação.

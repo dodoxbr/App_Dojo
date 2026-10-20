@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
+import { beltSuggestions } from "@dojo/contracts/belts";
 import { assessManual, correctPromotion, grantPromotion, registerRank } from "./actions";
 import type { FormState } from "../../../login/actions";
 
@@ -11,7 +12,7 @@ export function RegisterRankForm({ academyId, userId }: { academyId: string; use
   return (
     <form action={action} style={{ display: "inline" }}>
       <input type="hidden" name="idempotencyKey" value={key} />
-      <input name="beltCode" placeholder="faixa" maxLength={40} required aria-label="Faixa" />{" "}
+      <input name="beltCode" list="belt-suggestions" placeholder="faixa" maxLength={40} required aria-label="Faixa" /><datalist id="belt-suggestions">{beltSuggestions.map((b) => <option key={b} value={b} />)}</datalist>{" "}
       <input name="degree" type="number" min={0} max={20} defaultValue={0} required aria-label="Grau" style={{ width: 60 }} />{" "}
       <input name="effectiveDate" type="date" defaultValue={today} max={today} required aria-label="Data da última graduação" />{" "}
       <button type="submit" disabled={pending}>{pending ? "Salvando…" : "Registrar graduação atual"}</button>
@@ -49,7 +50,8 @@ export function GrantPromotionForm({ academyId, userId, current }: { academyId: 
   return (
     <form action={action} onChange={() => setKey(crypto.randomUUID())}>
       <input type="hidden" name="idempotencyKey" value={key} />
-      <label>Nova faixa <input name="beltCode" defaultValue={current.beltCode} maxLength={40} required /></label>
+      <label>Nova faixa <input name="beltCode" list="belt-suggestions" defaultValue={current.beltCode} maxLength={40} required /></label>
+      <datalist id="belt-suggestions">{beltSuggestions.map((b) => <option key={b} value={b} />)}</datalist>
       <label>Novo grau <input name="degree" type="number" min={0} max={20} defaultValue={current.degree + 1} required /></label>
       <label>Vale desde <input name="effectiveDate" type="date" defaultValue={today} min={current.effectiveDate} max={today} required /></label>
       <label>Justificativa <input name="reason" minLength={3} maxLength={500} required placeholder="por que esta graduação foi concedida" /></label>
@@ -67,7 +69,8 @@ export function CorrectPromotionForm({ academyId, promotionId, current }: { acad
   return (
     <form action={action} onChange={() => setKey(crypto.randomUUID())}>
       <input type="hidden" name="idempotencyKey" value={key} />
-      <label>Faixa correta <input name="beltCode" defaultValue={current.beltCode} maxLength={40} required /></label>
+      <label>Faixa correta <input name="beltCode" list="belt-suggestions" defaultValue={current.beltCode} maxLength={40} required /></label>
+      <datalist id="belt-suggestions">{beltSuggestions.map((b) => <option key={b} value={b} />)}</datalist>
       <label>Grau correto <input name="degree" type="number" min={0} max={20} defaultValue={current.degree} required /></label>
       <label>Data correta <input name="effectiveDate" type="date" defaultValue={current.effectiveDate} max={today} required /></label>
       <label>Motivo da retificação <input name="reason" minLength={3} maxLength={500} required /></label>

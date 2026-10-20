@@ -18,6 +18,10 @@ Cada história deve ter migration, política RLS, testes negativos e interface m
 | US-012 | Painel de frequência e piloto | 011 | Indicadores e testes E2E |
 | US-013 | Fluxo responsável/menores | 004 | Obrigatório antes de aceitar menores |
 
+| US-014 | Desafios automáticos (presença validada e sequência) com ranking opt-in | 012, 013 | Proposta F2, ver `docs/features/F2-desafios.md` |
+| US-015 | Desafios de treino e de golpes com registro do aluno e verificação do professor | 014 | Proposta F2 |
+| US-016 | Reações/comentários moderados e medalhas | 015 | Proposta F2/F4 |
+
 ## Definition of Done
 - Critérios de aceite atendidos; UI com estados de carregamento, erro e vazio.
 - RLS e autorização testadas inclusive contra acesso cruzado.

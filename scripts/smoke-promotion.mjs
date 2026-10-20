@@ -87,10 +87,14 @@ const grant = (u, who, { belt = 'Faixa Teste A', degree = 2, date = localDate(0)
 assert.equal((await grant(teacher, alice)).error?.code, '42501', 'instrutor não concede, mesmo com recommend_graduation');
 assert.equal((await grant(alice, alice)).error?.code, '42501', 'aluna não se promove');
 assert.equal((await grant(outsider, alice)).error?.code, '42501', 'externo não concede');
-assert.equal((await grant(manager, manager)).error?.code, '42501', 'gestor não se promove');
 assert.equal((await grant(manager, alice, { reason: 'ok' })).error?.code, '22023', 'justificativa obrigatória');
 assert.equal((await grant(manager, alice, { degree: 1 })).error?.code, '22023', 'destino igual ao atual');
 assert.equal((await grant(manager, outsider)).error?.code, '22023', 'quem não é membro não é promovido');
+assert.equal((await manager.client.rpc('register_initial_rank', {
+  p_academy_id: academyId, p_user_id: manager.id, p_belt_code: 'Faixa Teste Z', p_degree: 1, p_effective_date: localDate(100),
+  p_reason: null, p_idempotency_key: crypto.randomUUID(),
+})).error, null, 'o mestre registra a própria graduação atual');
+assert.equal((await grant(manager, manager, { belt: 'Faixa Teste Z', degree: 2, reason: 'o mestre se gradua (teste)' })).error, null, 'o mestre se gradua');
 
 const key = crypto.randomUUID();
 r = await grant(manager, alice, { key });
