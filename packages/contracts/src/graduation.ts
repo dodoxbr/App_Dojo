@@ -144,3 +144,59 @@ export function progressText(c: { kind: CriterionKind; current: number | null; t
   const unit = c.kind === 'curriculum' ? '%' : '';
   return `${c.current ?? 0}${unit} de ${c.target ?? 0}${unit} — ${c.detail ?? ''}`;
 }
+
+// --- Granting and rectifying a promotion (US-011). Only the academy manager decides; the system never promotes. ---
+
+const requiredReason = z.string().trim().min(3, 'Informe a justificativa.').max(500);
+const notFuture = isoDate.refine((v) => new Date(`${v}T00:00:00Z`).getTime() <= Date.now() + 24 * 60 * 60 * 1000, {
+  message: 'A data não pode estar no futuro.',
+});
+
+export const grantPromotionSchema = z.object({
+  academyId: z.uuid(),
+  userId: z.uuid(),
+  beltCode: z.string().trim().min(1).max(40),
+  degree: z.number().int().min(0).max(20),
+  effectiveDate: notFuture,
+  reason: requiredReason,
+  idempotencyKey: z.uuid(),
+});
+
+export const correctPromotionSchema = z.object({
+  promotionId: z.uuid(),
+  beltCode: z.string().trim().min(1).max(40),
+  degree: z.number().int().min(0).max(20),
+  effectiveDate: notFuture,
+  reason: requiredReason,
+  idempotencyKey: z.uuid(),
+});
+
+export const promotionEventLabels: Record<string, string> = {
+  initial: 'Graduação inicial registrada',
+  promotion: 'Promoção',
+  correction: 'Retificação',
+};
+
+export type PromotionEvent = {
+  id: string;
+  event_type: string;
+  belt_code: string;
+  degree: number;
+  effective_date: string;
+  created_at: string;
+  corrects_promotion_id: string | null;
+  reason: string | null;
+  previous_belt_code: string | null;
+  previous_degree: number | null;
+};
+
+// Full history, newest first, flagging events that a later correction superseded. The current rank is the latest
+// event that was not superseded (same rule as the public.current_ranks view).
+export function buildRankHistory(events: PromotionEvent[]) {
+  const superseded = new Set(events.map((e) => e.corrects_promotion_id).filter((v): v is string => !!v));
+  const history = [...events]
+    .sort((a, b) => b.effective_date.localeCompare(a.effective_date) || b.created_at.localeCompare(a.created_at))
+    .map((e) => ({ ...e, superseded: superseded.has(e.id) }));
+  const current = history.find((e) => !e.superseded) ?? null;
+  return { history, current };
+}

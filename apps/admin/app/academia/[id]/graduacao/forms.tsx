@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { assessManual, registerRank } from "./actions";
+import { assessManual, correctPromotion, grantPromotion, registerRank } from "./actions";
 import type { FormState } from "../../../login/actions";
 
 export function RegisterRankForm({ academyId, userId }: { academyId: string; userId: string }) {
@@ -36,6 +36,44 @@ export function ManualCriterionForm({ academyId, userId, label }: { academyId: s
       <button type="submit" disabled={pending}>{pending ? "Salvando…" : "Salvar"}</button>
       {state.error && <span role="alert"> {state.error}</span>}
       {state.message && <span role="status"> {state.message}</span>}
+    </form>
+  );
+}
+
+type Rank = { beltCode: string; degree: number; effectiveDate: string };
+
+export function GrantPromotionForm({ academyId, userId, current }: { academyId: string; userId: string; current: Rank }) {
+  const [state, action, pending] = useActionState<FormState, FormData>(grantPromotion.bind(null, academyId, userId), {});
+  const [key, setKey] = useState(() => crypto.randomUUID());
+  const today = new Date().toISOString().slice(0, 10);
+  return (
+    <form action={action} onChange={() => setKey(crypto.randomUUID())}>
+      <input type="hidden" name="idempotencyKey" value={key} />
+      <label>Nova faixa <input name="beltCode" defaultValue={current.beltCode} maxLength={40} required /></label>
+      <label>Novo grau <input name="degree" type="number" min={0} max={20} defaultValue={current.degree + 1} required /></label>
+      <label>Vale desde <input name="effectiveDate" type="date" defaultValue={today} min={current.effectiveDate} max={today} required /></label>
+      <label>Justificativa <input name="reason" minLength={3} maxLength={500} required placeholder="por que esta graduação foi concedida" /></label>
+      <button type="submit" disabled={pending}>{pending ? "Concedendo…" : "Conceder graduação"}</button>
+      {state.error && <p role="alert">{state.error}</p>}
+      {state.message && <p role="status">{state.message}</p>}
+    </form>
+  );
+}
+
+export function CorrectPromotionForm({ academyId, promotionId, current }: { academyId: string; promotionId: string; current: Rank }) {
+  const [state, action, pending] = useActionState<FormState, FormData>(correctPromotion.bind(null, academyId, promotionId), {});
+  const [key, setKey] = useState(() => crypto.randomUUID());
+  const today = new Date().toISOString().slice(0, 10);
+  return (
+    <form action={action} onChange={() => setKey(crypto.randomUUID())}>
+      <input type="hidden" name="idempotencyKey" value={key} />
+      <label>Faixa correta <input name="beltCode" defaultValue={current.beltCode} maxLength={40} required /></label>
+      <label>Grau correto <input name="degree" type="number" min={0} max={20} defaultValue={current.degree} required /></label>
+      <label>Data correta <input name="effectiveDate" type="date" defaultValue={current.effectiveDate} max={today} required /></label>
+      <label>Motivo da retificação <input name="reason" minLength={3} maxLength={500} required /></label>
+      <button type="submit" disabled={pending}>{pending ? "Retificando…" : "Retificar registro"}</button>
+      {state.error && <p role="alert">{state.error}</p>}
+      {state.message && <p role="status">{state.message}</p>}
     </form>
   );
 }

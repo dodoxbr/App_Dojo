@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { evaluationSchema } from "@dojo/contracts/graduation";
+import { evaluationSchema, type PromotionEvent } from "@dojo/contracts/graduation";
+import { RankHistory } from "@/components/rank-history";
 import { EvaluationView } from "@/components/evaluation-view";
 import { getCaller } from "@/lib/context";
 
@@ -14,8 +15,17 @@ export default async function GraduacaoAlunoPage() {
 
   const results = await Promise.all(
     (academies ?? []).map(async (a) => {
-      const { data } = await supabase.rpc("evaluate_promotion", { p_academy_id: a.id, p_user_id: userId });
-      return { academy: a as { id: string; name: string }, evaluation: evaluationSchema.safeParse(data) };
+      const [{ data }, { data: events }] = await Promise.all([
+        supabase.rpc("evaluate_promotion", { p_academy_id: a.id, p_user_id: userId }),
+        supabase.from("promotions")
+          .select("id, event_type, belt_code, degree, effective_date, created_at, corrects_promotion_id, reason, previous_belt_code, previous_degree")
+          .eq("academy_id", a.id).eq("user_id", userId),
+      ]);
+      return {
+        academy: a as { id: string; name: string },
+        evaluation: evaluationSchema.safeParse(data),
+        events: (events ?? []) as PromotionEvent[],
+      };
     }),
   );
 
@@ -28,10 +38,12 @@ export default async function GraduacaoAlunoPage() {
         academia definiu. Só contam presenças confirmadas pelo professor.
       </p>
       {results.length === 0 && <p>Você ainda não faz parte de nenhuma academia.</p>}
-      {results.map(({ academy, evaluation }) => (
+      {results.map(({ academy, evaluation, events }) => (
         <section key={academy.id}>
           <h2>{academy.name}</h2>
           {evaluation.success ? <EvaluationView evaluation={evaluation.data} /> : <p role="alert">Não foi possível calcular o seu progresso.</p>}
+          <h3>Histórico de graduações</h3>
+          <RankHistory events={events} />
         </section>
       ))}
     </main>

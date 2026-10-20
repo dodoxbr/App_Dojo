@@ -2,7 +2,14 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { assessManualSchema, createRuleSchema, registerRankSchema, toDbCriteria } from "@dojo/contracts/graduation";
+import {
+  assessManualSchema,
+  correctPromotionSchema,
+  createRuleSchema,
+  grantPromotionSchema,
+  registerRankSchema,
+  toDbCriteria,
+} from "@dojo/contracts/graduation";
 import { getCaller } from "@/lib/context";
 import { rpcErrorMessage } from "@/lib/rpc-errors";
 import type { FormState } from "../../../login/actions";
@@ -98,4 +105,71 @@ export async function assessManual(academyId: string, userId: string, label: str
   }
   revalidatePath(`/academia/${academyId}/graduacao/alunos/${userId}`);
   return { message: "Avaliação salva." };
+}
+
+// Only the academy manager decides a promotion. The system recommends; it never promotes by itself.
+export async function grantPromotion(academyId: string, userId: string, _prev: FormState, formData: FormData): Promise<FormState> {
+  const parsed = grantPromotionSchema.safeParse({
+    academyId,
+    userId,
+    beltCode: formData.get("beltCode"),
+    degree: Number(formData.get("degree")),
+    effectiveDate: formData.get("effectiveDate"),
+    reason: formData.get("reason"),
+    idempotencyKey: formData.get("idempotencyKey"),
+  });
+  if (!parsed.success) return { error: "Informe a faixa, o grau (0 a 20), a data (não pode ser futura) e a justificativa (mínimo 3 caracteres)." };
+
+  const { supabase } = await getCaller();
+  const { error } = await supabase.rpc("grant_promotion", {
+    p_academy_id: academyId,
+    p_user_id: userId,
+    p_belt_code: parsed.data.beltCode,
+    p_degree: parsed.data.degree,
+    p_effective_date: parsed.data.effectiveDate,
+    p_reason: parsed.data.reason,
+    p_idempotency_key: parsed.data.idempotencyKey,
+  });
+  if (error) return { error: promotionError(error) };
+  revalidatePath(`/academia/${academyId}/graduacao`, "layout");
+  return { message: "Graduação concedida e registrada no histórico." };
+}
+
+export async function correctPromotion(academyId: string, promotionId: string, _prev: FormState, formData: FormData): Promise<FormState> {
+  const parsed = correctPromotionSchema.safeParse({
+    promotionId,
+    beltCode: formData.get("beltCode"),
+    degree: Number(formData.get("degree")),
+    effectiveDate: formData.get("effectiveDate"),
+    reason: formData.get("reason"),
+    idempotencyKey: formData.get("idempotencyKey"),
+  });
+  if (!parsed.success) return { error: "Informe a faixa, o grau (0 a 20), a data (não pode ser futura) e o motivo da retificação." };
+
+  const { supabase } = await getCaller();
+  const { error } = await supabase.rpc("correct_promotion", {
+    p_promotion_id: promotionId,
+    p_belt_code: parsed.data.beltCode,
+    p_degree: parsed.data.degree,
+    p_effective_date: parsed.data.effectiveDate,
+    p_reason: parsed.data.reason,
+    p_idempotency_key: parsed.data.idempotencyKey,
+  });
+  if (error) return { error: promotionError(error) };
+  revalidatePath(`/academia/${academyId}/graduacao`, "layout");
+  return { message: "Retificação registrada. O histórico anterior foi mantido." };
+}
+
+function promotionError(error: { code?: string; message: string }): string {
+  const m = error.message;
+  if (error.code === "42501" && m.includes("self")) return "Ninguém altera a própria graduação.";
+  if (error.code === "22023") {
+    if (m.includes("no current rank")) return "Registre primeiro a graduação atual deste aluno.";
+    if (m.includes("same rank")) return "O destino é igual à graduação atual.";
+    if (m.includes("before current rank")) return "A data não pode ser anterior à graduação atual.";
+    if (m.includes("no change")) return "Nada foi alterado em relação ao registro.";
+    if (m.includes("reason")) return "Informe a justificativa (mínimo 3 caracteres).";
+  }
+  if (error.code === "23505") return "Este registro já foi retificado. Retifique o registro mais recente.";
+  return rpcErrorMessage(error);
 }

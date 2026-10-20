@@ -19,11 +19,9 @@ export default async function AlunosGraduacaoPage({ params }: { params: Promise<
   const userIds = (members ?? []).map((m) => m.user_id as string);
   const [{ data: profiles }, { data: ranks }] = await Promise.all([
     userIds.length ? supabase.from("profiles").select("id, display_name").in("id", userIds) : Promise.resolve({ data: [] }),
-    supabase.from("promotions").select("user_id, belt_code, degree, effective_date, created_at").eq("academy_id", id)
-      .order("effective_date", { ascending: false }).order("created_at", { ascending: false }),
+    supabase.from("current_ranks").select("user_id, belt_code, degree, effective_date").eq("academy_id", id),
   ]);
-  const current = new Map<string, { belt_code: string; degree: number; effective_date: string }>();
-  for (const r of ranks ?? []) if (!current.has(r.user_id as string)) current.set(r.user_id as string, r as never);
+  const current = new Map((ranks ?? []).map((r) => [r.user_id as string, r as { belt_code: string; degree: number; effective_date: string }]));
   const people = (profiles ?? [])
     .map((p) => ({ id: p.id as string, name: p.display_name as string }))
     .sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
