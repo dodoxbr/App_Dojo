@@ -43,6 +43,7 @@ jobs:
           node scripts/smoke-membership.mjs
           node scripts/smoke-catalog.mjs
           node scripts/smoke-diary.mjs
+          node scripts/smoke-classes.mjs
       - run: npx supabase stop --no-backup
         if: always()
 

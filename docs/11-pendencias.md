@@ -69,3 +69,12 @@
 - [ ] Diário só no painel web; sem tela no app mobile. Sem calendário, mídia, exportação nem exclusão de conta/dados (LGPD, `docs/06`).
 - [ ] A data do treino é um dia (12:00 UTC); o fuso da academia será considerado quando houver sessões.
 - [ ] Telas do diário verificadas por typecheck, lint, build e smoke test do backend; falta uso manual em navegador.
+
+## US-007 (turmas e aulas)
+- [ ] Fuso padrão `America/Sao_Paulo` (coluna `academies.timezone`); não há tela para mudar o fuso. Validar com a academia.
+- [ ] Instrutor responsável agenda/cancela aulas da própria turma por padrão (não é uma permissão da matriz do gestor). Decidir se deve virar permissão configurável.
+- [ ] Sem recorrência: cada aula é agendada uma a uma. Avaliar "gerar aulas semanais" depois de ver o uso.
+- [ ] Alunos não veem o nome do instrutor (perfis são privados); decidir se o nome do professor responsável é público dentro da academia.
+- [ ] Sem lotação máxima, lista de espera, tipo de aula (gi/no-gi) nem local; não definidos na especificação.
+- [ ] Turma sem horário fixo: o dia/horário recorrente da turma não é modelado, só as aulas.
+- [ ] Telas de turmas e agenda só no painel web, verificadas por typecheck, lint, build e smoke test do backend; falta uso manual em navegador.

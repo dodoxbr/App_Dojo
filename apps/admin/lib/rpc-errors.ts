@@ -1,4 +1,4 @@
-// Maps database error codes (see migrations 004/005) to messages that do not leak other tenants' data.
+// Maps database error codes (see migrations 004-011) to messages that do not leak other tenants' data.
 export function rpcErrorMessage(
   error: { code?: string; message?: string },
   options: { conflict?: string } = {},
@@ -10,10 +10,15 @@ export function rpcErrorMessage(
       return "Não encontrado. A pessoa precisa já ter criado a conta.";
     case "23505":
       return options.conflict ?? "A operação conflita com o estado atual (por exemplo, já decidido ou não alterável).";
-    case "22023":
-      return error.message?.includes("contrast")
-        ? "Contraste insuficiente entre as cores (mínimo 4,5:1)."
-        : "Dados inválidos. Revise os campos.";
+    case "22023": {
+      const m = error.message ?? "";
+      if (m.includes("contrast")) return "Contraste insuficiente entre as cores (mínimo 4,5:1).";
+      if (m.includes("instructor")) return "O instrutor precisa ser instrutor ou gestor aprovado desta academia.";
+      if (m.includes("class inactive")) return "Esta turma está inativa. Ative-a para agendar aulas.";
+      if (m.includes("time")) return "O horário final deve ser depois do inicial.";
+      if (m.includes("date")) return "A data deve estar dentro de 1 ano a partir de hoje.";
+      return "Dados inválidos. Revise os campos.";
+    }
     default:
       return "Não foi possível concluir a operação. Tente novamente.";
   }
