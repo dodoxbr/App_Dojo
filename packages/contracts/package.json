@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./auth": "./src/auth.ts"
+    "./auth": "./src/auth.ts",
+    "./academy": "./src/academy.ts"
   },
   "scripts": {
     "test": "node --test tests/*.test.ts",

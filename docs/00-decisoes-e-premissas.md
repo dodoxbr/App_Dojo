@@ -8,6 +8,12 @@
 - Crescimento por features: pagamentos, competições, social, fotos e IA depois.
 - Desenvolvimento no VS Code com Claude Code, documentação em Markdown.
 
+## Papéis e acesso (decisão do dono do produto, US-003)
+- **Super admin da plataforma** (o dono do produto): libera quais usuários podem criar academias. Na fase de testes, tem acesso total à gestão. O diário de treino ainda não está acessível a ele; rever na US-006 e antes de qualquer dado real (`CLAUDE.md`, regra 6).
+- **Gestor da academia**: quem cria a academia. É administrador e também atua como professor, com acesso geral à própria academia. Cadastra colaboradores (instrutores) e alunos (US-004).
+- **Instrutor**: não tem acesso total. O gestor liga/desliga as permissões do instrutor da sua academia.
+- **Aluno**: acessa o próprio diário e a própria evolução.
+
 ## Premissas de engenharia (a validar)
 - Stack: Expo/React Native + Next.js + Supabase/Postgres + TypeScript.
 - Cada usuário pode integrar mais de uma academia; uma academia pode integrar uma equipe e ter unidades futuras.

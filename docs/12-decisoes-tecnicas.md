@@ -28,5 +28,8 @@
 **Status:** aceita (US-001). **Decisão:** migration dedicada revoga privilégios padrão de `anon`/`authenticated` e concede por tabela só o que as políticas RLS usam; novas tabelas não herdam grants. **Consequência:** cada história que cria tabela deve declarar seus grants.
 
 
+## ADR-011 — Papéis, auditoria e operações no servidor (US-003)
+**Status:** aceita (US-003). **Decisão:** super admin em `platform_admins` (inserido só por SQL, nunca pelo app); criadores liberados em `academy_creators`; matriz de permissões do instrutor por academia em `academy_role_permissions`; `audit_events` escrita só por operações `security definer` com `search_path` vazio e `EXECUTE` apenas para `authenticated`. Erros: 28000, 42501, P0002, 23505, 22023. **Consequência:** nenhum INSERT/UPDATE direto de cliente nessas tabelas; o contraste do tema é validado no banco e espelhado em `packages/contracts` com os mesmos valores de referência.
+
 ## ADR-010 — Dependências de autenticação (US-002)
 **Status:** aceita (US-002). **Decisão:** `zod` em `packages/contracts` (esquemas compartilhados, `docs/02`/`docs/07`); `@supabase/supabase-js` nos dois apps; `@supabase/ssr` no admin (sessão por cookies); `expo-secure-store` no mobile (token fora de armazenamento em texto puro). Sem `service_role` em nenhum cliente. **Consequência:** `packages/contracts` exporta TypeScript direto (sem build); o admin precisa de `transpilePackages`. SecureStore limita ~2 KB por valor, então o adaptador de sessão divide em partes.

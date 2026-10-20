@@ -3,8 +3,8 @@
 - [ ] Nome do produto e identidade visual própria.
 - [ ] Regras oficiais da academia para faixa/grau e exigências técnicas.
 - [ ] Currículo da planilha revisado pelo mestre; permissões de reprodução.
-- [ ] Quem pode criar academias e quem se torna gestor inicial.
-- [ ] Instrutor pode aprovar filiação? Definir política.
+- [x] Quem pode criar academias e quem se torna gestor inicial: o super admin libera usuários; quem cria vira gestor (decisão do dono do produto, `docs/00`).
+- [ ] Instrutor pode aprovar filiação? O gestor cadastra colaboradores e alunos; falta definir se o instrutor também aprova (hoje fora do catálogo de permissões).
 - [ ] Aluno sem filiação pode registrar treinos pessoais? Proposta: sim.
 - [ ] Quais dados são necessários para menores e responsável?
 - [ ] Privacidade de fotos e duração de armazenamento.
@@ -28,3 +28,12 @@
 - [ ] Telas do admin e do mobile não foram exercitadas em navegador; o fluxo foi validado por `scripts/smoke-auth.mjs` contra o Supabase local.
 - [ ] E-mails de confirmação em produção exigem SMTP próprio e `site_url`/redirects definidos.
 - [ ] Texto do nome padrão ("Novo usuário") e política de senha (mínimo 8) a validar com o produto.
+
+## US-003 (academia, papéis e tema)
+- [ ] Contraste do tema (4,5:1 entre as duas cores) e catálogo de permissões do instrutor são propostas; validar com a academia. Padrão inicial do instrutor: ver lista e validar presença.
+- [ ] Super admin com acesso total à gestão só durante os testes. Antes do piloto: decidir o que ele pode ver, em especial o diário (US-006).
+- [ ] Convite por e-mail para quem ainda não tem conta; hoje a pessoa precisa criar a conta antes de ser liberada.
+- [ ] Upload de logo (Storage privado) não implementado; `logo_path` segue sem uso.
+- [ ] A lista de criadores mostra só o início do ID, pois `profiles` é privado; avaliar exibir nome/e-mail por operação própria do super admin.
+- [ ] Super admin é criado por `scripts/make-platform-admin.mjs` (banco local). Em homologação/produção, definir o procedimento seguro.
+- [ ] Telas novas (plataforma, criar academia, gerenciar academia) verificadas por typecheck, lint, build e smoke test do backend; falta uso manual em navegador.

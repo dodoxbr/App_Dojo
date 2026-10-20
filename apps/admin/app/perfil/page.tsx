@@ -1,13 +1,10 @@
-import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import Link from "next/link";
+import { getCaller } from "@/lib/context";
 import { ProfileForm } from "./profile-form";
 import { signOut } from "./actions";
 
 export default async function PerfilPage() {
-  const supabase = await createClient();
-  const { data } = await supabase.auth.getClaims();
-  if (!data?.claims) redirect("/login");
-
+  const { supabase, isPlatformAdmin, canCreateAcademy, managedAcademies } = await getCaller();
   const { data: profile, error } = await supabase.from("profiles").select("display_name").single();
 
   return (
@@ -18,6 +15,20 @@ export default async function PerfilPage() {
       ) : (
         <ProfileForm displayName={profile.display_name} />
       )}
+
+      {(isPlatformAdmin || canCreateAcademy || managedAcademies.length > 0) && (
+        <nav aria-label="Atalhos">
+          <h2>Atalhos</h2>
+          <ul>
+            {isPlatformAdmin && <li><Link href="/plataforma">Plataforma (super admin)</Link></li>}
+            {canCreateAcademy && <li><Link href="/academias/nova">Criar academia</Link></li>}
+            {managedAcademies.map((a) => (
+              <li key={a.id}><Link href={`/academia/${a.id}`}>Gerenciar: {a.name}</Link></li>
+            ))}
+          </ul>
+        </nav>
+      )}
+
       <form action={signOut}><button type="submit">Sair</button></form>
     </main>
   );
