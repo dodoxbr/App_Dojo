@@ -60,3 +60,12 @@
 - [ ] Busca sem índice (varredura); reavaliar com volume. Lista de categorias do filtro é calculada a partir das linhas visíveis.
 - [ ] Permissão de uso/reprodução do conteúdo da planilha: decisão do dono do produto de manter no repositório (hoje público).
 - [ ] Telas do catálogo verificadas por typecheck, lint, build e smoke test do backend; falta uso manual em navegador. Sem tela no app mobile.
+
+## US-006 (diário)
+- [ ] **GATE ANTES DO PILOTO / DADOS REAIS:** desligar o acesso de teste do super admin aos diários (`node scripts/set-admin-diary-access.mjs off`; hoje está LIGADO por decisão do dono do produto). Definir depois se o super admin terá algum acesso ao diário e com qual autorização do aluno.
+- [ ] Leituras do super admin ao diário não são auditadas (RLS não registra SELECT); se o acesso for mantido, criar acesso por operação auditada.
+- [ ] Compartilhamento do diário com o professor (permissão explícita e granular) ainda não existe: `visibility` aceita só `private`.
+- [ ] Vínculo do registro com a aula/sessão (US-007) e rascunho pré-preenchido pelo plano da aula (F2).
+- [ ] Diário só no painel web; sem tela no app mobile. Sem calendário, mídia, exportação nem exclusão de conta/dados (LGPD, `docs/06`).
+- [ ] A data do treino é um dia (12:00 UTC); o fuso da academia será considerado quando houver sessões.
+- [ ] Telas do diário verificadas por typecheck, lint, build e smoke test do backend; falta uso manual em navegador.

@@ -18,6 +18,8 @@ export default async function PlataformaPage() {
       <p><Link href="/perfil">← Meu perfil</Link></p>
       <h1>Plataforma</h1>
 
+      <p><Link href="/plataforma/diarios">Diários (acesso de teste)</Link></p>
+
       <section>
         <h2>Liberar criação de academias</h2>
         <GrantForm />

@@ -9,7 +9,7 @@
 - Desenvolvimento no VS Code com Claude Code, documentação em Markdown.
 
 ## Papéis e acesso (decisão do dono do produto, US-003)
-- **Super admin da plataforma** (o dono do produto): libera quais usuários podem criar academias. Na fase de testes, tem acesso total à gestão. O diário de treino ainda não está acessível a ele; rever na US-006 e antes de qualquer dado real (`CLAUDE.md`, regra 6).
+- **Super admin da plataforma** (o dono do produto): libera quais usuários podem criar academias. Na fase de testes, tem acesso total à gestão **e ao diário de treino** (decisão do dono do produto em 2026-10-20, implementada na US-006 com uma chave `platform_settings.admin_diary_access`, ligada por ora). Antes de qualquer dado real ou piloto a chave deve ser desligada (`CLAUDE.md`, regra 6).
 - **Gestor da academia**: quem cria a academia. É administrador e também atua como professor, com acesso geral à própria academia. Cadastra colaboradores (instrutores) e alunos (US-004).
 - **Instrutor**: não tem acesso total. O gestor liga/desliga as permissões do instrutor da sua academia.
 - **Aluno**: acessa o próprio diário e a própria evolução.

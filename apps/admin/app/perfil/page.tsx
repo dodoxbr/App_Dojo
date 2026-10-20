@@ -43,6 +43,7 @@ export default async function PerfilPage() {
       <nav aria-label="Atalhos">
         <h2>Atalhos</h2>
         <ul>
+          <li><Link href="/diario">Meu diário</Link></li>
           <li><Link href="/tecnicas">Catálogo de técnicas</Link></li>
           {isPlatformAdmin && <li><Link href="/plataforma">Plataforma (super admin)</Link></li>}
           {canCreateAcademy && <li><Link href="/academias/nova">Criar academia</Link></li>}
