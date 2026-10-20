@@ -1,0 +1,12 @@
+.env
+.env.*
+!.env.example
+node_modules/
+.expo/
+.next/
+dist/
+coverage/
+.DS_Store
+supabase/.temp/
+supabase/.branches/
+*.tsbuildinfo

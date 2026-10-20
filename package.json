@@ -1,0 +1,21 @@
+{
+  "name": "dojo-platform",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "npm@10.9.0",
+  "engines": { "node": ">=22" },
+  "workspaces": ["packages/*", "apps/*"],
+  "scripts": {
+    "lint": "npm run lint --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "db:start": "supabase start -x studio,imgproxy,edge-runtime,logflare,vector",
+    "db:reset": "supabase db reset",
+    "db:test": "supabase test db",
+    "db:stop": "supabase stop",
+    "check": "npm run lint && npm run typecheck && npm test"
+  },
+  "devDependencies": {
+    "supabase": "2.121.0"
+  }
+}
