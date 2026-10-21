@@ -67,7 +67,7 @@ export function CreateChallengeForm({ academies, techniques }: { academies: Opti
 }
 
 export function EntryForm({ challengeId, metric, today }: { challengeId: string; metric: ChallengeMetric; today: string }) {
-  const [state, action, pending] = useActionState<FormState, FormData>(addEntry.bind(null, challengeId), {});
+  const [state, action, pending] = useActionState<FormState, FormData>((prev, formData) => addEntry(challengeId, prev, formData), {});
   // The key changes with the data: a double click repeats the same request, another day/time is a new one.
   const [key, setKey] = useState(() => crypto.randomUUID());
   return (

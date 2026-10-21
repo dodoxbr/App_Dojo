@@ -10,7 +10,7 @@ type Props = {
 };
 
 export function EditForm({ techniqueId, name, category, level, description, type, position }: Props) {
-  const [state, action, pending] = useActionState<FormState, FormData>(updateTechnique.bind(null, techniqueId), {});
+  const [state, action, pending] = useActionState<FormState, FormData>((prev, formData) => updateTechnique(techniqueId, prev, formData), {});
   return (
     <form action={action}>
       <label>Nome <input name="name" defaultValue={name} minLength={2} maxLength={160} required /></label>
@@ -27,7 +27,7 @@ export function EditForm({ techniqueId, name, category, level, description, type
 }
 
 export function AliasForm({ techniqueId }: { techniqueId: string }) {
-  const [state, action, pending] = useActionState<FormState, FormData>(addAlias.bind(null, techniqueId), {});
+  const [state, action, pending] = useActionState<FormState, FormData>((prev, formData) => addAlias(techniqueId, prev, formData), {});
   return (
     <form action={action}>
       <label>Novo sinônimo <input name="alias" minLength={2} maxLength={120} required /></label>

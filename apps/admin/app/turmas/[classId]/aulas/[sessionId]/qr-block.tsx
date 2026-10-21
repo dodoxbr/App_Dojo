@@ -5,7 +5,7 @@ import { CHECK_IN_TOKEN_MINUTES } from "@dojo/contracts/attendance";
 import { generateQr, type QrState } from "./actions";
 
 export function QrBlock({ classId, sessionId }: { classId: string; sessionId: string }) {
-  const [state, action, pending] = useActionState<QrState, FormData>(generateQr.bind(null, classId, sessionId), {});
+  const [state, action, pending] = useActionState<QrState, FormData>(() => generateQr(classId, sessionId), {});
   return (
     <div>
       <form action={action}>

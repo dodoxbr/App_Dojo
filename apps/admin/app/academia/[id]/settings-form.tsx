@@ -8,7 +8,7 @@ import type { FormState } from "../../login/actions";
 type Props = { academyId: string; name: string; themePrimary: string; themeSecondary: string };
 
 export function SettingsForm({ academyId, name, themePrimary, themeSecondary }: Props) {
-  const [state, action, pending] = useActionState<FormState, FormData>(updateSettings.bind(null, academyId), {});
+  const [state, action, pending] = useActionState<FormState, FormData>((prev, formData) => updateSettings(academyId, prev, formData), {});
   const [primary, setPrimary] = useState(themePrimary);
   const [secondary, setSecondary] = useState(themeSecondary);
   const ratio = contrastRatio(primary, secondary);

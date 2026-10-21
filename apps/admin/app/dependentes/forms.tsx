@@ -27,7 +27,7 @@ export function CreateDependentForm({ defaultName, defaultBirthDate }: { default
 }
 
 export function RequestForDependentForm({ minorId, academyId }: { minorId: string; academyId: string }) {
-  const [state, action, pending] = useActionState<FormState, FormData>(requestForDependent.bind(null, minorId, academyId), {});
+  const [state, action, pending] = useActionState<FormState, FormData>((prev, formData) => requestForDependent(minorId, academyId, prev, formData), {});
   return (
     <form action={action}>
       <p>
@@ -46,7 +46,7 @@ export function RequestForDependentForm({ minorId, academyId }: { minorId: strin
 }
 
 export function InviteForm({ minorId }: { minorId: string }) {
-  const [state, action, pending] = useActionState<FormState, FormData>(createInvite.bind(null, minorId), {});
+  const [state, action, pending] = useActionState<FormState, FormData>(() => createInvite(minorId), {});
   return (
     <form action={action}>
       <button type="submit" disabled={pending}>{pending ? "Gerando…" : "Gerar código para outro responsável financeiro"}</button>

@@ -33,7 +33,7 @@ export function CreateCurriculumForm({ academyId }: { academyId: string }) {
 }
 
 export function EditCurriculumForm(props: { curriculumId: string; title: string; level: string; isActive: boolean }) {
-  const [state, action, pending] = useActionState<FormState, FormData>(updateCurriculum.bind(null, props.curriculumId), {});
+  const [state, action, pending] = useActionState<FormState, FormData>((prev, formData) => updateCurriculum(props.curriculumId, prev, formData), {});
   return (
     <form action={action}>
       <label>Nome do currículo <input name="title" defaultValue={props.title} minLength={2} maxLength={120} required /></label>

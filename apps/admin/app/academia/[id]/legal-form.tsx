@@ -5,7 +5,7 @@ import { updateLegal } from "./actions";
 import type { FormState } from "../../login/actions";
 
 export function LegalForm({ academyId, legalName, cnpj }: { academyId: string; legalName: string; cnpj: string }) {
-  const [state, action, pending] = useActionState<FormState, FormData>(updateLegal.bind(null, academyId), {});
+  const [state, action, pending] = useActionState<FormState, FormData>((prev, formData) => updateLegal(academyId, prev, formData), {});
   return (
     <form action={action}>
       <label>Razão social <input name="legalName" defaultValue={legalName} minLength={2} maxLength={200} required /></label>

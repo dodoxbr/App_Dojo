@@ -1,12 +1,12 @@
 "use client";
 
 import { useActionState } from "react";
-import { BRAZIL_UFS, formatPhone, formatPostalCode, type ContactRow } from "@dojo/contracts/contacts";
 import { saveContact } from "./actions";
+import { BRAZIL_UFS, formatPhone, formatPostalCode, type ContactRow } from "@dojo/contracts/contacts";
 import type { FormState } from "../../login/actions";
 
 export function ContactForm({ userId, current, suggestedName }: { userId: string; current: ContactRow | null; suggestedName: string }) {
-  const [state, action, pending] = useActionState<FormState, FormData>(saveContact.bind(null, userId), {});
+  const [state, action, pending] = useActionState<FormState, FormData>((prev, formData) => saveContact(userId, prev, formData), {});
   return (
     <form action={action}>
       <label>Nome completo <input name="fullName" minLength={2} maxLength={160} autoComplete="name" defaultValue={current?.full_name ?? suggestedName} required /></label>

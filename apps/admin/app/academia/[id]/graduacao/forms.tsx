@@ -6,7 +6,7 @@ import { assessManual, correctPromotion, grantPromotion, registerRank } from "./
 import type { FormState } from "../../../login/actions";
 
 export function RegisterRankForm({ academyId, userId }: { academyId: string; userId: string }) {
-  const [state, action, pending] = useActionState<FormState, FormData>(registerRank.bind(null, academyId, userId), {});
+  const [state, action, pending] = useActionState<FormState, FormData>((prev, formData) => registerRank(academyId, userId, prev, formData), {});
   const [key] = useState(() => crypto.randomUUID());
   const today = new Date().toISOString().slice(0, 10);
   return (
@@ -23,7 +23,7 @@ export function RegisterRankForm({ academyId, userId }: { academyId: string; use
 }
 
 export function ManualCriterionForm({ academyId, userId, label }: { academyId: string; userId: string; label: string }) {
-  const [state, action, pending] = useActionState<FormState, FormData>(assessManual.bind(null, academyId, userId, label), {});
+  const [state, action, pending] = useActionState<FormState, FormData>((prev, formData) => assessManual(academyId, userId, label, prev, formData), {});
   // New key whenever a field changes: a double click repeats the same request, a different choice is a new one.
   const [key, setKey] = useState(() => crypto.randomUUID());
   return (
@@ -44,7 +44,7 @@ export function ManualCriterionForm({ academyId, userId, label }: { academyId: s
 type Rank = { beltCode: string; degree: number; effectiveDate: string };
 
 export function GrantPromotionForm({ academyId, userId, current }: { academyId: string; userId: string; current: Rank }) {
-  const [state, action, pending] = useActionState<FormState, FormData>(grantPromotion.bind(null, academyId, userId), {});
+  const [state, action, pending] = useActionState<FormState, FormData>((prev, formData) => grantPromotion(academyId, userId, prev, formData), {});
   const [key, setKey] = useState(() => crypto.randomUUID());
   const today = new Date().toISOString().slice(0, 10);
   return (
@@ -63,7 +63,7 @@ export function GrantPromotionForm({ academyId, userId, current }: { academyId: 
 }
 
 export function CorrectPromotionForm({ academyId, promotionId, current }: { academyId: string; promotionId: string; current: Rank }) {
-  const [state, action, pending] = useActionState<FormState, FormData>(correctPromotion.bind(null, academyId, promotionId), {});
+  const [state, action, pending] = useActionState<FormState, FormData>((prev, formData) => correctPromotion(academyId, promotionId, prev, formData), {});
   const [key, setKey] = useState(() => crypto.randomUUID());
   const today = new Date().toISOString().slice(0, 10);
   return (

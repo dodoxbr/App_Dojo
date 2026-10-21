@@ -5,7 +5,7 @@ import { addMember } from "./actions";
 import type { FormState } from "../../../login/actions";
 
 export function AddMemberForm({ academyId }: { academyId: string }) {
-  const [state, action, pending] = useActionState<FormState, FormData>(addMember.bind(null, academyId), {});
+  const [state, action, pending] = useActionState<FormState, FormData>((prev, formData) => addMember(academyId, prev, formData), {});
   return (
     <form action={action}>
       <label>E-mail (a pessoa precisa ter conta) <input name="email" type="email" required /></label>

@@ -16,7 +16,7 @@ export default async function FichaPage() {
       <p><Link href="/perfil">← Meu perfil</Link></p>
       <h1>Minha ficha de cadastro</h1>
       <p>Precisamos desses dados para você entrar em uma academia. Eles são privados: só você e o gestor das academias em que você tem vínculo conseguem ver, e cada consulta do gestor fica registrada.</p>
-      <ContactForm userId={userId} current={parsed.success ? parsed.data : null} suggestedName={(profile?.display_name as string | undefined) ?? ""} />
+      <ContactForm key={parsed.success ? parsed.data.updated_at : "novo"} userId={userId} current={parsed.success ? parsed.data : null} suggestedName={(profile?.display_name as string | undefined) ?? ""} />
     </main>
   );
 }

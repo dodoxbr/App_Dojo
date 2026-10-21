@@ -6,7 +6,7 @@ import { declareSkill } from "./actions";
 import type { FormState } from "../login/actions";
 
 export function SkillSelect({ academyId, techniqueId, current }: { academyId: string; techniqueId: string; current: string }) {
-  const [state, action, pending] = useActionState<FormState, FormData>(declareSkill.bind(null, academyId, techniqueId), {});
+  const [state, action, pending] = useActionState<FormState, FormData>((prev, formData) => declareSkill(academyId, techniqueId, prev, formData), {});
   return (
     <form action={action} style={{ display: "inline" }}>
       <select name="status" defaultValue={current} aria-label="Meu progresso nesta técnica">

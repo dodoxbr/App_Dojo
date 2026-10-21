@@ -44,7 +44,7 @@ export function LoginForms({ next }: { next: string }) {
         )}
         <label>E-mail <input name="email" type="email" autoComplete="email" required /></label>
         <label>Senha <input name="password" type="password" autoComplete="new-password" minLength={8} required /></label>
-        <label><input type="checkbox" name="acceptTerms" required /> Li e aceito os <Link href="/termos" target="_blank">termos de uso e a política de privacidade</Link> (rascunho em revisão)</label>
+        <label><input type="checkbox" name="acceptTerms" required /> <span>Li e aceito os <Link href="/termos" target="_blank">termos de uso e a política de privacidade</Link> (rascunho em revisão)</span></label>
         <button type="submit" disabled={upPending}>{upPending ? "Enviando…" : "Cadastrar"}</button>
         <Status state={upState} />
       </form>

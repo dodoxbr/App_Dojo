@@ -30,7 +30,7 @@ export function CreateClassForm({ academyId, instructors }: { academyId: string;
 type EditProps = { classId: string; title: string; instructorUserId: string; isActive: boolean; instructors: Person[] };
 
 export function EditClassForm({ classId, title, instructorUserId, isActive, instructors }: EditProps) {
-  const [state, action, pending] = useActionState<FormState, FormData>(updateClass.bind(null, classId), {});
+  const [state, action, pending] = useActionState<FormState, FormData>((prev, formData) => updateClass(classId, prev, formData), {});
   return (
     <form action={action}>
       <label>Nome da turma <input name="title" defaultValue={title} minLength={2} maxLength={120} required /></label>
@@ -49,7 +49,7 @@ export function EditClassForm({ classId, title, instructorUserId, isActive, inst
 }
 
 export function CreateSessionForm({ classId }: { classId: string }) {
-  const [state, action, pending] = useActionState<FormState, FormData>(createSession.bind(null, classId), {});
+  const [state, action, pending] = useActionState<FormState, FormData>((prev, formData) => createSession(classId, prev, formData), {});
   // The key changes whenever a field changes: a double click repeats the same request (same key, no duplicate),
   // while a different date/time is always a new request.
   const [idempotencyKey, setKey] = useState(() => crypto.randomUUID());

@@ -8,7 +8,7 @@ import type { FormState } from "../../../login/actions";
 type Props = { academyId: string; userId: string; techniqueId: string; current: string };
 
 export function AssessForm({ academyId, userId, techniqueId, current }: Props) {
-  const [state, action, pending] = useActionState<FormState, FormData>(assessSkill.bind(null, academyId, userId, techniqueId), {});
+  const [state, action, pending] = useActionState<FormState, FormData>((prev, formData) => assessSkill(academyId, userId, techniqueId, prev, formData), {});
   // New key whenever a field changes: a double click repeats the same request, a different choice is a new one.
   const [key, setKey] = useState(() => crypto.randomUUID());
   return (

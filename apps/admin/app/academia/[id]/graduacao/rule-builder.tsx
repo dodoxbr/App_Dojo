@@ -43,7 +43,7 @@ type Props = {
 };
 
 export function RuleBuilder({ academyId, curricula, initial }: Props) {
-  const [state, action, pending] = useActionState<FormState, FormData>(createRule.bind(null, academyId), {});
+  const [state, action, pending] = useActionState<FormState, FormData>((prev, formData) => createRule(academyId, prev, formData), {});
   const [key, setKey] = useState(() => crypto.randomUUID());
   const [rows, setRows] = useState<Row[]>(
     initial?.criteria.length ? initial.criteria.map((c) => ({ ...blank(c.kind), ...c })) : [blank()],
