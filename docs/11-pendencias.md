@@ -210,3 +210,5 @@
 - [ ] O app mobile não tem o feed.
 - [ ] A plataforma **não publica no Instagram**: quem decide e publica é a academia, fora do sistema. O aviso "pode/não pode ir para as redes sociais" só considera os menores **marcados**; menor não marcado na foto não é detectado.
 - [ ] Remover uma foto da plataforma não remove cópias já publicadas no Instagram ou baixadas por terceiros; o texto dos termos avisa, mas o processo de retirada nas redes é da academia.
+
+- **Armadilha do Next dev:** nunca use `serverAction.bind(null, …)` dentro de componente cliente passado ao `useActionState` (o servidor de desenvolvimento entra em laço e trava). Use closure `(prev, formData) => action(ids, prev, formData)` ou faça o `bind` em componente servidor. Passeio em navegador real: `node scripts/e2e-browser.mjs` (precisa de `SUPABASE_ANON_KEY`, painel em execução e Supabase local).

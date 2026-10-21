@@ -9,6 +9,8 @@ export function ContactForm({ userId, current, suggestedName }: { userId: string
   const [state, action, pending] = useActionState<FormState, FormData>((prev, formData) => saveContact(userId, prev, formData), {});
   return (
     <form action={action}>
+      {/* Os campos remontam quando a ficha salva muda (volta o valor salvo); a mensagem fica fora para não sumir. */}
+      <div key={current?.updated_at ?? "novo"} style={{ display: "contents" }}>
       <label>Nome completo <input name="fullName" minLength={2} maxLength={160} autoComplete="name" defaultValue={current?.full_name ?? suggestedName} required /></label>
       <label>Telefone com DDD <input name="phone" type="tel" inputMode="tel" autoComplete="tel" defaultValue={current ? formatPhone(current.phone) : ""} required /></label>
       <label>CEP <input name="postalCode" inputMode="numeric" autoComplete="postal-code" defaultValue={current ? formatPostalCode(current.postal_code) : ""} required /></label>
@@ -35,6 +37,7 @@ export function ContactForm({ userId, current, suggestedName }: { userId: string
         <label>Alergias, lesões, medicamentos ou condições que o professor deve saber <textarea name="healthNotes" rows={3} maxLength={500} defaultValue={current?.health_notes ?? ""} /></label>
         <label><input type="checkbox" name="healthConsent" defaultChecked={Boolean(current?.health_consent_at)} /> Autorizo o uso destas informações de saúde para a segurança nos treinos (dado sensível; só você, o responsável e o gestor da academia conseguem ver)</label>
       </fieldset>
+      </div>
       <button type="submit" disabled={pending}>{pending ? "Salvando…" : "Salvar ficha"}</button>
       {state.error && <p role="alert">{state.error}</p>}
       {state.message && <p role="status">{state.message}</p>}
