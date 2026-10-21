@@ -48,7 +48,7 @@ select throws_ok($$select public.create_academy('x', 'slug-ok', gen_random_uuid(
 select is((select count(*)::int from public.memberships where role = 'manager' and status = 'approved'
            and academy_id = (select id from public.academies where slug = 'academia-teste')), 1, 'criador e gestor aprovado');
 select is((select count(*)::int from public.academy_role_permissions
-           where academy_id = (select id from public.academies where slug = 'academia-teste')), 2, 'permissoes padrao do instrutor (minimas)');
+           where academy_id = (select id from public.academies where slug = 'academia-teste')), 3, 'permissoes padrao do instrutor (minimas + ver saude, decisao do dono do produto)');
 select ok((select count(*) from public.audit_events where action = 'academy.create') = 1, 'criacao auditada');
 
 -- Direct writes are denied

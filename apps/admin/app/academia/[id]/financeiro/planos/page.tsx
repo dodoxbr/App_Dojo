@@ -41,9 +41,11 @@ export default async function PlanosPage({
               <form action={setPlan.bind(null, id)}>
                 <strong>{r.student_name}</strong>
                 {r.is_minor ? ` (menor${r.financial_name ? ` · responsável financeiro: ${r.financial_name}` : ""})` : ""}
-                {r.amount_cents ? ` — hoje: ${formatCents(r.amount_cents)}, dia ${r.due_day}${r.active ? "" : " (inativo)"}` : " — sem plano"}
+                {r.amount_cents ? ` — hoje: ${formatCents(r.amount_cents)}${r.discount_cents ? ` com desconto de ${formatCents(r.discount_cents)} (${r.discount_note})` : ""}, dia ${r.due_day}${r.active ? "" : " (inativo)"}` : " — sem plano"}
                 <input type="hidden" name="userId" value={r.user_id} />
                 <label>Valor (R$) <input name="amount" inputMode="decimal" defaultValue={r.amount_cents ? (r.amount_cents / 100).toFixed(2).replace(".", ",") : ""} required /></label>
+                <label>Desconto (R$, opcional) <input name="discount" inputMode="decimal" defaultValue={r.discount_cents ? (r.discount_cents / 100).toFixed(2).replace(".", ",") : ""} /></label>
+                <label>Motivo do desconto <input name="discountNote" maxLength={120} defaultValue={r.discount_note ?? ""} placeholder="irmãos, bolsa…" /></label>
                 <label>Vence no dia <input name="dueDay" type="number" min={1} max={28} defaultValue={r.due_day ?? 10} required /></label>
                 <label>Cobrar a partir de <input name="startsOn" type="date" defaultValue={r.starts_on ?? today} required /></label>
                 <label><input type="checkbox" name="active" defaultChecked={r.active ?? true} /> Plano ativo</label>

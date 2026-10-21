@@ -7,6 +7,7 @@ export const instructorPermissions = [
   'assess_skills',
   'recommend_graduation',
   'view_progress',
+  'view_health',
 ] as const;
 export type InstructorPermission = (typeof instructorPermissions)[number];
 
@@ -16,6 +17,7 @@ export const instructorPermissionLabels: Record<InstructorPermission, string> = 
   assess_skills: 'Avaliar domínio técnico',
   recommend_graduation: 'Recomendar graduação',
   view_progress: 'Ver o progresso dos alunos',
+  view_health: 'Ver observações de saúde e contato de emergência dos alunos',
 };
 
 export const academyNameSchema = z.string().trim().min(2).max(160);

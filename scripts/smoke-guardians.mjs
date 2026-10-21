@@ -4,7 +4,7 @@
 // Usage: SUPABASE_URL=... SUPABASE_ANON_KEY=... node scripts/smoke-guardians.mjs
 import assert from 'node:assert/strict';
 import { createClient } from '@supabase/supabase-js';
-import { localDate, localEnv, makePlatformAdmin, newUser, saveContact, TZ } from './lib/local.mjs';
+import { localDate, localEnv, makePlatformAdmin, newUser, PASSWORD, saveContact, TZ } from './lib/local.mjs';
 
 const run = Date.now();
 const { url, anonKey } = localEnv();
@@ -36,7 +36,7 @@ assert.equal((await make(mother)).data, minorId, 'repetir a mesma requisição n
 
 // The dependent has no credentials: nobody can sign in as the minor.
 const anon = createClient(url, anonKey, { auth: { persistSession: false } });
-const probe = await anon.auth.signInWithPassword({ email: 'filha-teste@example.test', password: 'qualquer-coisa-123' });
+const probe = await anon.auth.signInWithPassword({ email: 'filha-teste@example.test', password: PASSWORD });
 assert(probe.error, 'não existe login para o menor');
 
 const deps = (await mother.client.rpc('list_my_dependents')).data;

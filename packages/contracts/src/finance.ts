@@ -68,12 +68,31 @@ export function monthLabel(ym: string): string {
   return new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(Date.UTC(y, m - 1, 1)));
 }
 
+// Optional fixed discount (siblings, scholarship...): empty means none. It must stay below the plan value and always has a reason.
+const optionalDiscount = z
+  .string()
+  .optional()
+  .transform((v, ctx) => {
+    if (!v || !v.trim()) return 0;
+    const cents = parseMoneyToCents(v);
+    if (cents === null) {
+      ctx.addIssue({ code: 'custom', message: 'Informe o desconto em reais, por exemplo 50,00.' });
+      return z.NEVER;
+    }
+    return cents;
+  });
+
 export const setPlanSchema = z.object({
   userId: z.uuid(),
   amount: moneySchema,
+  discount: optionalDiscount,
+  discountNote: z.string().trim().max(120).optional().transform((v) => (v ? v : undefined)),
   dueDay: z.coerce.number().int().min(1, 'O vencimento vai do dia 1 ao 28.').max(28, 'O vencimento vai do dia 1 ao 28.'),
   startsOn: isoDate,
   active: z.boolean(),
+}).superRefine((v, ctx) => {
+  if (v.discount >= v.amount && v.discount > 0) ctx.addIssue({ code: 'custom', path: ['discount'], message: 'O desconto deve ser menor que o valor do plano (para isentar, use Isentar na cobrança).' });
+  if (v.discount > 0 && (!v.discountNote || v.discountNote.length < 2)) ctx.addIssue({ code: 'custom', path: ['discountNote'], message: 'Informe o motivo do desconto (por exemplo: irmãos, bolsa).' });
 });
 
 export const createChargeSchema = z.object({
@@ -134,6 +153,8 @@ export const planRowSchema = z.object({
   due_day: z.number().nullable(),
   starts_on: z.string().nullable(),
   active: z.boolean().nullable(),
+  discount_cents: z.number().nullable(),
+  discount_note: z.string().nullable(),
 });
 
 const studentCharge = z.object({
@@ -152,7 +173,7 @@ const studentCharge = z.object({
 
 export const studentFinanceSchema = z.object({
   name: z.string().nullable(),
-  plan: z.object({ amount_cents: z.number(), due_day: z.number(), starts_on: z.string(), active: z.boolean() }).nullable(),
+  plan: z.object({ amount_cents: z.number(), due_day: z.number(), starts_on: z.string(), active: z.boolean(), discount_cents: z.number().optional(), discount_note: z.string().nullable().optional() }).nullable(),
   financial: z.object({ name: z.string(), kind: z.enum(['legal', 'financial']), relationship: z.string() }).nullable(),
   charges: z.array(studentCharge),
   history: z.array(z.object({ charge_id: z.uuid(), event: z.string(), at: z.string(), actor: z.string(), data: z.record(z.string(), z.unknown()) })),

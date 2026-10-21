@@ -16,7 +16,7 @@ import {
 import { getCaller } from "@/lib/context";
 import { financeMessage, fmtDate, todayIn } from "@/lib/finance-ui";
 import { ChargeActions } from "./charge-actions";
-import { generateMonth } from "./actions";
+import { generateMonth, setAutoCharges } from "./actions";
 
 // Monthly view of the manager: summary, charges of the month and the buttons to mark them by hand.
 export default async function FinanceiroPage({
@@ -31,7 +31,7 @@ export default async function FinanceiroPage({
   const { supabase, managedAcademies } = await getCaller();
   if (!managedAcademies.some((a) => a.id === id)) redirect("/perfil");
 
-  const { data: academy } = await supabase.from("academies").select("id, name, timezone").eq("id", id).maybeSingle();
+  const { data: academy } = await supabase.from("academies").select("id, name, timezone, auto_charges").eq("id", id).maybeSingle();
   if (!academy) notFound();
   const today = todayIn((academy.timezone as string) ?? "America/Sao_Paulo");
   const month = mes && monthParamSchema.safeParse(mes).success ? mes : today.slice(0, 7);
@@ -74,6 +74,14 @@ export default async function FinanceiroPage({
       <section>
         <h2>Gerar as mensalidades do mês</h2>
         <p>Cria uma cobrança para cada aluno com plano ativo. Repetir não duplica.</p>
+        <p>
+          Geração automática: <strong>{academy.auto_charges ? "ligada" : "desligada"}</strong>. Quando ligada, o sistema gera sozinho as mensalidades do mês
+          corrente (uma conferência por dia, de madrugada) e nunca duplica.
+        </p>
+        <form action={setAutoCharges.bind(null, id)}>
+          <input type="hidden" name="enabled" value={academy.auto_charges ? "false" : "true"} />
+          <button type="submit">{academy.auto_charges ? "Desligar a geração automática" : "Ligar a geração automática"}</button>
+        </form>
         <form action={generateMonth.bind(null, id)}>
           <input type="hidden" name="month" value={month} />
           <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />

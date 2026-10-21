@@ -41,20 +41,20 @@ set local role authenticated;
 
 -- 1. Plans: only the manager of the academy, only for approved students, with explicit values
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000a1","role":"authenticated"}', true);
-select lives_ok($$select public.set_member_plan('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000b1', 15000, 10, (select today - 30 from ctx), true)$$, 'gestor define o plano do aluno 1');
-select lives_ok($$select public.set_member_plan('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000d1', 9000, 5, (select today - 30 from ctx), true)$$, 'e do menor');
-select lives_ok($$select public.set_member_plan('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000b2', 12000, 15, (select today - 30 from ctx), false)$$, 'plano inativo do aluno 2');
-select throws_ok($$select public.set_member_plan('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000b3', 0, 10, (select today from ctx), true)$$, '22023', null, 'valor zero rejeitado (a academia define o valor)');
-select throws_ok($$select public.set_member_plan('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000b3', 10000, 29, (select today from ctx), true)$$, '22023', null, 'dia de vencimento acima de 28 rejeitado');
-select throws_ok($$select public.set_member_plan('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000b3', 10000, 10, (select today + 1000 from ctx), true)$$, '22023', null, 'inicio muito distante rejeitado');
-select throws_ok($$select public.set_member_plan('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000a3', 10000, 10, (select today from ctx), true)$$, '22023', null, 'so alunos tem plano (instrutor nao)');
-select throws_ok($$select public.set_member_plan('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000c9', 10000, 10, (select today from ctx), true)$$, '22023', null, 'quem nao e da academia nao tem plano');
+select lives_ok($$select public.set_member_plan('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000b1', 15000, 10, (select today - 30 from ctx), true, 0, null)$$, 'gestor define o plano do aluno 1');
+select lives_ok($$select public.set_member_plan('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000d1', 9000, 5, (select today - 30 from ctx), true, 0, null)$$, 'e do menor');
+select lives_ok($$select public.set_member_plan('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000b2', 12000, 15, (select today - 30 from ctx), false, 0, null)$$, 'plano inativo do aluno 2');
+select throws_ok($$select public.set_member_plan('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000b3', 0, 10, (select today from ctx), true, 0, null)$$, '22023', null, 'valor zero rejeitado (a academia define o valor)');
+select throws_ok($$select public.set_member_plan('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000b3', 10000, 29, (select today from ctx), true, 0, null)$$, '22023', null, 'dia de vencimento acima de 28 rejeitado');
+select throws_ok($$select public.set_member_plan('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000b3', 10000, 10, (select today + 1000 from ctx), true, 0, null)$$, '22023', null, 'inicio muito distante rejeitado');
+select throws_ok($$select public.set_member_plan('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000a3', 10000, 10, (select today from ctx), true, 0, null)$$, '22023', null, 'so alunos tem plano (instrutor nao)');
+select throws_ok($$select public.set_member_plan('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000c9', 10000, 10, (select today from ctx), true, 0, null)$$, '22023', null, 'quem nao e da academia nao tem plano');
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000b1","role":"authenticated"}', true);
-select throws_ok($$select public.set_member_plan('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000b1', 1, 10, (select today from ctx), true)$$, '42501', null, 'aluno nao define o proprio plano');
+select throws_ok($$select public.set_member_plan('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000b1', 1, 10, (select today from ctx), true, 0, null)$$, '42501', null, 'aluno nao define o proprio plano');
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000a3","role":"authenticated"}', true);
-select throws_ok($$select public.set_member_plan('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000b1', 1, 10, (select today from ctx), true)$$, '42501', null, 'instrutor nao define plano');
+select throws_ok($$select public.set_member_plan('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000b1', 1, 10, (select today from ctx), true, 0, null)$$, '42501', null, 'instrutor nao define plano');
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000a2","role":"authenticated"}', true);
-select throws_ok($$select public.set_member_plan('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000b1', 1, 10, (select today from ctx), true)$$, '42501', null, 'gestor de outra academia nao define plano');
+select throws_ok($$select public.set_member_plan('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000b1', 1, 10, (select today from ctx), true, 0, null)$$, '42501', null, 'gestor de outra academia nao define plano');
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000a9","role":"authenticated"}', true);
 select throws_ok($$select * from public.list_member_plans('00000000-0000-0000-0000-00000000ac01')$$, '42501', null, 'super admin nao ve o financeiro');
 

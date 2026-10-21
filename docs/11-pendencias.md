@@ -178,16 +178,23 @@
 - [ ] CPF e dados de cobrança ficam para a US-017 (coletar só o necessário).
 - [ ] O app mobile pede o aceite no cadastro, mas ainda não tem tela para a ficha nem para os termos.
 - [ ] Contas criadas antes desta versão não têm ficha: ficam sem poder pedir entrada até preencher.
-- [ ] Observações de saúde são dado sensível (LGPD art. 11): hoje só titular, responsável e gestor leem. Decidir se o professor da aula precisa ver (por exemplo, alergias) e com qual regra; exigem revisão jurídica.
+- [x] O professor passou a ver as observações de saúde e o contato de emergência (permissão `view_health`, ligada por padrão). Falta a revisão jurídica do uso de dado sensível e o aviso claro ao aluno de que o professor vê (o texto do consentimento da ficha já diz que o gestor vê; atualizar para o professor).
 - [ ] A razão social/CNPJ da academia é informada pelo gestor e **não é conferida** em base oficial; só o dígito verificador é validado. A empresa da plataforma depende das variáveis de ambiente do ambiente de produção (ainda não existe).
 
 ## US-017 (financeiro manual)
 - [ ] **Validar com a academia** se o fluxo manual (plano por aluno, gerar o mês, marcar o pagamento) atende; só depois decidir a plataforma de pagamento.
-- [ ] Sem juros, multa, desconto, pagamento parcial, 2ª via nem comprovante: o gestor registra o valor cheio; para outro valor, cancele e crie uma avulsa.
+- [ ] Sem juros, multa, pagamento parcial, 2ª via nem comprovante: o gestor registra o valor cheio; para outro valor, cancele e crie uma avulsa. O desconto é um valor fixo por plano, com motivo.
 - [ ] Sem lembrete de vencimento nem aviso ao aluno ou responsável (não há notificações na plataforma ainda).
 - [ ] Sem relatório exportável (planilha) nem visão consolidada de vários meses; só o resumo do mês.
-- [ ] Mensalidade só para alunos; instrutores e outros colaboradores não têm plano. Confirmar se haverá desconto para família (irmãos) ou bolsa.
-- [ ] Gerar o mês é uma ação do gestor (não automática no dia 1). Avaliar geração automática com a academia.
+- [ ] Mensalidade só para alunos; instrutores e outros colaboradores não têm plano. Desconto de irmãos ou bolsa é manual, por aluno; avaliar regras automáticas (percentual, família) se a academia pedir.
+- [x] Geração automática do mês entregue (opção por academia, job diário); a manual continua.
 - [ ] Os dados financeiros são pessoais: o gestor vê o que cada pessoa deve; definir retenção e o que acontece com as cobranças quando a pessoa sai da academia (hoje ficam).
 - [ ] O responsável financeiro só consulta; ele não marca pagamento. O app mobile não tem telas de financeiro.
 - [ ] O super admin não vê o financeiro das academias (decisão de privacidade); suporte a problemas exigirá um procedimento à parte.
+
+## Pós-US-017 (automático, desconto, saúde)
+- [ ] O agendamento usa **pg_cron**: em produção precisa estar habilitado no painel do Supabase (não foi testado em projeto hospedado). Se o job não rodar, o gestor ainda gera o mês na mão.
+- [ ] A geração automática cria as cobranças do **mês corrente** (inclusive ao ligar no meio do mês, com vencimento possivelmente já passado). Avaliar se deve gerar só a partir do mês seguinte.
+- [ ] O texto do consentimento de saúde na ficha precisa citar o **professor** além do gestor; exige revisão jurídica.
+- [ ] O professor vê a saúde de todos os alunos da aula; não há troca de permissão por turma. O professor responsável pela turma é o mesmo que tem a permissão geral de instrutor.
+- [ ] CI: a varredura de segredos (gitleaks) acusava a senha fictícia dos testes locais e falhou em 3 execuções passadas; adicionada exceção em `.gitleaks.toml` só para esse valor (`senha-sintetica-123`).

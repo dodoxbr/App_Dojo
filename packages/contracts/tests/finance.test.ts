@@ -49,6 +49,15 @@ test('a plan needs a value chosen by the academy and a due day 1..28', () => {
   assert.equal(setPlanSchema.safeParse({ ...base, amount: '' }).success, false);
 });
 
+test('a discount is a fixed amount below the plan value and always has a reason', () => {
+  const base = { userId: '11111111-1111-4111-8111-111111111111', amount: '200,00', dueDay: '10', startsOn: '2026-10-01', active: true };
+  assert.equal(setPlanSchema.parse(base).discount, 0, 'sem desconto por padrão');
+  assert.equal(setPlanSchema.parse({ ...base, discount: '50,00', discountNote: 'irmãos' }).discount, 5000);
+  assert.equal(setPlanSchema.safeParse({ ...base, discount: '50,00' }).success, false, 'desconto sem motivo');
+  assert.equal(setPlanSchema.safeParse({ ...base, discount: '200,00', discountNote: 'bolsa' }).success, false, 'desconto igual ao valor');
+  assert.equal(setPlanSchema.safeParse({ ...base, discount: 'abc', discountNote: 'bolsa' }).success, false);
+});
+
 test('one-off charges, payments and reasons', () => {
   const id = '11111111-1111-4111-8111-111111111111';
   assert.equal(createChargeSchema.safeParse({ userId: id, description: 'Taxa de exame', amount: '50', dueDate: '2026-11-01', idempotencyKey: id }).success, true);

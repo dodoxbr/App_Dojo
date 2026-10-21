@@ -34,12 +34,12 @@ assert.equal((await uncle.client.rpc('accept_financial_invite', { p_code: code, 
 
 // Plans (the academy chooses the values) and the monthly charges
 const month = `${localDate(0).slice(0, 7)}-01`;
-const plan = (user, amount, day) => master.client.rpc('set_member_plan', { p_academy_id: academy, p_user_id: user, p_amount_cents: amount, p_due_day: day, p_starts_on: localDate(30), p_active: true });
+const plan = (user, amount, day) => master.client.rpc('set_member_plan', { p_academy_id: academy, p_user_id: user, p_amount_cents: amount, p_due_day: day, p_starts_on: localDate(30), p_active: true, p_discount_cents: 0, p_discount_note: null });
 assert.equal((await plan(alice.id, 0, 10)).error?.code, '22023', 'plano sem valor é rejeitado');
 assert.equal((await plan(alice.id, 15000, 10)).error, null, 'plano da aluna');
 assert.equal((await plan(minorId, 9000, 5)).error, null, 'plano da menor');
 assert.equal((await plan(teacher.id, 9000, 5)).error?.code, '22023', 'instrutor não tem plano');
-assert.equal((await alice.client.rpc('set_member_plan', { p_academy_id: academy, p_user_id: alice.id, p_amount_cents: 1, p_due_day: 1, p_starts_on: localDate(0), p_active: true })).error?.code, '42501', 'aluna não define o próprio plano');
+assert.equal((await alice.client.rpc('set_member_plan', { p_academy_id: academy, p_user_id: alice.id, p_amount_cents: 1, p_due_day: 1, p_starts_on: localDate(0), p_active: true, p_discount_cents: 0, p_discount_note: null })).error?.code, '42501', 'aluna não define o próprio plano');
 
 const key = crypto.randomUUID();
 const gen = (k) => master.client.rpc('generate_monthly_charges', { p_academy_id: academy, p_month: month, p_idempotency_key: k });
@@ -87,6 +87,22 @@ assert.equal(sf.plan.amount_cents, 15000);
 assert(sf.charges.length >= 2, 'a ficha financeira lista as cobranças');
 assert(sf.history.length >= 3, 'e o histórico');
 assert.equal((await master.client.rpc('student_finance', { p_academy_id: academy, p_user_id: minorId })).data.financial.name, 'Smoke tio');
+
+// Discount (fixed amount with a reason) and the automatic generation switch
+assert.equal((await master.client.rpc('set_member_plan', { p_academy_id: academy, p_user_id: alice.id, p_amount_cents: 15000, p_due_day: 10, p_starts_on: localDate(30), p_active: true, p_discount_cents: 3000, p_discount_note: null })).error?.code, '22023', 'desconto sem motivo');
+assert.equal((await master.client.rpc('set_member_plan', { p_academy_id: academy, p_user_id: alice.id, p_amount_cents: 15000, p_due_day: 10, p_starts_on: localDate(30), p_active: true, p_discount_cents: 3000, p_discount_note: 'irmãos (teste)' })).error, null, 'desconto com motivo');
+assert.equal((await master.client.rpc('list_member_plans', { p_academy_id: academy })).data.find((p) => p.user_id === alice.id).discount_note, 'irmãos (teste)');
+assert.equal((await alice.client.rpc('set_auto_charges', { p_academy_id: academy, p_enabled: true })).error?.code, '42501', 'aluna não liga a geração automática');
+assert.equal((await master.client.rpc('set_auto_charges', { p_academy_id: academy, p_enabled: true })).error, null, 'gestor liga a geração automática');
+assert.equal((await master.client.from('academies').select('auto_charges').eq('id', academy).single()).data.auto_charges, true);
+assert.equal((await master.client.rpc('run_auto_charges')).error?.code, '42501', 'o job diário não é chamável por clientes');
+
+// Health notes: the teacher sees them by default; the manager can switch it off
+assert.equal((await saveContact(alice.client, alice.id, 'Aluna Financeiro', 'alergia a látex (dado de teste)')).error, null);
+assert.equal((await teacher.client.rpc('list_health_notes', { p_academy_id: academy })).data.length, 1, 'professor vê as observações de saúde');
+assert.equal((await owner.client.rpc('list_health_notes', { p_academy_id: academy })).error?.code, '42501', 'super admin não vê');
+assert.equal((await master.client.rpc('set_instructor_permission', { p_academy_id: academy, p_permission: 'view_health', p_granted: false })).error, null);
+assert.equal((await teacher.client.rpc('list_health_notes', { p_academy_id: academy })).error?.code, '42501', 'sem a permissão o professor não vê');
 
 const actions = new Set((await master.client.from('audit_events').select('action').eq('academy_id', academy)).data.map((x) => x.action));
 for (const a of ['finance.plan', 'finance.generate', 'finance.paid', 'finance.cancelled', 'finance.reopened', 'finance.create_charge']) assert(actions.has(a), `auditoria registra ${a}`);

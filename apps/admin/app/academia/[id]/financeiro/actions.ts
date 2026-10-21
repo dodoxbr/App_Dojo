@@ -25,21 +25,34 @@ export async function setPlan(academyId: string, formData: FormData): Promise<vo
   const parsed = setPlanSchema.safeParse({
     userId: formData.get("userId"),
     amount: formData.get("amount"),
+    discount: formData.get("discount") ?? undefined,
+    discountNote: formData.get("discountNote") ?? undefined,
     dueDay: formData.get("dueDay"),
     startsOn: formData.get("startsOn"),
     active: formData.get("active") === "on",
   });
   if (!parsed.success) {
     const field = parsed.error.issues[0]?.path[0];
-    return fail(academyId, next, field === "dueDay" ? "due_day" : "amount");
+    return fail(academyId, next, field === "dueDay" ? "due_day" : field === "discount" ? "discount" : field === "discountNote" ? "discount note" : "amount");
   }
   const { supabase } = await getCaller();
   const p = parsed.data;
   const { error } = await supabase.rpc("set_member_plan", {
     p_academy_id: academyId, p_user_id: p.userId, p_amount_cents: p.amount, p_due_day: p.dueDay, p_starts_on: p.startsOn, p_active: p.active,
+    p_discount_cents: p.discount, p_discount_note: p.discountNote ?? null,
   });
   if (error) return fail(academyId, next, financeErrorKey(error));
   return backTo(academyId, next, { ok: "1" });
+}
+
+// The daily job generates the current month for the academies that turn this on.
+export async function setAutoCharges(academyId: string, formData: FormData): Promise<void> {
+  const next = `/academia/${academyId}/financeiro`;
+  if (!idSchema.safeParse(academyId).success) return;
+  const { supabase } = await getCaller();
+  const { error } = await supabase.rpc("set_auto_charges", { p_academy_id: academyId, p_enabled: formData.get("enabled") === "true" });
+  if (error) return fail(academyId, next, financeErrorKey(error));
+  return backTo(academyId, next);
 }
 
 export async function generateMonth(academyId: string, formData: FormData): Promise<void> {

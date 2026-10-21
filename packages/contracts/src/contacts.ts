@@ -67,6 +67,19 @@ export const contactRowSchema = z.object({
   updated_at: z.string(),
 });
 
+// Health notes shown to the teacher (US-016b / owner decision): the academy list and the people in one lesson.
+export const healthNoteSchema = z.object({
+  user_id: z.uuid(),
+  person_name: z.string(),
+  is_minor: z.boolean().optional(),
+  attendance_status: z.string().optional(),
+  health_notes: z.string(),
+  emergency_name: z.string().nullable(),
+  emergency_phone: z.string().nullable(),
+  emergency_relationship: z.string().nullable(),
+});
+export type HealthNote = z.infer<typeof healthNoteSchema>;
+
 export const contactStatusSchema = z.object({ user_id: z.uuid(), has_contact: z.boolean() });
 
 export function formatPhone(d: string): string {

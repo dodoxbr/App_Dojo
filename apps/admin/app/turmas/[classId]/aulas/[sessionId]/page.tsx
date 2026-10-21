@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { attendanceSourceLabels, attendanceStatusLabels } from "@dojo/contracts/attendance";
 import { formatSessionRange } from "@dojo/contracts/classes";
+import { formatPhone, healthNoteSchema } from "@dojo/contracts/contacts";
 import { getCaller } from "@/lib/context";
 import { errorFromCode } from "@/lib/rpc-errors";
 import { confirmAttendance, revokeAttendance } from "./actions";
@@ -37,6 +38,9 @@ export default async function PresencasPage({
     supabase.from("attendances").select("id, user_id, status, source, revoked_reason, requested_at").eq("session_id", sessionId).order("requested_at"),
   ]);
   const attendances = rows ?? [];
+  // Health notes of the people in this lesson; the database only answers to the manager and to teachers with the permission.
+  const { data: healthRaw } = await supabase.rpc("session_health_notes", { p_session_id: sessionId });
+  const health = ((healthRaw ?? []) as unknown[]).map((x) => healthNoteSchema.safeParse(x)).flatMap((r) => (r.success ? [r.data] : []));
   const userIds = attendances.map((a) => a.user_id as string);
 
   // Names come from the roster / attendance policies; whoever cannot see a name is shown as "Aluno".
@@ -74,6 +78,22 @@ export default async function PresencasPage({
         {session.status === "cancelled" ? " (cancelada)" : ""}
       </p>
       {message && <p role="alert">{message}</p>}
+
+      {health.length > 0 && (
+        <section role="note">
+          <h2>Atenção à saúde (alunos desta aula)</h2>
+          <ul>
+            {health.map((h) => (
+              <li key={h.user_id}>
+                <strong>{h.person_name}</strong>{h.attendance_status === "pending" ? " (presença ainda não confirmada)" : ""}: {h.health_notes}
+                <br />
+                Emergência: {h.emergency_name ?? "—"}{h.emergency_relationship ? ` (${h.emergency_relationship})` : ""} {h.emergency_phone ? formatPhone(h.emergency_phone) : ""}
+              </li>
+            ))}
+          </ul>
+          <p><small>Dados sensíveis, só para a segurança nos treinos. Cada consulta é registrada.</small></p>
+        </section>
+      )}
 
       {session.status === "scheduled" && (
         <section>

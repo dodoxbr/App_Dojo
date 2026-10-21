@@ -1,0 +1,9 @@
+# Configuração do gitleaks (CI: job "secrets"). Mantém as regras padrão e libera apenas um valor conhecido.
+title = "dojo-platform"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Senha sintética usada só pelos scripts de teste contra o Supabase local (contas de exemplo, nunca um segredo)."
+regexes = ['''senha-sintetica-123''', '''qualquer-coisa-123''']

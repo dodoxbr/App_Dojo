@@ -20,6 +20,8 @@ const messages: Record<string, string> = {
   due_date: "O vencimento deve ficar dentro de 1 ano.",
   reason: "Informe o motivo (3 a 500 caracteres).",
   note: "A observação pode ter até 500 caracteres.",
+  discount: "O desconto deve ser menor que o valor do plano. Para isentar, use Isentar na cobrança.",
+  "discount note": "Informe o motivo do desconto (por exemplo: irmãos, bolsa).",
   state: "A cobrança não está no estado esperado. Atualize a página e confira o histórico.",
   forbidden: "Você não tem permissão para esta ação.",
   other: "Não foi possível concluir a operação. Tente novamente.",
@@ -30,7 +32,7 @@ export function financeErrorKey(error: { code?: string; message?: string }): str
   if (error.code === "23505") return "state";
   if (error.code === "22023") {
     const m = error.message ?? "";
-    for (const key of Object.keys(messages)) if (key !== "state" && key !== "forbidden" && key !== "other" && m.includes(key)) return key;
+    for (const key of Object.keys(messages).sort((a, b) => b.length - a.length)) if (key !== "state" && key !== "forbidden" && key !== "other" && m.includes(key)) return key;
   }
   return "other";
 }

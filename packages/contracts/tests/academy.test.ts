@@ -48,6 +48,10 @@ test('CNPJ check digits', () => {
   assert.equal(formatCnpj('11222333000181'), '11.222.333/0001-81');
 });
 
+test('the teacher health permission exists and the diary still does not', () => {
+  assert.equal((instructorPermissions as readonly string[]).includes('view_health'), true);
+});
+
 test('diary is never an instructor permission', () => {
   assert.equal((instructorPermissions as readonly string[]).some((p) => p.includes('diary')), false);
 });

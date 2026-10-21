@@ -52,10 +52,10 @@ export async function newUser(label, run = Date.now()) {
 }
 
 // Fills the registration form of a person (own or dependent) with synthetic data.
-export function saveContact(client, userId, fullName) {
+export function saveContact(client, userId, fullName, healthNotes = null) {
   return client.rpc('save_contact', {
     p_user_id: userId, p_full_name: fullName, p_phone: '(11) 99999-0000', p_postal_code: '01001-000', p_street: 'Rua Ficticia',
     p_number: '1', p_complement: null, p_neighborhood: 'Centro', p_city: 'Sao Paulo', p_state: 'SP',
-    p_emergency_name: 'Contato de Emergencia', p_emergency_phone: '(11) 97777-6666', p_emergency_relationship: 'mae', p_health_notes: null, p_health_consent: false,
+    p_emergency_name: 'Contato de Emergencia', p_emergency_phone: '(11) 97777-6666', p_emergency_relationship: 'mae', p_health_notes: healthNotes, p_health_consent: healthNotes !== null,
   });
 }
