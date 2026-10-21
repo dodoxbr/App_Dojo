@@ -144,11 +144,20 @@ if (b) {
 
 // ---- gestor ------------------------------------------------------------------------------------------------------
 b = await pass('gestor', master, [
-  ['/perfil', ['Meu perfil']], [A, ['Academia Navegador']], [`${A}/membros`, ['Membros']], [`${A}/responsaveis`, []], [`${A}/financeiro`, ['Financeiro']],
+  [`${A}/inicio`, ['Alunos ativos', 'Ações rápidas']], ['/perfil', ['Meu perfil']], [A, ['Academia Navegador']], [`${A}/membros`, ['Membros']], [`${A}/responsaveis`, []], [`${A}/financeiro`, ['Financeiro']],
   [`${A}/financeiro/planos`, ['Planos']], [`${A}/saude`, []], [`${A}/turmas`, ['Turmas']], [`${A}/curriculos`, []], [`${A}/graduacao`, []], [`${A}/graduacao/nova`, []],
   [`${A}/painel`, []], ['/academias/nova', ['Criar academia']], ['/tecnicas/nova', []], [`/feed/${academyId}`, ['Feed']],
 ]);
 if (b) {
+  // Menu "Mais" da barra inferior (só no celular): abre e mostra o financeiro
+  if (mobile) {
+    try {
+      await b.goto(`${BASE}${A}/inicio`);
+      await b.eval("document.querySelector('nav[aria-label=\"Navegação principal\"] summary').click()");
+      await b.waitFor("[...document.querySelectorAll('nav[aria-label=\"Navegação principal\"] details a')].some((a) => a.textContent.includes('Financeiro') && a.offsetParent !== null)", 4000, 'menu Mais com Financeiro');
+      await b.screenshot(path.join(SHOTS, `${String(++shotN).padStart(2, '0')}-gestor-menu-mais.png`), { fullPage: false });
+    } catch (e) { note('gestor', `${A}/inicio (menu Mais)`, e.message); }
+  }
   // Dados da empresa (LegalForm) e cadastro de membro (AddMemberForm) em formulário de verdade
   await b.goto(`${BASE}${A}`);
   try {

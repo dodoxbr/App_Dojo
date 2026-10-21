@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { formatSessionRange } from "@dojo/contracts/classes";
 import { evaluationSchema } from "@dojo/contracts/graduation";
 import { membershipStatusLabels } from "@dojo/contracts/membership";
@@ -21,8 +22,12 @@ export default async function InicioPage() {
 
   const [{ data: profile }, { data: memberships }] = await Promise.all([
     supabase.from("profiles").select("display_name").eq("id", userId).maybeSingle(),
-    supabase.from("memberships").select("academy_id, status").eq("user_id", userId),
+    supabase.from("memberships").select("academy_id, status, role").eq("user_id", userId),
   ]);
+  // Quem trabalha numa academia e não treina nela começa pelo início da equipe; quem faz as duas coisas vê um atalho.
+  const staffIds = (memberships ?? []).filter((m) => m.status === "approved" && (m.role === "manager" || m.role === "instructor")).map((m) => m.academy_id as string);
+  const isStudent = (memberships ?? []).some((m) => m.status === "approved" && m.role === "student");
+  if (staffIds.length > 0 && !isStudent) redirect(`/academia/${staffIds[0]}/inicio`);
   const firstName = ((profile?.display_name as string | undefined) ?? "").split(" ")[0] || "atleta";
   const approvedIds = (memberships ?? []).filter((m) => m.status === "approved").map((m) => m.academy_id as string);
   const waiting = (memberships ?? []).filter((m) => m.status !== "approved");
@@ -81,6 +86,12 @@ export default async function InicioPage() {
             </div>
           )}
         </header>
+
+        {staffIds.length > 0 && (
+          <Alert tone="info">
+            Você também trabalha na equipe: <Link href={`/academia/${staffIds[0]}/inicio`}>abrir o início da equipe</Link>.
+          </Alert>
+        )}
 
         {waiting.map((m) => (
           <Alert key={m.academy_id as string} tone="info">

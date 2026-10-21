@@ -136,6 +136,7 @@ try {
       assert.equal(res.status, 200, `${label}: status ${res.status}\n${serverLog.slice(-800)}`);
       for (const text of [].concat(expect.has)) assert(body.includes(text), `${label}: não contém "${text}"`);
       for (const bad of BAD) assert(!body.includes(bad), `${label}: contém marca de erro "${bad}"`);
+      for (const text of [].concat(expect.not ?? [])) assert(!body.includes(text), `${label}: não devia conter "${text}"`);
     }
     results.push(label);
   };
@@ -282,6 +283,15 @@ try {
   await check('manager', `${A}/graduacao/alunos`, { has: ['Alunos e graduação atual', 'Smoke aluno'] });
   await check('manager', `${A}/graduacao/alunos/${student.id}`, { has: ['Conceder graduação', 'Retificar o último registro', 'Histórico de graduações'] });
   await check('manager', `${A}/painel`, { has: ['Painel de frequência', 'Ativação', 'Retenção semanal'] });
+  // Início da equipe e navegação por papel (redesign etapa 3)
+  await check('manager', '/inicio', { redirect: `${A}/inicio` });
+  await check('teacher', '/inicio', { redirect: `${A}/inicio` });
+  await check('manager', `${A}/inicio`, { has: ['Gestor', 'Alunos ativos', 'Pedidos de entrada', 'Presenças a confirmar', 'Ações rápidas', 'Próximas aulas', 'Membros', 'Financeiro', 'Saúde'] });
+  await check('teacher', `${A}/inicio`, { has: ['Instrutor', 'Alunos ativos', 'Ações rápidas', 'Aulas', 'Meu treino'], not: ['Financeiro', 'Pedidos de entrada'] });
+  await check('student', `${A}/inicio`, { redirect: '/perfil' });
+  await check('owner', `${A}/inicio`, { redirect: '/plataforma' });
+  await check('owner', `${A}/painel`, { has: ['Plataforma', 'Painel de frequência'], not: ['Financeiro'] });
+  await check('manager', `${A}/membros`, { has: ['Início', 'Turmas', 'Graduação', 'Mais'] });
   await check('manager', `${A}/painel?dias=7`, { has: ['Painel de frequência', '7 dias'] });
   await check('manager', `/desafios/${challengeId}`, { has: ['Desafio de páginas', 'Ranking', 'Moderação'] });
   await check('manager', '/desafios', { has: ['Desafios', 'Desafio de páginas'] });

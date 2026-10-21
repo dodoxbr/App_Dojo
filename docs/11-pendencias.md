@@ -243,7 +243,13 @@
 ## Redesign (etapa 2: navegação e home do aluno)
 - [x] AppShell (barra lateral no desktop, barra inferior no celular), `NavLinks`, Badge, ProgressBar, EmptyState, PageHeader e ButtonLink criados; home do aluno em `/inicio` com dados reais (progresso pelos critérios da regra de graduação, treinos confirmados na semana, próximo treino, diário recente). Login agora leva a `/inicio`.
 - [ ] O shell com a navegação do aluno só envolve `/inicio`, `/diario`, `/tecnicas`, `/graduacao` e `/perfil`; as demais telas do aluno (aulas, trilha, desafios, financeiro, feed, medalhas…) ainda não têm a navegação persistente.
-- [ ] Gestor e professor ainda não têm barra lateral própria (membros, turmas, graduação, financeiro…): usam os atalhos do perfil. Criar a navegação por papel na etapa seguinte.
+- [x] (etapa 3) Gestor e instrutor têm navegação própria: layout `apps/admin/app/academia/[id]/layout.tsx` (menu por papel e por permissão; o super admin só vê Plataforma e Painel) e início da equipe em `/academia/[id]/inicio` (alunos ativos, pedidos de entrada, presenças a confirmar, alunos no número de treinos, ações rápidas, próximas aulas). `/inicio` leva quem só trabalha na equipe para esse início.
 - [ ] A home mostra a primeira academia por ordem de nome; sem seletor de academia para quem treina em mais de uma.
 - [ ] "Meta configurada" do brief: usa os critérios numéricos da regra de graduação da academia (presenças, dias, trilha); sem regra cadastrada mostra aviso, nunca um número inventado. O progresso do aluno não mostra o número do aviso dos 30 treinos (é do professor).
 - [ ] Telas antigas dentro do shell ficam como cartão (visual legado) até serem migradas.
+
+## Redesign (etapa 3: navegação por papel)
+- [ ] Só as telas sob `/academia/[id]/*` têm o menu da equipe; páginas fora desse caminho usadas pela equipe (`/aulas`, `/turmas/[classId]`, `/turmas/[classId]/aulas/[sessionId]`, `/feed/[academyId]`, `/desafios`) ainda abrem sem menu.
+- [ ] O início da equipe usa a primeira academia (a que vier primeiro) de quem trabalha em mais de uma; sem seletor de academia.
+- [ ] "Graduações elegíveis" do brief aparece como "No número de treinos" (aviso por professor, US-020); não existe indicador de elegibilidade pela regra de graduação do gestor.
+- [ ] O menu "Mais" da barra inferior é um `<details>`; não foi testado com leitor de tela.
