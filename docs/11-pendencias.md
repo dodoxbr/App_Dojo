@@ -221,7 +221,7 @@
 - [ ] Medalhas são calculadas a cada consulta (ADR-023); revisar o custo se uma academia crescer muito.
 - [ ] Sem edição de comentário, resposta, menção, vários tipos de reação, notificações e medalha manual do gestor.
 - [ ] O app mobile não tem reações, comentários nem medalhas.
-- [ ] **Testes do banco com dados de sobra:** `supabase test db` falha em 4 testes antigos (contagens globais de auditoria e de mensalidades) quando o banco local tem dados de testes manuais; num banco limpo (`supabase db reset`) eles passavam. Não foi feito reset para não apagar as contas de teste em uso.
+- [x] (resolvido com `supabase db reset` em 2026-10-21) **Testes do banco com dados de sobra:** `supabase test db` falha em 4 testes antigos (contagens globais de auditoria e de mensalidades) quando o banco local tem dados de testes manuais; num banco limpo (`supabase db reset`) eles passavam. Não foi feito reset para não apagar as contas de teste em uso.
 
 ## US-020 (aviso de 30 treinos)
 - [ ] O professor pediu "30 treinos" e o dono do produto confirmou a contagem **desde a última graduação**; não há regra de graduação por número de treinos no sistema (nenhum número de graduação foi inventado). Confirmar se o marco vale igual para todas as faixas e para menores.
@@ -229,3 +229,4 @@
 - [ ] Para o instrutor o menor aparece só como "menor de idade", sem o nome do responsável.
 - [ ] O app mobile não mostra o aviso.
 - [ ] O número do aviso é **por professor** (padrão 30). Se vários professores acompanham o mesmo aluno, ele recebe o aviso quando o menor número entre os professores dele é atingido; instrutor sem permissão de graduação não configura (vale 30 para as turmas dele). Sem configuração por faixa ou por aluno e o gestor não ajusta o número de outro professor.
+- [ ] **`challenges.test.sql` depende do horário:** as aulas do cenário ficam 10 h e 6 h atrás e as datas são do dia local; entre 00:00 e ~10:00 (horário de Brasília) 2 testes (70 e 75) falham. Passa no resto do dia. Reescrever com horários fixos em relação ao início do dia local.
