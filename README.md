@@ -10,6 +10,7 @@ SaaS multiacademia de Jiu-Jitsu, com diário de treino e catálogo técnico como
 2. Leia `docs/10-backlog.md` e implemente somente a fatia `US-001` antes das demais.
 3. Configure o Supabase local e execute as migrações em `supabase/migrations`.
 4. **Não publique** até concluir as políticas de acesso, testes de segurança, proteção de menores e fluxos de aprovação.
+5. Para **testar no navegador**: `docs/16-roteiro-de-testes.md`. Para **hospedar** (teste na internet e produção): `docs/15-guia-de-publicacao.md`; antes de abrir para pessoas reais, rode `scripts/prelaunch-check.sql`.
 
 ## Conteúdo
 - `docs/`: requisitos, arquitetura, segurança, UX, decisões, backlog, testes e instruções.
