@@ -51,7 +51,7 @@ select is((select cnpj from public.public_academy_legal('LEGAL-UM')), '112223330
 select is((select count(*)::int from public.public_academy_legal('nao-existe')), 0, 'slug inexistente: vazio');
 select throws_ok($$select public.set_academy_legal('00000000-0000-0000-0000-00000000ac02', 'Empresa', '11222333000181')$$, '42501', null, 'anonimo nao edita');
 reset role;
-select is((select count(*)::int from public.audit_events where action = 'academy.legal'), 1, 'a edicao da empresa foi auditada');
+select is((select count(*)::int from public.audit_events where action = 'academy.legal' and academy_id = (select id from public.academies where slug = 'legal-um')), 1, 'a edicao da empresa foi auditada');
 
 select * from finish();
 rollback;

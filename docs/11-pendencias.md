@@ -229,7 +229,7 @@
 - [ ] Para o instrutor o menor aparece só como "menor de idade", sem o nome do responsável.
 - [ ] O app mobile não mostra o aviso.
 - [ ] O número do aviso é **por professor** (padrão 30). Se vários professores acompanham o mesmo aluno, ele recebe o aviso quando o menor número entre os professores dele é atingido; instrutor sem permissão de graduação não configura (vale 30 para as turmas dele). Sem configuração por faixa ou por aluno e o gestor não ajusta o número de outro professor.
-- [ ] **`challenges.test.sql` depende do horário:** as aulas do cenário ficam 10 h e 6 h atrás e as datas são do dia local; entre 00:00 e ~10:00 (horário de Brasília) 2 testes (70 e 75) falham. Passa no resto do dia. Reescrever com horários fixos em relação ao início do dia local.
+- [x] (corrigido em 2026-10-21; conferir no CI de madrugada) **`challenges.test.sql` depende do horário:** as aulas do cenário ficam 10 h e 6 h atrás e as datas são do dia local; entre 00:00 e ~10:00 (horário de Brasília) 2 testes (70 e 75) falham. Passa no resto do dia. Reescrever com horários fixos em relação ao início do dia local.
 
 ## Redesign (etapa 1: login e cadastro)
 - [ ] **Recuperar senha:** o brief pede o link "Esqueci minha senha", mas **o fluxo não existe** (nem a tela, nem o e-mail de redefinição). Não foi inventado; virar história própria (usa o e-mail do Supabase Auth).

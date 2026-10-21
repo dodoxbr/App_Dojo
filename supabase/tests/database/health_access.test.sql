@@ -79,7 +79,7 @@ select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000
 select lives_ok($$select public.set_instructor_permission('00000000-0000-0000-0000-00000000ac01', 'view_health', true)$$, 'e liga de novo');
 
 reset role;
-select is((select count(*)::int from public.audit_events where action = 'health.view'), 8, 'cada consulta foi auditada');
+select is((select count(*)::int from public.audit_events where action = 'health.view' and academy_id in ('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-00000000ac02')), 8, 'cada consulta foi auditada');
 select is((select count(*)::int from public.audit_events where action = 'health.view' and metadata::text like '%asma%'), 0, 'a auditoria nao guarda o conteudo das observacoes');
 
 select * from finish();

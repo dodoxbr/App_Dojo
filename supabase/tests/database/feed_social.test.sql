@@ -121,7 +121,7 @@ reset role;
 select is((select count(*)::int from public.audit_events where action like 'feed.comment%' and metadata::text like '%teste%'), 0, 'a auditoria nao guarda o texto');
 select cmp_ok((select count(*)::int from public.audit_events where action like 'feed.comment%'), '>', 5, 'mas registra quem comentou, denunciou, devolveu e apagou');
 delete from public.feed_posts where id = '00000000-0000-0000-0000-0000000000f1';
-select is((select count(*)::int from public.feed_comments) + (select count(*)::int from public.feed_reactions), 0, 'apagar a foto leva reacoes e comentarios');
+select is((select count(*)::int from public.feed_comments where post_id = '00000000-0000-0000-0000-0000000000f1') + (select count(*)::int from public.feed_reactions where post_id = '00000000-0000-0000-0000-0000000000f1'), 0, 'apagar a foto leva reacoes e comentarios');
 
 select * from finish();
 rollback;

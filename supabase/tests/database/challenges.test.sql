@@ -63,6 +63,11 @@ select throws_ok($$select public.create_challenge('00000000-0000-0000-0000-00000
 select throws_ok($$select public.create_challenge('00000000-0000-0000-0000-00000000ac01', 'XA', null, 'nada', 5, null, null, (now() at time zone 'America/Sao_Paulo')::date, (now() at time zone 'America/Sao_Paulo')::date + 5, 3, true, gen_random_uuid())$$, '22023', null, 'tipo desconhecido rejeitado');
 select lives_ok($$select public.create_challenge('00000000-0000-0000-0000-00000000ac01', 'Presenca do mes', null, 'attendance', 10, null, null, (now() at time zone 'America/Sao_Paulo')::date - 0, (now() at time zone 'America/Sao_Paulo')::date + 30, 3, false, gen_random_uuid())$$, 'segundo desafio (presenca validada, automatico)');
 select lives_ok($$select public.create_challenge('00000000-0000-0000-0000-00000000ac01', 'Mil tesouras', null, 'technique_reps', 1, (select id from public.techniques where name = 'Tesoura' and academy_id is null), 100, (now() at time zone 'America/Sao_Paulo')::date, (now() at time zone 'America/Sao_Paulo')::date + 30, 3, true, gen_random_uuid())$$, 'terceiro desafio (golpe: repeticoes da Tesoura, ate 100 por dia)');
+-- As aulas do cenario ficam 10 h e 6 h atras: entre 00:00 e ~10:00 (horario local) caem no dia anterior. Para o teste nao depender do
+-- horario, os desafios (que a operacao so deixa comecar hoje) passam a ter comecado ontem, como superusuario do teste.
+reset role;
+update public.challenges set starts_on = starts_on - 1 where title in ('Maratona de treinos', 'Presenca do mes', 'Mil tesouras');
+set local role authenticated;
 select throws_ok($$select public.create_challenge('00000000-0000-0000-0000-00000000ac01', 'Quarto', null, 'training', 5, null, null, (now() at time zone 'America/Sao_Paulo')::date, (now() at time zone 'America/Sao_Paulo')::date + 5, 3, true, gen_random_uuid())$$, '22023', null, 'no maximo 3 desafios em aberto por criador');
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000f1","role":"authenticated"}', true);
 select throws_ok($$select public.create_challenge('00000000-0000-0000-0000-00000000ac01', 'Externo', null, 'training', 5, null, null, (now() at time zone 'America/Sao_Paulo')::date, (now() at time zone 'America/Sao_Paulo')::date + 5, 3, true, gen_random_uuid())$$, '42501', null, 'quem nao e membro nao cria');

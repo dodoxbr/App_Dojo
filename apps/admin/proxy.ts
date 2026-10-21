@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { supabaseEnv } from "@/lib/supabase/env";
 
-const PROTECTED = ["/perfil", "/plataforma", "/academia", "/academias", "/entrar", "/tecnicas", "/diario", "/turmas", "/aulas", "/checkin", "/trilha", "/graduacao", "/desafios", "/dependentes", "/financeiro", "/feed", "/api/feed"];
+const PROTECTED = ["/perfil", "/plataforma", "/academia", "/academias", "/entrar", "/tecnicas", "/diario", "/turmas", "/aulas", "/checkin", "/trilha", "/graduacao", "/desafios", "/dependentes", "/financeiro", "/feed", "/medalhas", "/api/feed"];
 
 // Refreshes the session cookie and does an optimistic redirect. Authorization is enforced by RLS.
 export async function proxy(request: NextRequest) {

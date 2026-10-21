@@ -151,7 +151,7 @@ select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000
 select throws_ok($$select * from public.my_charges('00000000-0000-0000-0000-0000000000d1')$$, '42501', null, 'aos 18 anos o responsavel deixa de ver');
 reset role;
 select throws_ok($$update public.charge_events set event = 'paid'$$, '55000', null, 'o historico e imutavel');
-select is((select count(*)::int from public.audit_events where action in ('finance.plan', 'finance.generate', 'finance.paid', 'finance.cancelled', 'finance.waived', 'finance.reopened', 'finance.create_charge')), 10, 'tudo foi auditado');
+select is((select count(*)::int from public.audit_events where action in ('finance.plan', 'finance.generate', 'finance.paid', 'finance.cancelled', 'finance.waived', 'finance.reopened', 'finance.create_charge') and academy_id in ('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-00000000ac02')), 10, 'tudo foi auditado');
 
 select * from finish();
 rollback;

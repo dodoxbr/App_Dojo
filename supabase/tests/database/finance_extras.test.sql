@@ -58,7 +58,7 @@ select is(public.run_auto_charges(), 0, 'rodar de novo nao duplica');
 select is((select count(*)::int from public.charges where user_id = '00000000-0000-0000-0000-0000000000b3'), 0, 'academia sem a opcao ligada nao e gerada');
 select is((select count(*)::int from public.audit_events where action = 'finance.generate' and metadata ->> 'auto' = 'true'), 1, 'a geracao automatica fica marcada na auditoria');
 select is((select count(*)::int from cron.job where jobname = 'auto-charges' and active), 1, 'o agendamento diario existe e esta ativo');
-select is((select count(*)::int from public.charges where reference_month = (select month from ctx)), 2, 'duas mensalidades no mes, sem duplicar');
+select is((select count(*)::int from public.charges where reference_month = (select month from ctx) and academy_id in ('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-00000000ac02')), 2, 'duas mensalidades no mes, sem duplicar');
 
 select * from finish();
 rollback;
