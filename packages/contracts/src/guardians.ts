@@ -16,6 +16,7 @@ export const requestDependentSchema = z.object({
   minorId: z.uuid(),
   academyId: z.uuid(),
   photos: z.boolean(),
+  social: z.boolean().default(false),
 });
 
 export const verifyConsentSchema = z.object({
@@ -51,6 +52,7 @@ export const consentRowSchema = z.object({
   status: z.enum(['pending', 'verified']),
   consent_active: z.boolean(),
   consent_photos: z.boolean(),
+  consent_social: z.boolean(),
   membership_status: z.string().nullable(),
   created_at: z.string(),
 });
@@ -67,6 +69,7 @@ export const overviewSchema = z.object({
       consent_status: z.enum(['pending', 'verified']),
       consent_active: z.boolean(),
       consent_photos: z.boolean(),
+      consent_social: z.boolean().default(false),
       membership_status: z.string().nullable(),
       validated_attendances_30_days: z.number().nullable(),
       rank: z.object({ belt_code: z.string(), degree: z.number(), since: z.string() }).nullable(),

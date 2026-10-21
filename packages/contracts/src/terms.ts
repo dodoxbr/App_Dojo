@@ -1,6 +1,6 @@
 // US-016: terms shown at sign-up. EVERY TEXT HERE IS A DRAFT pending legal review (docs/11): it does not name a company, a
 // CNPJ or a contact because those data do not exist yet. The accepted version is recorded in the database.
-export const CURRENT_TERMS_VERSION = 'rascunho-2026-10';
+export const CURRENT_TERMS_VERSION = 'rascunho-2026-11';
 
 export type TermsSection = { id: string; title: string; paragraphs: string[] };
 
@@ -39,8 +39,18 @@ export const termsOfUse: TermsSection[] = [
     ],
   },
   {
+    id: 'fotos',
+    title: '4. Fotos e vídeos dos treinos',
+    paragraphs: [
+      'A plataforma tem um feed de fotos de cada academia. As fotos postadas ficam visíveis para todos os membros da academia por 30 dias e depois são apagadas da plataforma.',
+      'A academia costuma divulgar os treinos nas redes sociais dela, como o Instagram. Ao participar dos treinos, você concorda que fotos e vídeos em que você apareça podem ser publicados nas redes sociais da academia.',
+      'Você pode pedir a remoção de uma foto a qualquer momento, pela denúncia no próprio feed ou falando com a academia. A academia retira o que estiver sob o controle dela; o que já foi copiado por terceiros ou publicado em redes de terceiros pode depender de pedido na própria rede.',
+      'Fotos de menores só entram no feed com a autorização do responsável. A publicação nas redes sociais da academia exige uma autorização separada do responsável.',
+    ],
+  },
+  {
     id: 'conduta',
-    title: '4. Conduta',
+    title: '5. Conduta',
     paragraphs: [
       'Não use a plataforma para assediar, enganar ou expor outras pessoas, nem para tentar acessar dados que não são seus.',
       'A academia pode suspender ou encerrar o vínculo de quem descumprir estas regras.',
@@ -48,7 +58,7 @@ export const termsOfUse: TermsSection[] = [
   },
   {
     id: 'pagamentos',
-    title: '5. Mensalidades e pagamentos',
+    title: '6. Mensalidades e pagamentos',
     paragraphs: [
       'O controle financeiro da academia é feito pelo gestor, que registra manualmente as mensalidades e os pagamentos recebidos. A plataforma não recebe, intermedeia nem processa pagamentos.',
       'O aluno consulta as próprias cobranças. Em caso de menor, o responsável legal e o responsável financeiro consultam as cobranças do menor.',
@@ -57,7 +67,7 @@ export const termsOfUse: TermsSection[] = [
   },
   {
     id: 'mudancas',
-    title: '6. Mudanças',
+    title: '7. Mudanças',
     paragraphs: ['Quando estes termos mudarem, uma nova versão será publicada e pediremos que você aceite novamente.'],
   },
 ];
@@ -69,6 +79,7 @@ export const privacyPolicy: TermsSection[] = [
     paragraphs: [
       'Conta: e-mail, nome de exibição e data de nascimento (usada só para saber se você é maior de idade).',
       'Ficha de cadastro: nome completo, telefone e endereço. Eles ficam em área privada.',
+      'Fotos dos treinos: as imagens que os membros postam no feed da academia, sem os dados escondidos da foto (como a localização), guardadas por 30 dias.',
       'Uso da plataforma: filiação às academias, presenças confirmadas, graduações, avaliações de domínio técnico e participação em desafios.',
       'Diário de treino: é privado por padrão. O professor só lê o que você compartilhar de forma explícita.',
     ],
@@ -96,7 +107,7 @@ export const privacyPolicy: TermsSection[] = [
     paragraphs: [
       'Os dados de menores são tratados com proteção reforçada e somente com o consentimento específico do responsável legal, conferido pessoalmente pelo gestor da academia.',
       'O responsável pode revogar o consentimento a qualquer momento; o menor fica suspenso na academia até um novo consentimento.',
-      'Fotos de menores só são usadas se o responsável autorizar de forma expressa.',
+      'Fotos de menores só entram no feed se o responsável autorizar de forma expressa. A publicação nas redes sociais da academia, como o Instagram, é uma autorização separada e pode ser dada ou retirada a qualquer momento.',
     ],
   },
   {

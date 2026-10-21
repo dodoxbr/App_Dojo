@@ -33,7 +33,7 @@ export async function createDependent(_prev: FormState, formData: FormData): Pro
 
 // The legal guardian asks for the minor's place in an academy and gives the consent (photos off unless ticked).
 export async function requestForDependent(minorId: string, academyId: string, _prev: FormState, formData: FormData): Promise<FormState> {
-  const parsed = requestDependentSchema.safeParse({ minorId, academyId, photos: formData.get("photos") === "on" });
+  const parsed = requestDependentSchema.safeParse({ minorId, academyId, photos: formData.get("photos") === "on", social: formData.get("social") === "on" });
   if (!parsed.success) return { error: "Pedido inválido." };
   if (formData.get("consent") !== "on") return { error: "Marque que você leu e concorda com o termo de consentimento." };
   const { supabase } = await getCaller();
@@ -41,6 +41,7 @@ export async function requestForDependent(minorId: string, academyId: string, _p
     p_minor_id: parsed.data.minorId,
     p_academy_id: parsed.data.academyId,
     p_photos: parsed.data.photos,
+    p_social: parsed.data.social,
   });
   if (error) return { error: rpcErrorMessage(error) };
   revalidatePath(`/dependentes/${minorId}`);

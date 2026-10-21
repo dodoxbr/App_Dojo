@@ -90,6 +90,11 @@ export default async function FeedPage({
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={`/api/feed/image/${p.id}`} width={p.width} height={p.height} loading="lazy" alt={`Foto postada por ${p.author_name}`} style={{ maxWidth: "100%", height: "auto" }} />
               {p.caption && <p>{p.caption}</p>}
+              {p.can_manage && (
+                <p><small>{p.social_ok
+                  ? "Redes sociais da academia (Instagram): sem restrição de menores. Confira se não há menor na foto sem marcação."
+                  : "NÃO publicar nas redes sociais: há menor marcado sem a autorização do responsável para isso."}</small></p>
+              )}
               {p.tags.length > 0 && <p><small>Na foto: {p.tags.map((t) => t.name).join(", ")}</small></p>}
               <p><small>Some em {daysLeft(p.expires_at)} dia(s).</small></p>
               {(reportsOf.get(p.id) ?? []).length > 0 && (

@@ -144,7 +144,7 @@ try {
   await check(null, '/', { has: 'Painel' });
   await check(null, '/login', { has: ['Entrar', 'cuidar de um menor de idade', 'Li e aceito os'] });
   await check(null, `/termos/${slug}`, { has: ['Academia Páginas Ltda (teste)', '11.222.333/0001-81', 'Termos de uso'] });
-  await check(null, '/termos', { has: ['Termos de uso', 'Política de privacidade', 'Rascunho em revisão jurídica', 'Crianças e adolescentes'] });
+  await check(null, '/termos', { has: ['Termos de uso', 'Política de privacidade', 'Rascunho em revisão jurídica', 'Crianças e adolescentes', 'Instagram', 'Fotos e vídeos dos treinos'] });
   await check(null, '/dependentes', { redirect: '/login?next=%2Fdependentes' });
   await check(null, '/perfil', { redirect: '/login?next=%2Fperfil' });
   await check(null, `/entrar/${slug}`, { redirect: '/login?next=' });
@@ -227,10 +227,11 @@ try {
   // Guardian (adult account that answers for the minor)
   await check('guardian', '/dependentes', { has: ['Meus dependentes', 'Menor de páginas', 'Responsável legal', 'Sou o responsável financeiro'] });
   await check('guardian', '/financeiro', { has: ['Meu financeiro', 'Menor de páginas'] });
+  await check('guardian', `/dependentes/${minorId}/feed`, { has: ['Treino de Menor de páginas', 'Ainda não há fotos'] });
   await check('guardian', '/dependentes/novo', { has: ['Cadastrar um menor', 'Seu parentesco'] });
   await check('guardian', `/dependentes/${minorId}/ficha`, { has: ['Ficha de Menor de páginas', 'Menor de Páginas da Silva', 'Salvar ficha'] });
-  await check('guardian', `/dependentes/${minorId}`, { has: ['Menor de páginas', 'Academia Páginas', 'Aguardando o gestor conferir', 'Revogar consentimento', 'Responsável financeiro'] });
-  await check('guardian', `/entrar/${slug}`, { has: ['Pedir vaga para um menor', 'Menor de páginas', 'termo de consentimento'] });
+  await check('guardian', `/dependentes/${minorId}`, { has: ['Menor de páginas', 'Academia Páginas', 'Aguardando o gestor conferir', 'Revogar consentimento', 'Responsável financeiro', 'Ver o treino do Menor de páginas'] });
+  await check('guardian', `/entrar/${slug}`, { has: ['Pedir vaga para um menor', 'Menor de páginas', 'termo de consentimento', 'redes sociais da academia, como o Instagram'] });
   await check('guardian', '/perfil', { has: ['Meus dependentes (menores de idade)'] });
   await check('guardian', `${A}/responsaveis`, { redirect: '/perfil' });
 

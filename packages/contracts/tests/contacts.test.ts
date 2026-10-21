@@ -68,4 +68,6 @@ test('terms are versioned drafts, with no invented company data', () => {
   const all = [...termsOfUse, ...privacyPolicy].flatMap((s) => s.paragraphs).join(' ');
   assert.doesNotMatch(all, /CNPJ \d|Ltda|S\.A\./i);
   assert(termsOfUse.length >= 5 && privacyPolicy.length >= 5);
+  assert.match(all, /Instagram/, 'os termos avisam que os treinos podem ir para o Instagram da academia');
+  assert.match(all, /remoção/, 'e como pedir a remoção');
 });

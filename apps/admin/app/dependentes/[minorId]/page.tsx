@@ -32,6 +32,8 @@ export default async function DependentePage({ params }: { params: Promise<{ min
         <Link href={`/dependentes/${minorId}/ficha`}>{hasContact ? "Ver ou editar a ficha" : "Preencher a ficha"}</Link>
       </p>
 
+      <p><Link href={`/dependentes/${minorId}/feed`}>Ver o treino do {o.minor?.display_name} (fotos do feed)</Link></p>
+
       {o.academies.length === 0 ? (
         <p>Ainda não há pedido de vaga. Abra o link da academia (<code>/entrar/endereço-da-academia</code>) para pedir a vaga do menor.</p>
       ) : (
@@ -44,7 +46,7 @@ export default async function DependentePage({ params }: { params: Promise<{ min
                 <li>Presenças confirmadas nos últimos 30 dias: {a.validated_attendances_30_days ?? 0}</li>
                 <li>Graduação: {a.rank ? `${a.rank.belt_code}, grau ${a.rank.degree} (desde ${new Date(`${a.rank.since}T12:00:00Z`).toLocaleDateString("pt-BR", { timeZone: "UTC" })})` : "ainda sem graduação registrada"}</li>
                 <li>Próximas aulas: {(a.next_sessions ?? []).length === 0 ? "nenhuma agendada" : (a.next_sessions ?? []).map((s) => `${s.title} (${fmtWhen(s.starts_at)})`).join("; ")}</li>
-                <li>Uso de fotos: {a.consent_photos ? "autorizado" : "não autorizado"}</li>
+                <li>Fotos no feed da academia: {a.consent_photos ? "autorizado" : "não autorizado"} · redes sociais (Instagram): {a.consent_social ? "autorizado" : "não autorizado"}</li>
               </ul>
             )}
             {a.consent_active && (

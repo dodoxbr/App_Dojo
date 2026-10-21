@@ -32,6 +32,19 @@ export const feedPostSchema = z.object({
   mine: z.boolean(),
   can_manage: z.boolean(),
   reported_by_me: z.boolean(),
+  social_ok: z.boolean(),
+});
+
+// What the legal guardian sees: only the posts that show their own minor.
+export const dependentPostSchema = z.object({
+  id: z.uuid(),
+  academy_name: z.string(),
+  author_name: z.string(),
+  caption: z.string().nullable(),
+  created_at: z.string(),
+  expires_at: z.string(),
+  width: z.number(),
+  height: z.number(),
 });
 
 export const feedPersonSchema = z.object({
@@ -58,3 +71,4 @@ export function daysLeft(expiresAt: string, now: Date = new Date()): number {
 
 export type FeedPost = z.infer<typeof feedPostSchema>;
 export type FeedPerson = z.infer<typeof feedPersonSchema>;
+export type DependentPost = z.infer<typeof dependentPostSchema>;

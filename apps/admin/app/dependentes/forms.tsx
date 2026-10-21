@@ -37,7 +37,8 @@ export function RequestForDependentForm({ minorId, academyId }: { minorId: strin
         </small>
       </p>
       <label><input type="checkbox" name="consent" required /> Li e concordo com o termo de consentimento</label>
-      <label><input type="checkbox" name="photos" /> Autorizo também o uso de fotos do menor (opcional; desligado por padrão)</label>
+      <label><input type="checkbox" name="photos" /> Autorizo fotos do menor no feed da academia, visíveis só para os membros, por 30 dias (opcional; desligado por padrão)</label>
+      <label><input type="checkbox" name="social" /> Autorizo também a publicação de fotos do menor nas redes sociais da academia, como o Instagram (opcional; exige a autorização de fotos acima)</label>
       <button type="submit" disabled={pending}>{pending ? "Enviando…" : "Pedir vaga para o menor"}</button>
       <Status state={state} />
     </form>

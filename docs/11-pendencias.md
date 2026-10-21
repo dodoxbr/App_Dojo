@@ -202,9 +202,11 @@
 ## US-018 (feed de fotos)
 - [ ] **A foto fica no banco** (ADR-022), não no Storage: acompanhar o tamanho; para vídeo ou volume alto, migrar para Storage com CDN.
 - [ ] **Quem aparece na foto sem ser marcado** não é detectado: o sistema confia em quem posta para marcar os menores (e na denúncia dos outros membros). Não há reconhecimento facial nem revisão antes de publicar.
-- [ ] Adultos que aparecem numa foto não dão consentimento individual: os termos precisam dizer que fotos dos treinos são vistas pelos membros da academia e como pedir a remoção (hoje: denunciar). Revisão jurídica.
-- [ ] O responsável de um menor **não vê o feed** (não é membro da academia); só o gestor e os membros veem. Decidir se o responsável legal passa a ver as fotos em que o menor aparece.
+- [ ] Os termos agora dizem que as fotos são vistas pelos membros, que a academia pode postar no Instagram e como pedir a remoção. Para adultos o aceite é **por participar dos treinos**, sem opção individual de recusar o Instagram: pedir parecer jurídico e avaliar uma caixa de autorização separada para adultos (como existe para menores).
+- [x] O responsável legal passou a ver as fotos do feed em que o filho aparece (decisão do dono do produto).
 - [ ] Menor sem login não posta; um responsável posta como ele mesmo.
 - [ ] A retenção de 30 dias é igual para todas as academias; não há "guardar uma foto" nem álbum. Sem reações, comentários, vídeo e notificações (US-019).
 - [ ] O corte de 20 posts por dia e de 800 KB por foto são premissas de custo/antiabuso.
 - [ ] O app mobile não tem o feed.
+- [ ] A plataforma **não publica no Instagram**: quem decide e publica é a academia, fora do sistema. O aviso "pode/não pode ir para as redes sociais" só considera os menores **marcados**; menor não marcado na foto não é detectado.
+- [ ] Remover uma foto da plataforma não remove cópias já publicadas no Instagram ou baixadas por terceiros; o texto dos termos avisa, mas o processo de retirada nas redes é da academia.
