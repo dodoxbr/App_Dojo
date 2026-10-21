@@ -1,0 +1,28 @@
+.row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  min-height: 44px;
+}
+
+.box {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  min-height: 0;
+  margin: 10px 0 0;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+.box:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+
+.text {
+  display: block;
+  padding: var(--space-2) 0;
+  font-size: var(--text-sm);
+  font-weight: 400;
+  line-height: var(--leading-body);
+  color: var(--text);
+  cursor: pointer;
+}

@@ -1,6 +1,8 @@
-/* Visual básico e responsivo do painel (mobile primeiro). Sem dependências: estiliza os elementos HTML que as telas já usam.
+/* Visual básico e responsivo do painel (mobile primeiro). Tudo fica na camada `legacy`: os componentes novos (components/ui, com tokens em
+   styles/tokens.css) NÃO usam camada e por isso sempre vencem estas regras de elementos, sem quebrar as telas antigas. Sem dependências: estiliza os elementos HTML que as telas já usam.
    Páginas de uma academia podem trazer as cores dela por estilo próprio (por exemplo /entrar/[endereço]). */
 
+@layer legacy {
 :root {
   --ink: #1b1f24;
   --ink-soft: #4a5560;
@@ -223,4 +225,5 @@ summary { cursor: pointer; font-weight: 600; }
   h1 { font-size: 1.4rem; }
   button { width: 100%; justify-self: stretch; }
   li > form button, td button { width: auto; }
+}
 }

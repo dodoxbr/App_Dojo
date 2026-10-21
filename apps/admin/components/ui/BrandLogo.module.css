@@ -1,0 +1,24 @@
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--primary);
+}
+
+.light { color: #ffffff; }
+
+.mark { width: 40px; height: 40px; flex: none; }
+.markBg { fill: var(--primary); }
+.band, .bandAccent { fill: none; stroke-width: 5; stroke-linecap: round; }
+.band { stroke: #ffffff; }
+.bandAccent { stroke: var(--accent); }
+.knot { fill: #ffffff; stroke: var(--primary); stroke-width: 2; }
+
+.light .markBg { fill: rgba(255, 255, 255, 0.14); }
+.light .knot { stroke: #14304f; }
+
+.name {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}

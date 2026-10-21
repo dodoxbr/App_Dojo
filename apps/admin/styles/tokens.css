@@ -1,0 +1,70 @@
+/* Design tokens do Dojo Platform (brief de UI/UX). Valores base + tokens SEMÂNTICOS: as telas usam só os semânticos, e a cor
+   de uma academia (futuro AcademyThemeProvider) troca apenas --primary/--accent, nunca as cores de erro/sucesso/aviso.
+   Espaçamento em escala 4/8/12/16/24/32; contraste mínimo WCAG AA. Tema escuro: redefinir os semânticos mais tarde. */
+
+:root {
+  /* paleta base */
+  --color-brand: #183b63;
+  --color-brand-strong: #102840;
+  --color-accent: #0e9488;
+  --color-accent-strong: #0b756b;
+  --color-bg: #f5f7fa;
+  --color-surface: #ffffff;
+  --color-text: #142235;
+  --color-muted: #5a6a80;
+  --color-border: #dfe5ed;
+  --color-border-strong: #8a97a8;
+  --color-danger: #c43b47;
+  --color-danger-bg: #fdecee;
+  --color-success: #1b7a47;
+  --color-success-bg: #e8f6ee;
+  --color-info: #1d5a9e;
+  --color-info-bg: #eaf2fc;
+
+  /* semânticos (o que os componentes usam) */
+  --primary: var(--color-brand);
+  --primary-strong: var(--color-brand-strong);
+  --primary-contrast: #ffffff;
+  --accent: var(--color-accent);
+  --accent-strong: var(--color-accent-strong);
+  --bg: var(--color-bg);
+  --surface: var(--color-surface);
+  --text: var(--color-text);
+  --text-muted: var(--color-muted);
+  --border: var(--color-border);
+  --border-strong: var(--color-border-strong);
+  --danger: var(--color-danger);
+  --danger-surface: var(--color-danger-bg);
+  --success: var(--color-success);
+  --success-surface: var(--color-success-bg);
+  --info: var(--color-info);
+  --info-surface: var(--color-info-bg);
+  --focus-ring: #1a73e8;
+
+  /* espaçamento */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+
+  /* forma e sombra */
+  --radius-card: 16px;
+  --radius-control: 10px;
+  --radius-pill: 999px;
+  --shadow-card: 0 8px 28px rgba(16, 40, 64, 0.07);
+  --control-height: 48px;
+
+  /* tipografia: Inter se estiver instalada, senão a fonte do sistema (nada é baixado de terceiros) */
+  --font-sans: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --text-xs: 0.8125rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.625rem;
+  --text-2xl: 2.25rem;
+  --leading-tight: 1.2;
+  --leading-body: 1.5;
+}

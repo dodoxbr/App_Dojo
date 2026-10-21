@@ -1,0 +1,11 @@
+.card {
+  padding: var(--space-5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+
+@media (min-width: 768px) {
+  .card { padding: var(--space-6); }
+}

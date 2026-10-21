@@ -230,3 +230,12 @@
 - [ ] O app mobile não mostra o aviso.
 - [ ] O número do aviso é **por professor** (padrão 30). Se vários professores acompanham o mesmo aluno, ele recebe o aviso quando o menor número entre os professores dele é atingido; instrutor sem permissão de graduação não configura (vale 30 para as turmas dele). Sem configuração por faixa ou por aluno e o gestor não ajusta o número de outro professor.
 - [ ] **`challenges.test.sql` depende do horário:** as aulas do cenário ficam 10 h e 6 h atrás e as datas são do dia local; entre 00:00 e ~10:00 (horário de Brasília) 2 testes (70 e 75) falham. Passa no resto do dia. Reescrever com horários fixos em relação ao início do dia local.
+
+## Redesign (etapa 1: login e cadastro)
+- [ ] **Recuperar senha:** o brief pede o link "Esqueci minha senha", mas **o fluxo não existe** (nem a tela, nem o e-mail de redefinição). Não foi inventado; virar história própria (usa o e-mail do Supabase Auth).
+- [ ] A marca "Dojo Platform" (BrandLogo) é **provisória**, desenhada no código; trocar só esse componente quando houver o logotipo oficial. Não há foto nem ilustração (o brief só permite com ativo autorizado).
+- [ ] O selo "N" redondo que aparece na tela é do servidor de desenvolvimento do Next e **some no build de produção**.
+- [ ] Os campos de senha e confirmação voltam vazios depois de um erro (de propósito); nome, data, e-mail e aceite dos termos ficam preenchidos.
+- [ ] As demais telas ainda usam o visual antigo (`@layer legacy`); migrar na ordem do brief: onboarding/filiação, home do aluno, diário, catálogo, painel do professor. Componentes ainda a criar: AppShell, BottomNavigation, SidebarNavigation, PageHeader, ProgressBar, Badge, EmptyState, LoadingState, Modal/ConfirmDialog, AcademyThemeProvider, TechniqueCard, TrainingLogCard, BeltProgressCard.
+- [ ] Tema escuro e cores por academia (AcademyThemeProvider) ainda não implementados; os tokens já estão prontos para isso.
+- [ ] Capturas das telas de login em 360, 390, 768 e 1280 px: rodar `node scripts/e2e-login.mjs` (cria e apaga uma conta sintética no banco local).
