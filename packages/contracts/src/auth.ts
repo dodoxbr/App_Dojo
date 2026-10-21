@@ -36,6 +36,7 @@ export function isAdultOn(birthDate: string, today: Date = new Date()): boolean 
 export const signUpSchema = signInSchema.extend({
   displayName: displayNameSchema,
   birthDate: birthDateSchema,
+  acceptTerms: z.preprocess((v) => v === 'on' || v === true, z.literal(true, { error: 'Aceite os termos de uso e a política de privacidade.' })),
   forMinor: z.preprocess((v) => v === 'on' || v === true, z.boolean()),
   dependentName: z.string().trim().max(120).optional().transform((v) => (v ? v : undefined)),
   dependentBirthDate: z.union([birthDateSchema, z.literal('')]).optional().transform((v) => (v ? v : undefined)),

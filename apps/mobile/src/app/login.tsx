@@ -1,6 +1,7 @@
 import { signInSchema, signUpSchema } from '@dojo/contracts/auth';
+import { CURRENT_TERMS_VERSION } from '@dojo/contracts/terms';
 import { useState } from 'react';
-import { ActivityIndicator, Button, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Button, StyleSheet, Switch, Text, TextInput, View } from 'react-native';
 import { supabase } from '@/lib/supabase';
 
 export default function Login() {
@@ -9,6 +10,7 @@ export default function Login() {
   const [birthDate, setBirthDate] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [acceptTerms, setAcceptTerms] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
@@ -25,13 +27,13 @@ export default function Login() {
       if (err) setError('E-mail ou senha inválidos, ou e-mail ainda não confirmado.');
       return;
     }
-    const parsed = signUpSchema.safeParse({ email, password, displayName, birthDate });
-    if (!parsed.success) return setError('Informe nome (2 a 120 caracteres), data de nascimento (AAAA-MM-DD), e-mail válido e senha com 8 ou mais caracteres.');
+    const parsed = signUpSchema.safeParse({ email, password, displayName, birthDate, acceptTerms });
+    if (!parsed.success) return setError('Informe nome (2 a 120 caracteres), data de nascimento (AAAA-MM-DD), e-mail válido, senha com 8 ou mais caracteres e aceite os termos.');
     setBusy(true);
     const { error: err } = await supabase.auth.signUp({
       email: parsed.data.email,
       password: parsed.data.password,
-      options: { data: { display_name: parsed.data.displayName, birth_date: parsed.data.birthDate } },
+      options: { data: { display_name: parsed.data.displayName, birth_date: parsed.data.birthDate, terms_version: CURRENT_TERMS_VERSION } },
     });
     setBusy(false);
     if (err) setError('Não foi possível concluir o cadastro. Tente novamente.');
@@ -64,6 +66,12 @@ export default function Login() {
         secureTextEntry
         autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
       />
+      {mode === 'signup' && (
+        <View style={styles.terms}>
+          <Switch value={acceptTerms} onValueChange={setAcceptTerms} accessibilityLabel="Aceitar os termos" />
+          <Text style={styles.termsText}>Li e aceito os termos de uso e a política de privacidade (rascunho em revisão; texto completo no painel web, página /termos).</Text>
+        </View>
+      )}
       {busy ? <ActivityIndicator accessibilityLabel="Enviando" /> : <Button title={mode === 'signin' ? 'Entrar' : 'Cadastrar'} onPress={submit} />}
       {error && <Text accessibilityRole="alert" style={styles.error}>{error}</Text>}
       {message && <Text accessibilityRole="alert">{message}</Text>}
@@ -84,4 +92,6 @@ const styles = StyleSheet.create({
   title: { fontSize: 24, fontWeight: '600' },
   input: { borderWidth: 1, borderColor: '#999', borderRadius: 6, padding: 10, minHeight: 44 },
   error: { color: '#B00020' },
+  terms: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  termsText: { flex: 1 },
 });

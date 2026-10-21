@@ -44,5 +44,17 @@ export async function newUser(label, run = Date.now()) {
   await fetch(link, { redirect: 'manual' });
   const inn = await client.auth.signInWithPassword({ email, password: PASSWORD });
   assert.equal(inn.error, null, `login ${label}`);
-  return { client, email, id: inn.data.user.id };
+  const id = inn.data.user.id;
+  // The registration form (US-016) is required to join an academy; synthetic data.
+  const saved = await saveContact(client, id, `Smoke ${label}`);
+  assert.equal(saved.error, null, `ficha de ${label}`);
+  return { client, email, id };
+}
+
+// Fills the registration form of a person (own or dependent) with synthetic data.
+export function saveContact(client, userId, fullName) {
+  return client.rpc('save_contact', {
+    p_user_id: userId, p_full_name: fullName, p_phone: '(11) 99999-0000', p_postal_code: '01001-000', p_street: 'Rua Ficticia',
+    p_number: '1', p_complement: null, p_neighborhood: 'Centro', p_city: 'Sao Paulo', p_state: 'SP',
+  });
 }

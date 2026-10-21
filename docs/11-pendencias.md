@@ -167,3 +167,14 @@
 - [ ] Financeiro (US-017): controle por aluno pelo gestor; escolher a plataforma de pagamento (provedor, taxas, PIX/boleto/cartão, repasse) e registrar ADR; nunca guardar dados de cartão; CPF e endereço de cobrança entram com a ficha.
 - [ ] Feed de fotos (US-018) substitui o grupo de WhatsApp dos treinos: definir quem posta, quem vê, retenção e o consentimento de foto (maiores também).
 - [x] Limite de dependentes por responsável = 7 (migration 022).
+
+## US-016 (termos e ficha)
+- [ ] **Os termos são rascunho** e não citam controlador, CNPJ nem canal de atendimento (não existem ainda). Precisam de revisão jurídica antes de qualquer pessoa real; só então definir a retenção dos dados.
+- [ ] A troca de versão dos termos **só avisa** no perfil; não bloqueia o uso. Decidir se a nova versão passa a exigir novo aceite antes de continuar.
+- [ ] A ficha não verifica telefone, e-mail ou endereço (só o formato). Sem consulta de CEP, sem confirmação por SMS.
+- [ ] Sem contato de emergência nem dados de saúde na ficha (não pedidos). Academias de luta costumam precisar; confirmar com a academia.
+- [ ] O gestor lê a ficha de todos os membros da academia (intencional, auditado). Confirmar se o instrutor também precisa de telefone (hoje não vê).
+- [ ] Sem exportação nem exclusão a pedido do titular (LGPD art. 18); falta fluxo e prazo.
+- [ ] CPF e dados de cobrança ficam para a US-017 (coletar só o necessário).
+- [ ] O app mobile pede o aceite no cadastro, mas ainda não tem tela para a ficha nem para os termos.
+- [ ] Contas criadas antes desta versão não têm ficha: ficam sem poder pedir entrada até preencher.

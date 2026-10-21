@@ -23,6 +23,8 @@ export default async function EntrarPage({ params }: { params: Promise<{ slug: s
   const minors = ((depsRaw ?? []) as unknown[])
     .map((x) => dependentRowSchema.safeParse(x))
     .flatMap((r) => (r.success && r.data.kind === "legal" && !r.data.minor_is_adult ? [r.data] : []));
+  const { data: contactRows } = await supabase.rpc("get_contact", { p_user_id: userId });
+  const hasContact = ((contactRows ?? []) as unknown[]).length > 0;
   const { data: mine } = await supabase
     .from("memberships")
     .select("status")
@@ -58,7 +60,10 @@ export default async function EntrarPage({ params }: { params: Promise<{ slug: s
       {ageStatus === "adult" && minors.length === 0 && (
         <p><small>Quer matricular um filho ou dependente menor de idade? <Link href="/dependentes/novo">Cadastre o menor primeiro</Link>.</small></p>
       )}
-      {!mine && ageStatus === "adult" && (
+      {!mine && ageStatus === "adult" && !hasContact && (
+        <p role="alert">Antes de pedir entrada, preencha a sua ficha de cadastro (nome completo, telefone e endereço). <Link href="/perfil/ficha">Preencher a ficha</Link></p>
+      )}
+      {!mine && ageStatus === "adult" && hasContact && (
         <>
           <p>Você foi convidado(a) a entrar nesta academia. O gestor precisa aprovar o seu pedido.</p>
           <RequestButton academyId={academy.id} />

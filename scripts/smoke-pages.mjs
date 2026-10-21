@@ -7,7 +7,7 @@ import { spawn, execSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { createServerClient } from '@supabase/ssr';
-import { localDate, localEnv, makePlatformAdmin, newUser, PASSWORD } from './lib/local.mjs';
+import { localDate, localEnv, makePlatformAdmin, newUser, PASSWORD, saveContact } from './lib/local.mjs';
 
 const { url, anonKey } = localEnv();
 const run = Date.now();
@@ -72,6 +72,7 @@ await student.client.rpc('add_challenge_entry', { p_challenge_id: challengeId, p
 // A guardian with a dependent whose consent is still waiting for the manager to check the document
 const minorId = (await guardian.client.rpc('create_dependent', { p_display_name: 'Menor de páginas', p_birth_date: localDate(365 * 9), p_relationship: 'mãe', p_idempotency_key: crypto.randomUUID() })).data;
 assert(minorId, 'dependente criado');
+assert.equal((await saveContact(guardian.client, minorId, 'Menor de Páginas da Silva')).error, null, 'ficha do dependente');
 assert((await guardian.client.rpc('request_dependent_membership', { p_minor_id: minorId, p_academy_id: academyId, p_photos: false })).data, 'vaga do dependente pedida');
 
 // ---- sessions as the Next app expects them (cookies written by @supabase/ssr) ---------------------------------------
@@ -131,13 +132,15 @@ try {
 
   // Not signed in
   await check(null, '/', { has: 'Painel' });
-  await check(null, '/login', { has: ['Entrar', 'cuidar de um menor de idade'] });
+  await check(null, '/login', { has: ['Entrar', 'cuidar de um menor de idade', 'Li e aceito os'] });
+  await check(null, '/termos', { has: ['Termos de uso', 'Política de privacidade', 'Rascunho em revisão jurídica', 'Crianças e adolescentes'] });
   await check(null, '/dependentes', { redirect: '/login?next=%2Fdependentes' });
   await check(null, '/perfil', { redirect: '/login?next=%2Fperfil' });
   await check(null, `/entrar/${slug}`, { redirect: '/login?next=' });
 
   // Student
-  await check('student', '/perfil', { has: ['Meu perfil', 'Minhas academias', 'Academia Páginas'] });
+  await check('student', '/perfil', { has: ['Meu perfil', 'Minhas academias', 'Academia Páginas', 'Minha ficha de cadastro', 'Li e aceito'] });
+  await check('student', '/perfil/ficha', { has: ['Minha ficha de cadastro', 'Nome completo', 'Rua Ficticia', '(11) 99999-0000', '01001-000', 'Salvar ficha'] });
   await check('student', '/diario', { has: ['Meu diário', 'Tesoura'] });
   await check('student', '/diario/novo', { has: 'Registrar treino' });
   await check('student', `/diario/${logId}`, { has: ['Treino de', 'Excluir este registro'] });
@@ -160,6 +163,7 @@ try {
   // Guardian (adult account that answers for the minor)
   await check('guardian', '/dependentes', { has: ['Meus dependentes', 'Menor de páginas', 'Responsável legal', 'Sou o responsável financeiro'] });
   await check('guardian', '/dependentes/novo', { has: ['Cadastrar um menor', 'Seu parentesco'] });
+  await check('guardian', `/dependentes/${minorId}/ficha`, { has: ['Ficha de Menor de páginas', 'Menor de Páginas da Silva', 'Salvar ficha'] });
   await check('guardian', `/dependentes/${minorId}`, { has: ['Menor de páginas', 'Academia Páginas', 'Aguardando o gestor conferir', 'Revogar consentimento', 'Responsável financeiro'] });
   await check('guardian', `/entrar/${slug}`, { has: ['Pedir vaga para um menor', 'Menor de páginas', 'termo de consentimento'] });
   await check('guardian', '/perfil', { has: ['Meus dependentes (menores de idade)'] });
@@ -179,7 +183,8 @@ try {
   await check('manager', '/perfil', { has: ['Meu perfil', 'Gerenciar: Academia Páginas', 'Criar academia'] });
   await check('manager', A, { has: ['Academia Páginas', 'Identidade visual', 'O que o instrutor pode fazer'] });
   await check('manager', `${A}/membros`, { has: ['Membros', 'Cadastrar aluno ou colaborador'] });
-  await check('manager', `${A}/membros`, { has: ['Menor de páginas', 'menor · falta conferir o responsável'] });
+  await check('manager', `${A}/membros`, { has: ['Menor de páginas', 'menor · falta conferir o responsável', 'Ficha'] });
+  await check('manager', `${A}/membros/${student.id}`, { has: ['Ficha de Smoke aluno', 'Rua Ficticia', '(11) 99999-0000', 'registrada na auditoria'] });
   await check('manager', `${A}/responsaveis`, { has: ['Menores e responsáveis', 'Aguardando conferência', 'Menor de páginas', 'Smoke responsavel', 'Confirmar conferência'] });
   await check('manager', `${A}/turmas`, { has: ['Turmas', 'Turma de páginas', 'Nova turma'] });
   await check('manager', `/turmas/${classId}`, { has: ['Turma de páginas', 'Editar turma'] });

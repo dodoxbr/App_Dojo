@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState, useState } from "react";
 import { signIn, signUp, type FormState } from "./actions";
 
@@ -43,6 +44,7 @@ export function LoginForms({ next }: { next: string }) {
         )}
         <label>E-mail <input name="email" type="email" autoComplete="email" required /></label>
         <label>Senha <input name="password" type="password" autoComplete="new-password" minLength={8} required /></label>
+        <label><input type="checkbox" name="acceptTerms" required /> Li e aceito os <Link href="/termos" target="_blank">termos de uso e a política de privacidade</Link> (rascunho em revisão)</label>
         <button type="submit" disabled={upPending}>{upPending ? "Enviando…" : "Cadastrar"}</button>
         <Status state={upState} />
       </form>

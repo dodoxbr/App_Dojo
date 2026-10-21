@@ -17,10 +17,12 @@ test('sign in normalizes e-mail and requires a password of 8+ chars', () => {
 });
 
 test('sign up requires a valid display name and a birth date', () => {
-  const base = { email: 'a@example.test', password: '12345678', birthDate: '1990-01-01' };
+  const base = { email: 'a@example.test', password: '12345678', birthDate: '1990-01-01', acceptTerms: 'on' };
   assert.equal(signUpSchema.safeParse({ ...base, displayName: 'Aluno Teste' }).success, true);
   assert.equal(signUpSchema.safeParse({ ...base, displayName: '' }).success, false);
   assert.equal(signUpSchema.safeParse({ email: base.email, password: base.password, displayName: 'Aluno Teste' }).success, false);
+  assert.equal(signUpSchema.safeParse({ ...base, displayName: 'Aluno Teste', acceptTerms: undefined }).success, false, 'os termos são obrigatórios');
+  assert.equal(signUpSchema.safeParse({ ...base, displayName: 'Aluno Teste', acceptTerms: 'off' }).success, false);
 });
 
 test('birth date must be a real, past calendar day', () => {

@@ -17,6 +17,7 @@ insert into public.academies (id, name, slug, owner_user_id) values
  ('00000000-0000-0000-0000-00000000ac01', 'Academia Um', 'idade-um', '00000000-0000-0000-0000-0000000000b1');
 insert into public.memberships (academy_id, user_id, role, status) values
  ('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000b1', 'manager', 'approved');
+insert into public.profile_contacts (user_id, full_name, phone, postal_code, street, number, neighborhood, city, state, updated_by) select id, 'Pessoa de Teste', '11999990000', '01001000', 'Rua Ficticia', '1', 'Centro', 'Sao Paulo', 'SP', id from auth.users where email like '%@example.test' on conflict (user_id) do nothing;
 
 -- What the sign-up trigger stored
 select is((select count(*)::int from public.profile_private where user_id = '00000000-0000-0000-0000-0000000000d1'), 1, 'data de nascimento valida e guardada');

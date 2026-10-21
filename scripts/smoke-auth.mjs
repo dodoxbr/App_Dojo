@@ -14,7 +14,7 @@ const email = `smoke-${Date.now()}@example.test`;
 const password = 'senha-sintetica-123';
 const supabase = createClient(url, anonKey, { auth: { persistSession: false } });
 
-const up = await supabase.auth.signUp({ email, password, options: { data: { display_name: 'Smoke Teste', birth_date: '1990-01-01' } } });
+const up = await supabase.auth.signUp({ email, password, options: { data: { display_name: 'Smoke Teste', birth_date: '1990-01-01', terms_version: 'rascunho-2026-10' } } });
 assert.equal(up.error, null, 'cadastro');
 assert.equal(up.data.session, null, 'sem sessão antes de confirmar o e-mail');
 
@@ -37,6 +37,10 @@ await fetch(link, { redirect: 'manual' });
 const inn = await supabase.auth.signInWithPassword({ email, password });
 assert.equal(inn.error, null, 'login após confirmação');
 
+assert.equal((await supabase.rpc('my_terms_version')).data, 'rascunho-2026-10', 'o aceite dos termos do cadastro foi registrado');
+const forged = await supabase.from('terms_acceptances').insert({ user_id: inn.data.user.id, document: 'terms_of_use', version: 'forjado' });
+assert(forged.error, 'o aceite não se forja por escrita direta');
+assert.equal((await supabase.rpc('get_contact', { p_user_id: inn.data.user.id })).data.length, 0, 'ainda sem ficha');
 const own = await supabase.from('profiles').select('id, display_name');
 assert.equal(own.error, null);
 assert.equal(own.data.length, 1, 'vê somente o próprio perfil');

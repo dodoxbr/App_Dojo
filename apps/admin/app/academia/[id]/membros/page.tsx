@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import { contactStatusSchema } from "@dojo/contracts/contacts";
 import { ageFlagSchema } from "@dojo/contracts/guardians";
 import { membershipRoleLabels, membershipStatusLabels } from "@dojo/contracts/membership";
 import { getCaller } from "@/lib/context";
@@ -37,9 +38,14 @@ export default async function MembrosPage({
   const flags = new Map(
     ((flagsRaw ?? []) as unknown[]).map((x) => ageFlagSchema.safeParse(x)).flatMap((r) => (r.success ? [[r.data.user_id, r.data] as const] : [])),
   );
+  const { data: contactRaw } = await supabase.rpc("contact_status", { p_academy_id: id });
+  const hasFicha = new Map(
+    ((contactRaw ?? []) as unknown[]).map((x) => contactStatusSchema.safeParse(x)).flatMap((r) => (r.success ? [[r.data.user_id, r.data.has_contact] as const] : [])),
+  );
   const minorTag = (userId: string) => {
     const f = flags.get(userId);
-    return f?.is_minor ? (f.guardian_ready ? " (menor · responsável conferido)" : " (menor · falta conferir o responsável)") : "";
+    const age = f?.is_minor ? (f.guardian_ready ? " (menor · responsável conferido)" : " (menor · falta conferir o responsável)") : "";
+    return `${age}${hasFicha.get(userId) === false ? " · ficha pendente" : ""}`;
   };
 
   const pending = (members ?? []).filter((m) => m.status === "pending");
@@ -90,6 +96,7 @@ export default async function MembrosPage({
               <li key={m.id as string}>
                 {nameOf.get(m.user_id as string) ?? "Pessoa"}{minorTag(m.user_id as string)} — {membershipRoleLabels[m.role as string]} ·{" "}
                 {membershipStatusLabels[m.status as string]}
+                {" "}<Link href={`/academia/${id}/membros/${m.user_id as string}`}>Ficha</Link>
                 {m.role !== "manager" && (
                   <form action={endMembership.bind(null, id)} style={{ display: "inline", marginLeft: 8 }}>
                     <input type="hidden" name="membershipId" value={m.id as string} />

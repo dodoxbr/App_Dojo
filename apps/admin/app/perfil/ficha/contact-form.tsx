@@ -1,0 +1,32 @@
+"use client";
+
+import { useActionState } from "react";
+import { BRAZIL_UFS, formatPhone, formatPostalCode, type ContactRow } from "@dojo/contracts/contacts";
+import { saveContact } from "./actions";
+import type { FormState } from "../../login/actions";
+
+export function ContactForm({ userId, current, suggestedName }: { userId: string; current: ContactRow | null; suggestedName: string }) {
+  const [state, action, pending] = useActionState<FormState, FormData>(saveContact.bind(null, userId), {});
+  return (
+    <form action={action}>
+      <label>Nome completo <input name="fullName" minLength={2} maxLength={160} autoComplete="name" defaultValue={current?.full_name ?? suggestedName} required /></label>
+      <label>Telefone com DDD <input name="phone" type="tel" inputMode="tel" autoComplete="tel" defaultValue={current ? formatPhone(current.phone) : ""} required /></label>
+      <label>CEP <input name="postalCode" inputMode="numeric" autoComplete="postal-code" defaultValue={current ? formatPostalCode(current.postal_code) : ""} required /></label>
+      <label>Rua <input name="street" maxLength={160} autoComplete="address-line1" defaultValue={current?.street ?? ""} required /></label>
+      <label>Número <input name="number" maxLength={20} defaultValue={current?.number ?? ""} required /></label>
+      <label>Complemento (opcional) <input name="complement" maxLength={80} defaultValue={current?.complement ?? ""} /></label>
+      <label>Bairro <input name="neighborhood" maxLength={80} defaultValue={current?.neighborhood ?? ""} required /></label>
+      <label>Cidade <input name="city" maxLength={80} autoComplete="address-level2" defaultValue={current?.city ?? ""} required /></label>
+      <label>
+        Estado{" "}
+        <select name="state" defaultValue={current?.state ?? ""} required>
+          <option value="" disabled>Escolha…</option>
+          {BRAZIL_UFS.map((uf) => <option key={uf} value={uf}>{uf}</option>)}
+        </select>
+      </label>
+      <button type="submit" disabled={pending}>{pending ? "Salvando…" : "Salvar ficha"}</button>
+      {state.error && <p role="alert">{state.error}</p>}
+      {state.message && <p role="status">{state.message}</p>}
+    </form>
+  );
+}

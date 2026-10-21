@@ -14,7 +14,11 @@ export default async function DependentePage({ params }: { params: Promise<{ min
   const { minorId } = await params;
   if (!idSchema.safeParse(minorId).success) notFound();
   const { supabase } = await getCaller();
-  const { data, error } = await supabase.rpc("guardian_overview", { p_minor_id: minorId });
+  const [{ data, error }, { data: contactRows }] = await Promise.all([
+    supabase.rpc("guardian_overview", { p_minor_id: minorId }),
+    supabase.rpc("get_contact", { p_user_id: minorId }),
+  ]);
+  const hasContact = ((contactRows ?? []) as unknown[]).length > 0;
   const parsed = overviewSchema.safeParse(data);
   if (error || !parsed.success || !parsed.data.minor) notFound();
   const o = parsed.data;
@@ -23,6 +27,10 @@ export default async function DependentePage({ params }: { params: Promise<{ min
     <main style={{ padding: 16, display: "grid", gap: 20, maxWidth: 640 }}>
       <p><Link href="/dependentes">← Meus dependentes</Link></p>
       <h1>{o.minor?.display_name}</h1>
+      <p role={hasContact ? "status" : "alert"}>
+        {hasContact ? "Ficha de cadastro preenchida." : "Falta a ficha de cadastro do menor: sem ela não é possível pedir vaga."}{" "}
+        <Link href={`/dependentes/${minorId}/ficha`}>{hasContact ? "Ver ou editar a ficha" : "Preencher a ficha"}</Link>
+      </p>
 
       {o.academies.length === 0 ? (
         <p>Ainda não há pedido de vaga. Abra o link da academia (<code>/entrar/endereço-da-academia</code>) para pedir a vaga do menor.</p>

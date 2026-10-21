@@ -32,6 +32,12 @@ async function newUser(label) {
   await fetch(link, { redirect: 'manual' });
   const inn = await client.auth.signInWithPassword({ email, password });
   assert.equal(inn.error, null, `login ${label}`);
+  // Registration form (US-016) is required to join an academy; synthetic data.
+  const ficha = await client.rpc('save_contact', {
+    p_user_id: inn.data.user.id, p_full_name: `Smoke ${label}`, p_phone: '(11) 99999-0000', p_postal_code: '01001-000',
+    p_street: 'Rua Ficticia', p_number: '1', p_complement: null, p_neighborhood: 'Centro', p_city: 'Sao Paulo', p_state: 'SP',
+  });
+  assert.equal(ficha.error, null, `ficha de ${label}`);
   return { client, email, id: inn.data.user.id };
 }
 

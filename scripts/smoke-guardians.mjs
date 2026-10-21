@@ -4,7 +4,7 @@
 // Usage: SUPABASE_URL=... SUPABASE_ANON_KEY=... node scripts/smoke-guardians.mjs
 import assert from 'node:assert/strict';
 import { createClient } from '@supabase/supabase-js';
-import { localDate, localEnv, makePlatformAdmin, newUser, TZ } from './lib/local.mjs';
+import { localDate, localEnv, makePlatformAdmin, newUser, saveContact, TZ } from './lib/local.mjs';
 
 const run = Date.now();
 const { url, anonKey } = localEnv();
@@ -45,6 +45,9 @@ assert.equal(deps[0].kind, 'legal');
 assert.equal((await stranger.client.rpc('list_my_dependents')).data.length, 0, 'terceiros não enxergam dependentes');
 
 // Consent + request: the minor cannot be approved before the manager checks the guardian's document.
+assert.equal((await mother.client.rpc('request_dependent_membership', { p_minor_id: minorId, p_academy_id: academy, p_photos: false })).error?.code, '22023', 'sem a ficha do menor não há pedido de vaga');
+assert.equal((await saveContact(mother.client, minorId, 'Filha Teste da Silva')).error, null, 'a mãe preenche a ficha da filha');
+assert.equal((await stranger.client.rpc('get_contact', { p_user_id: minorId })).error?.code, '42501', 'terceiros não leem a ficha');
 assert.equal((await stranger.client.rpc('request_dependent_membership', { p_minor_id: minorId, p_academy_id: academy, p_photos: false })).error?.code, '42501');
 const membershipId = (await mother.client.rpc('request_dependent_membership', { p_minor_id: minorId, p_academy_id: academy, p_photos: false })).data;
 assert(membershipId, 'pedido de vaga enviado');
