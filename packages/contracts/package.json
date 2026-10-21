@@ -20,7 +20,8 @@
     "./terms": "./src/terms.ts",
     "./contacts": "./src/contacts.ts",
     "./finance": "./src/finance.ts",
-    "./feed": "./src/feed.ts"
+    "./feed": "./src/feed.ts",
+    "./milestone": "./src/milestone.ts"
   },
   "scripts": {
     "test": "node --test tests/*.test.ts",

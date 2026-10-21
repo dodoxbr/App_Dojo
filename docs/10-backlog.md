@@ -24,6 +24,7 @@ Cada história deve ter migration, política RLS, testes negativos e interface m
 | US-017 | Financeiro: responsável financeiro como funcionalidade; o gestor controla mensalidade e pagamento de cada aluno (baixa manual primeiro); depois plataforma de pagamento (provedor a escolher, com ADR) | 016 | Feito (parte manual), ver `docs/features/US-017.md`; a plataforma de pagamento fica para depois da validação |
 | US-018 | Feed de fotos da academia, no lugar do WhatsApp dos treinos (armazenamento privado, sem metadados, foto de menor só com consentimento) | 013b, 016 | Feito, ver `docs/features/US-018.md` |
 | US-019 | Reações/comentários moderados e medalhas | 018 | Feito, ver `docs/features/US-019.md` (limiares das medalhas são valores de teste) |
+| US-020 | Aviso de 30 treinos desde a última graduação (aluno, responsável e professor) | 011 | Feito, ver `docs/features/US-020.md`; pedido do professor |
 
 ## Definition of Done
 - Critérios de aceite atendidos; UI com estados de carregamento, erro e vazio.

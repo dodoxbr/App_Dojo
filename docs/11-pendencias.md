@@ -222,3 +222,9 @@
 - [ ] Sem edição de comentário, resposta, menção, vários tipos de reação, notificações e medalha manual do gestor.
 - [ ] O app mobile não tem reações, comentários nem medalhas.
 - [ ] **Testes do banco com dados de sobra:** `supabase test db` falha em 4 testes antigos (contagens globais de auditoria e de mensalidades) quando o banco local tem dados de testes manuais; num banco limpo (`supabase db reset`) eles passavam. Não foi feito reset para não apagar as contas de teste em uso.
+
+## US-020 (aviso de 30 treinos)
+- [ ] O professor pediu "30 treinos" e o dono do produto confirmou a contagem **desde a última graduação**; não há regra de graduação por número de treinos no sistema (nenhum número de graduação foi inventado). Confirmar se o marco vale igual para todas as faixas e para menores.
+- [ ] O aviso é **só dentro do app** (sem push, e-mail ou WhatsApp). Sem "visto/dispensar".
+- [ ] Para o instrutor o menor aparece só como "menor de idade", sem o nome do responsável.
+- [ ] O app mobile não mostra o aviso.

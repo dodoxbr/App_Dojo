@@ -2,6 +2,7 @@ import Link from "next/link";
 import { membershipRoleLabels, membershipStatusLabels } from "@dojo/contracts/membership";
 import { getCaller } from "@/lib/context";
 import { CURRENT_TERMS_VERSION } from "@dojo/contracts/terms";
+import { MILESTONE_THRESHOLD, myMilestoneSchema, rankLabel, staffMilestoneSchema } from "@dojo/contracts/milestone";
 import { BirthDateForm } from "./birth-date-form";
 import { acceptTerms } from "./ficha/actions";
 import { ProfileForm } from "./profile-form";
@@ -16,6 +17,10 @@ export default async function PerfilPage() {
     supabase.rpc("get_contact", { p_user_id: userId }),
   ]);
   const hasContact = ((contactRows ?? []) as unknown[]).length > 0;
+  // US-020: aviso de 30 treinos desde a última graduação (do aluno e, para o professor, de quem chegou lá)
+  const [{ data: myMilestonesRaw }, { data: staffMilestonesRaw }] = await Promise.all([supabase.rpc("my_milestones"), supabase.rpc("my_staff_milestones")]);
+  const myMilestones = ((myMilestonesRaw ?? []) as unknown[]).map((x) => myMilestoneSchema.safeParse(x)).flatMap((r) => (r.success ? [r.data] : []));
+  const staffMilestones = ((staffMilestonesRaw ?? []) as unknown[]).map((x) => staffMilestoneSchema.safeParse(x)).flatMap((r) => (r.success ? [r.data] : [])).filter((m) => m.students > 0);
 
   const { data: mine } = await supabase.from("memberships").select("academy_id, role, status").eq("user_id", userId);
   const ids = (mine ?? []).map((m) => m.academy_id as string);
@@ -48,6 +53,19 @@ export default async function PerfilPage() {
       {ageStatus === "minor" && (
         <p role="note">Você é menor de 18 anos. Menores não usam o app sozinhos: o responsável cadastra o menor e usa o app em nome dele.</p>
       )}
+
+      {myMilestones.map((m) => (
+        <section key={m.academy_id} role="status">
+          <h2>{MILESTONE_THRESHOLD} treinos!</h2>
+          <p>Você chegou a {m.attendances} treinos confirmados na {m.academy_name} desde a última graduação ({rankLabel(m.belt_code, m.degree, m.rank_since)}). Converse com o seu professor. Quem decide a graduação é o professor e o gestor.</p>
+        </section>
+      ))}
+      {staffMilestones.map((m) => (
+        <section key={m.academy_id} role="status">
+          <h2>Alunos com {MILESTONE_THRESHOLD} treinos</h2>
+          <p>{m.students} aluno(s) da {m.academy_name} chegaram a {MILESTONE_THRESHOLD} treinos desde a última graduação. <Link href={`/academia/${m.academy_id}/graduacao/alunos`}>Ver quem são</Link></p>
+        </section>
+      ))}
 
       <section>
         <h2>Minhas academias</h2>

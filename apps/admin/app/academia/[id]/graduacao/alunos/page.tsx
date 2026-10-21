@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import { MILESTONE_THRESHOLD, milestoneStudentSchema, rankLabel } from "@dojo/contracts/milestone";
 import { getCaller } from "@/lib/context";
 import { RegisterRankForm } from "../forms";
 
@@ -14,6 +15,8 @@ export default async function AlunosGraduacaoPage({ params }: { params: Promise<
 
   const { data: academy } = await supabase.from("academies").select("id, name").eq("id", id).maybeSingle();
   if (!academy) notFound();
+  const { data: milestoneRaw } = await supabase.rpc("list_milestone_students", { p_academy_id: id });
+  const atMilestone = ((milestoneRaw ?? []) as unknown[]).map((x) => milestoneStudentSchema.safeParse(x)).flatMap((r) => (r.success ? [r.data] : []));
 
   const { data: members } = await supabase.from("memberships").select("user_id").eq("academy_id", id).eq("status", "approved").eq("role", "student");
   const userIds = (members ?? []).map((m) => m.user_id as string);
@@ -31,6 +34,18 @@ export default async function AlunosGraduacaoPage({ params }: { params: Promise<
       <p><Link href={`/academia/${id}/graduacao`}>← Graduação</Link></p>
       <h1>Alunos e graduação atual</h1>
       <p>A graduação oficial só é registrada pelo gestor. O aluno não altera a própria graduação.</p>
+      {atMilestone.length > 0 && (
+        <section role="status">
+          <h2>Chegaram a {MILESTONE_THRESHOLD} treinos desde a última graduação</h2>
+          <ul>
+            {atMilestone.map((s) => (
+              <li key={s.user_id}>
+                <Link href={`/academia/${id}/graduacao/alunos/${s.user_id}`}>{s.person_name}</Link>{s.is_minor ? " (menor de idade)" : ""} — {s.attendances} treinos · {rankLabel(s.belt_code, s.degree, s.rank_since)}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
       {people.length === 0 ? (
         <p>Nenhum aluno aprovado visível. Para ver a lista é preciso a permissão de ver a lista de alunos.</p>
       ) : (

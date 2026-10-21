@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { buildRankHistory, evaluationSchema, type PromotionEvent } from "@dojo/contracts/graduation";
 import { idSchema } from "@dojo/contracts/membership";
+import { milestoneSummarySchema, rankLabel } from "@dojo/contracts/milestone";
 import { EvaluationView } from "@/components/evaluation-view";
 import { RankHistory } from "@/components/rank-history";
 import { getCaller } from "@/lib/context";
@@ -25,6 +26,9 @@ export default async function AvaliacaoAlunoPage({ params }: { params: Promise<{
       .eq("academy_id", id).eq("user_id", userId),
   ]);
   if (!profile) notFound();
+  const { data: summaryRaw } = await supabase.rpc("student_milestone_summary", { p_academy_id: id, p_user_id: userId });
+  const summaryParsed = milestoneSummarySchema.safeParse(((summaryRaw ?? []) as unknown[])[0]);
+  const summary = summaryParsed.success ? summaryParsed.data : null;
   const parsed = evaluationSchema.safeParse(raw);
   const { current } = buildRankHistory((events ?? []) as PromotionEvent[]);
   // Nobody changes their own graduation, not even the manager (the database enforces it too).
@@ -34,6 +38,18 @@ export default async function AvaliacaoAlunoPage({ params }: { params: Promise<{
     <main style={{ padding: 16, display: "grid", gap: 24, maxWidth: 800 }}>
       <p><Link href={`/academia/${id}/graduacao/alunos`}>← Alunos</Link></p>
       <h1>{profile.display_name}</h1>
+
+      {summary && (
+        <section>
+          <h2>Perfil</h2>
+          <ul>
+            <li>{summary.is_minor ? "Menor de idade" : "Adulto"}</li>
+            <li>Graduação atual: {rankLabel(summary.belt_code, summary.degree, summary.rank_since)}</li>
+            <li>Treinos confirmados desde a última graduação: {summary.attendances}{summary.attendances >= summary.threshold ? ` (chegou a ${summary.threshold})` : ` (faltam ${summary.threshold - summary.attendances} para ${summary.threshold})`}</li>
+            {summary.health_visible && <li>Saúde: {summary.health_notes ?? "nenhuma observação informada"}</li>}
+          </ul>
+        </section>
+      )}
 
       <section>
         <h2>Progresso nos critérios</h2>

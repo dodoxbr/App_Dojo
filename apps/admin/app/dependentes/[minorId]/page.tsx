@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { dependentMedalSchema } from "@dojo/contracts/feed";
+import { MILESTONE_THRESHOLD, myMilestoneSchema, rankLabel } from "@dojo/contracts/milestone";
 import { consentStepLabel, overviewSchema } from "@dojo/contracts/guardians";
 import { idSchema } from "@dojo/contracts/membership";
 import { getCaller } from "@/lib/context";
@@ -15,11 +16,13 @@ export default async function DependentePage({ params }: { params: Promise<{ min
   const { minorId } = await params;
   if (!idSchema.safeParse(minorId).success) notFound();
   const { supabase } = await getCaller();
-  const [{ data, error }, { data: contactRows }, { data: medalRows }] = await Promise.all([
+  const [{ data, error }, { data: contactRows }, { data: medalRows }, { data: milestoneRows }] = await Promise.all([
     supabase.rpc("guardian_overview", { p_minor_id: minorId }),
     supabase.rpc("get_contact", { p_user_id: minorId }),
     supabase.rpc("dependent_medals", { p_minor_id: minorId }),
+    supabase.rpc("dependent_milestones", { p_minor_id: minorId }),
   ]);
+  const milestones = ((milestoneRows ?? []) as unknown[]).map((x) => myMilestoneSchema.safeParse(x)).flatMap((r) => (r.success ? [r.data] : []));
   const medals = ((medalRows ?? []) as unknown[]).map((x) => dependentMedalSchema.safeParse(x)).flatMap((r) => (r.success ? [r.data] : []));
   const hasContact = ((contactRows ?? []) as unknown[]).length > 0;
   const parsed = overviewSchema.safeParse(data);
@@ -34,6 +37,12 @@ export default async function DependentePage({ params }: { params: Promise<{ min
         {hasContact ? "Ficha de cadastro preenchida." : "Falta a ficha de cadastro do menor: sem ela não é possível pedir vaga."}{" "}
         <Link href={`/dependentes/${minorId}/ficha`}>{hasContact ? "Ver ou editar a ficha" : "Preencher a ficha"}</Link>
       </p>
+
+      {milestones.map((m) => (
+        <p key={m.academy_id} role="status">
+          {o.minor?.display_name} chegou a {m.attendances} treinos confirmados na {m.academy_name} desde a última graduação ({rankLabel(m.belt_code, m.degree, m.rank_since)}). Já são {MILESTONE_THRESHOLD} ou mais: converse com o professor. Quem decide a graduação é o professor e o gestor.
+        </p>
+      ))}
 
       <p><Link href={`/dependentes/${minorId}/feed`}>Ver o treino do {o.minor?.display_name} (fotos do feed)</Link></p>
 

@@ -5,6 +5,7 @@
 import assert from 'node:assert/strict';
 import { mkdirSync } from 'node:fs';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
 import { localDate, localEnv, makePlatformAdmin, newUser, PASSWORD } from './lib/local.mjs';
 import { openBrowser } from './lib/browser.mjs';
 
@@ -27,11 +28,19 @@ const slug = `navegador-${run}`;
 const academyId = (await master.client.rpc('create_academy', { p_name: 'Academia Navegador', p_slug: slug, p_idempotency_key: crypto.randomUUID() })).data;
 assert(academyId, 'academia criada');
 assert.equal((await master.client.rpc('add_member', { p_academy_id: academyId, p_email: teacher.email, p_role: 'instructor' })).error, null);
+assert.equal((await master.client.rpc('set_instructor_permission', { p_academy_id: academyId, p_permission: 'recommend_graduation', p_granted: true })).error, null);
 const request = await student.client.rpc('request_membership', { p_academy_id: academyId });
 assert.equal((await master.client.rpc('decide_membership', { p_membership_id: request.data, p_decision: 'approved', p_reason: null, p_idempotency_key: crypto.randomUUID() })).data, 'approved');
 const minorId = (await guardian.client.rpc('create_dependent', { p_display_name: 'Menor Navegador', p_birth_date: localDate(365 * 9), p_relationship: 'mãe', p_idempotency_key: crypto.randomUUID() })).data;
 assert(minorId, 'dependente criado');
 const classId = (await master.client.rpc('create_class', { p_academy_id: academyId, p_title: 'Turma Navegador', p_instructor_user_id: teacher.id, p_idempotency_key: crypto.randomUUID() })).data;
+
+// US-020: 30 validated attendances of the student (one lesson per day) straight in the LOCAL database, so the milestone notice shows up
+const sql = `insert into public.sessions (id, academy_id, class_id, starts_at, ends_at)
+  select gen_random_uuid(), '${academyId}', '${classId}', now() - make_interval(days => k), now() - make_interval(days => k) + interval '1 hour' from generate_series(1, 30) k;
+  insert into public.attendances (academy_id, session_id, user_id, source, status, validated_by, validated_at)
+  select '${academyId}', s.id, '${student.id}', 'teacher', 'validated', '${teacher.id}', now() from public.sessions s where s.class_id = '${classId}';`;
+execFileSync('docker', ['exec', 'supabase_db_dojo-platform-local', 'psql', '-U', 'postgres', '-d', 'postgres', '-v', 'ON_ERROR_STOP=1', '-c', sql], { stdio: 'pipe' });
 
 // A post of the student (tiny fake JPEG bytes through the real operation) so the teacher can react and comment in the browser
 const postId = (await student.client.rpc('create_feed_post', { p_academy_id: academyId, p_caption: 'treino do navegador (teste)', p_image: '\\xffd8ffe000104a46', p_width: 100, p_height: 100, p_has_minors: false, p_tag_ids: [], p_client_key: crypto.randomUUID() })).data;
@@ -81,7 +90,7 @@ async function pass(who, user, routes) {
 
 // ---- aluno -------------------------------------------------------------------------------------------------------
 let b = await pass('aluno', student, [
-  ['/perfil', ['Meu perfil']], ['/perfil/ficha', ['Minha ficha de cadastro']], ['/diario', ['Meu diário']], ['/diario/novo', ['Registrar treino']],
+  ['/perfil', ['Meu perfil', '30 treinos!', 'Converse com o seu professor']], ['/perfil/ficha', ['Minha ficha de cadastro']], ['/diario', ['Meu diário']], ['/diario/novo', ['Registrar treino']],
   ['/tecnicas', ['Catálogo']], ['/aulas', ['Agenda']], ['/trilha', []], ['/graduacao', []], ['/desafios', ['Desafios']], ['/desafios/novo', ['Criar desafio']],
   ['/financeiro', ['Meu financeiro']], [`/feed/${academyId}`, ['Feed']], ['/termos', ['Termos de uso']], [`/entrar/${slug}`, ['Academia Navegador']],
 ]);
@@ -106,7 +115,8 @@ if (b) await b.close();
 
 // ---- professor ---------------------------------------------------------------------------------------------------
 b = await pass('professor', teacher, [
-  ['/aulas', ['Agenda']], [`/turmas/${classId}`, ['Turma Navegador']], [`${A}/avaliacoes`, []], [`${A}/graduacao/alunos`, []], [`${A}/painel`, []], [`/feed/${academyId}`, ['Feed']], ['/medalhas', ['Medalhas']],
+  ['/aulas', ['Agenda']], [`/turmas/${classId}`, ['Turma Navegador']], [`${A}/avaliacoes`, []], [`${A}/graduacao/alunos`, []], [`${A}/painel`, []], [`/feed/${academyId}`, ['Feed']], ['/medalhas', ['Medalhas']], ['/perfil', ['Alunos com 30 treinos']],
+  [`${A}/graduacao/alunos`, ['Chegaram a 30 treinos', 'Smoke aluno']], [`${A}/graduacao/alunos/${student.id}`, ['Perfil', 'Treinos confirmados desde a última graduação: 30']],
 ]);
 if (b) {
   // Reação e comentário (formulários de verdade): "Osu!" liga, o comentário aparece
