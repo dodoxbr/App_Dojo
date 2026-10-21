@@ -10,3 +10,9 @@ coverage/
 supabase/.temp/
 supabase/.branches/
 *.tsbuildinfo
+
+# IDEs e capturas locais de teste
+.idea/
+.vscode/
+*.iml
+tmp-shots/
