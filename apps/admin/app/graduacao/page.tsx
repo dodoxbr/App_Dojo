@@ -3,7 +3,6 @@ import { evaluationSchema, type PromotionEvent } from "@dojo/contracts/graduatio
 import { RankHistory } from "@/components/rank-history";
 import { EvaluationView } from "@/components/evaluation-view";
 import { getCaller } from "@/lib/context";
-import { AppShell } from "@/components/shell/AppShell";
 
 // The student's own progress against the academy's rule for their current rank. A recommendation, never a promotion.
 export default async function GraduacaoAlunoPage() {
@@ -31,8 +30,7 @@ export default async function GraduacaoAlunoPage() {
   );
 
   return (
-    <AppShell>
-      <main style={{ padding: 16, display: "grid", gap: 24, maxWidth: 720 }}>
+    <main style={{ padding: 16, display: "grid", gap: 24, maxWidth: 720 }}>
       <p><Link href="/perfil">← Meu perfil</Link></p>
       <h1>Minha graduação</h1>
       <p>
@@ -49,6 +47,5 @@ export default async function GraduacaoAlunoPage() {
         </section>
       ))}
     </main>
-    </AppShell>
   );
 }

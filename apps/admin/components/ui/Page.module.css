@@ -1,0 +1,22 @@
+/* Área principal das telas migradas. Anula o cartão antigo do <main> (camada legacy) e organiza o conteúdo em coluna. */
+.page {
+  display: grid;
+  align-content: start;
+  gap: var(--space-5);
+  width: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: var(--space-4);
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  min-height: 0;
+  font-family: var(--font-sans);
+  color: var(--text);
+}
+
+.narrow { max-width: 760px; }
+
+@media (min-width: 768px) {
+  .page { padding: var(--space-5); }
+}

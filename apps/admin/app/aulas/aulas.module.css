@@ -1,0 +1,21 @@
+.section { display: grid; gap: var(--space-3); }
+.sectionTitle { margin: 0; font-size: var(--text-lg); color: var(--text); }
+
+.sessions { display: grid; gap: var(--space-2); margin: 0; padding: 0; list-style: none; }
+
+.session {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-4);
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+}
+
+.sessionInfo { display: grid; gap: 2px; min-width: 0; }
+.when { font-size: var(--text-sm); color: var(--text-muted); }
+.sessionActions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }

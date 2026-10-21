@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { PAGE_SIZE, techniqueSearchSchema } from "@dojo/contracts/technique";
+import { Alert, Badge, Button, ButtonLink, Card, EmptyState, ItemLink, ItemList, Page, PageHeader, SelectField, TextField } from "@/components/ui";
 import { getCaller } from "@/lib/context";
-import { AppShell } from "@/components/shell/AppShell";
+import styles from "./tecnicas.module.css";
 
 // Catalog search: tolerant to accents, case and synonyms (docs/05). Visibility is decided by RLS.
 export default async function TecnicasPage({
@@ -54,65 +54,69 @@ export default async function TecnicasPage({
   };
 
   return (
-<AppShell>
-    <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 720 }}>
-      <p><Link href="/perfil">← Meu perfil</Link></p>
-      <h1>Catálogo de técnicas</h1>
+    <Page width="narrow">
+      <PageHeader
+        title="Catálogo de técnicas"
+        subtitle="Busca por nome ou sinônimo, sem diferenciar acentos nem maiúsculas."
+        actions={isPlatformAdmin || managedAcademies.length > 0 ? <ButtonLink href="/tecnicas/nova" variant="secondary">Cadastrar técnica</ButtonLink> : undefined}
+      />
 
-      <form method="get">
-        <label>Buscar <input name="q" defaultValue={params.q ?? ""} maxLength={100} placeholder="nome ou sinônimo" /></label>
-        <label>
-          Categoria{" "}
-          <select name="categoria" defaultValue={params.category ?? ""}>
-            <option value="">Todas</option>
-            {categories.map((c) => <option key={c} value={c}>{c}</option>)}
-          </select>
-        </label>
-        <label>
-          Tipo{" "}
-          <select name="tipo" defaultValue={params.type ?? ""}>
-            <option value="">Todos</option>
-            {types.map((c) => <option key={c} value={c}>{c}</option>)}
-          </select>
-        </label>
-        <label>
-          Posição{" "}
-          <select name="posicao" defaultValue={params.position ?? ""}>
-            <option value="">Todas</option>
-            {positions.map((c) => <option key={c} value={c}>{c}</option>)}
-          </select>
-        </label>
-        <button type="submit">Buscar</button>
-      </form>
-
-      {(isPlatformAdmin || managedAcademies.length > 0) && <p><Link href="/tecnicas/nova">Cadastrar técnica</Link></p>}
+      <Card>
+        <form method="get" className={styles.filters}>
+          <TextField label="Buscar" name="q" defaultValue={params.q ?? ""} maxLength={100} placeholder="nome ou sinônimo" />
+          <div className={styles.selects}>
+            <SelectField label="Categoria" name="categoria" defaultValue={params.category ?? ""}>
+              <option value="">Todas</option>
+              {categories.map((c) => <option key={c} value={c}>{c}</option>)}
+            </SelectField>
+            <SelectField label="Tipo" name="tipo" defaultValue={params.type ?? ""}>
+              <option value="">Todos</option>
+              {types.map((c) => <option key={c} value={c}>{c}</option>)}
+            </SelectField>
+            <SelectField label="Posição" name="posicao" defaultValue={params.position ?? ""}>
+              <option value="">Todas</option>
+              {positions.map((c) => <option key={c} value={c}>{c}</option>)}
+            </SelectField>
+          </div>
+          <Button type="submit">Buscar</Button>
+        </form>
+      </Card>
 
       {error ? (
-        <p role="alert">Não foi possível buscar as técnicas.</p>
+        <Alert tone="danger">Não foi possível buscar as técnicas.</Alert>
       ) : results.length === 0 ? (
-        <p>Nenhuma técnica encontrada.</p>
+        <EmptyState title="Nenhuma técnica encontrada">Tente outro nome ou limpe os filtros.</EmptyState>
       ) : (
-        <ul>
+        <ItemList>
           {results.map((t) => (
             <li key={t.id}>
-              <Link href={`/tecnicas/${t.id}`}>{t.name}</Link> — {t.category}
-              {t.level ? ` · ${t.level}` : ""}
-              {t.technique_type ? ` · ${t.technique_type}` : ""}
-              {t.technique_position ? ` · ${t.technique_position}` : ""}
-              {t.classification_status === "proposed" ? " (classificação proposta)" : ""}
-              {t.academy_id ? " · da academia" : ""}
-              {!t.reviewed ? " · aguardando revisão" : ""}
-              {t.matched_alias ? ` (sinônimo: ${t.matched_alias})` : ""}
+              <ItemLink
+                href={`/tecnicas/${t.id}`}
+                title={t.name}
+                meta={t.matched_alias ? `sinônimo: ${t.matched_alias}` : undefined}
+                badges={
+                  <>
+                    <Badge>{t.category}</Badge>
+                    {t.level && <Badge tone="info">{t.level}</Badge>}
+                    {t.technique_type && <Badge>{t.technique_type}</Badge>}
+                    {t.technique_position && <Badge>{t.technique_position}</Badge>}
+                    {t.academy_id && <Badge tone="accent">da academia</Badge>}
+                    {t.classification_status === "proposed" && <Badge tone="info">classificação proposta</Badge>}
+                    {!t.reviewed && <Badge tone="danger">aguardando revisão</Badge>}
+                  </>
+                }
+              />
             </li>
           ))}
-        </ul>
+        </ItemList>
       )}
 
-      <nav aria-label="Paginação">
-        {params.page > 1 && <Link href={link(params.page - 1)}>← Anterior</Link>}{" "}
-        {hasNext && <Link href={link(params.page + 1)}>Próxima →</Link>}
-      </nav>
-    </main>
-    </AppShell>
+      {(params.page > 1 || hasNext) && (
+        <nav aria-label="Paginação" className={styles.pager}>
+          {params.page > 1 && <ButtonLink href={link(params.page - 1)} variant="secondary">← Anterior</ButtonLink>}
+          {hasNext && <ButtonLink href={link(params.page + 1)} variant="secondary">Próxima →</ButtonLink>}
+        </nav>
+      )}
+    </Page>
   );
 }

@@ -1,7 +1,6 @@
-import Link from "next/link";
+import { Alert, Badge, ButtonLink, EmptyState, ItemLink, ItemList, Page, PageHeader } from "@/components/ui";
 import { DIARY_PAGE_SIZE } from "@dojo/contracts/diary";
 import { getCaller } from "@/lib/context";
-import { AppShell } from "@/components/shell/AppShell";
 import { approvedAcademies, techniquesByLog } from "@/lib/diary";
 
 // The caller's OWN diary. Always filtered by user, even for the platform admin (who has a separate page).
@@ -27,38 +26,46 @@ export default async function DiarioPage({ searchParams }: { searchParams: Promi
   const academyName = new Map(academies.map((a) => [a.id, a.name]));
 
   return (
-    <AppShell>
-      <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 640 }}>
-      <p><Link href="/perfil">← Meu perfil</Link></p>
-      <h1>Meu diário</h1>
-      <p>Somente você vê estes registros. Registrar um treino não conta como presença na academia.</p>
-      <p><Link href="/diario/novo">Registrar treino</Link></p>
+    <Page width="narrow">
+      <PageHeader
+        title="Meu diário"
+        subtitle="Somente você vê estes registros. Registrar um treino não conta como presença na academia."
+        actions={<ButtonLink href="/diario/novo">Registrar treino</ButtonLink>}
+      />
 
       {error ? (
-        <p role="alert">Não foi possível carregar o diário.</p>
+        <Alert tone="danger">Não foi possível carregar o diário.</Alert>
       ) : logs.length === 0 ? (
-        <p>Você ainda não registrou nenhum treino.</p>
+        <EmptyState title="Você ainda não registrou nenhum treino" action={<ButtonLink href="/diario/novo" variant="secondary">Registrar o primeiro treino</ButtonLink>}>
+          O diário é só seu: anote o que treinou e as técnicas que praticou.
+        </EmptyState>
       ) : (
-        <ul>
-          {logs.map((l) => (
-            <li key={l.id as string}>
-              <Link href={`/diario/${l.id}`}>{new Date(l.trained_at as string).toLocaleDateString("pt-BR", { timeZone: "UTC" })}</Link>
-              {" — "}
-              {l.academy_id ? (academyName.get(l.academy_id as string) ?? "Academia") : "Treino pessoal"}
-              {(techniques.get(l.id as string) ?? []).length > 0 && (
-                <> · {(techniques.get(l.id as string) ?? []).map((t) => t.name).join(", ")}</>
-              )}
-              {l.notes ? <p>{(l.notes as string).slice(0, 140)}{(l.notes as string).length > 140 ? "…" : ""}</p> : null}
-            </li>
-          ))}
-        </ul>
+        <ItemList>
+          {logs.map((l) => {
+            const names = (techniques.get(l.id as string) ?? []).map((t) => t.name);
+            const notes = (l.notes as string | null) ?? "";
+            return (
+              <li key={l.id as string}>
+                <ItemLink
+                  href={`/diario/${l.id as string}`}
+                  title={new Date(l.trained_at as string).toLocaleDateString("pt-BR", { timeZone: "UTC" })}
+                  meta={l.academy_id ? (academyName.get(l.academy_id as string) ?? "Academia") : "Treino pessoal"}
+                  badges={names.length > 0 ? names.map((n) => <Badge key={n} tone="accent">{n}</Badge>) : undefined}
+                >
+                  {notes ? `${notes.slice(0, 140)}${notes.length > 140 ? "…" : ""}` : null}
+                </ItemLink>
+              </li>
+            );
+          })}
+        </ItemList>
       )}
 
-      <nav aria-label="Paginação">
-        {page > 1 && <Link href={`/diario?pagina=${page - 1}`}>← Mais recentes</Link>}{" "}
-        {hasNext && <Link href={`/diario?pagina=${page + 1}`}>Mais antigos →</Link>}
-      </nav>
-    </main>
-    </AppShell>
+      {(page > 1 || hasNext) && (
+        <nav aria-label="Paginação" style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+          {page > 1 && <ButtonLink href={`/diario?pagina=${page - 1}`} variant="secondary">← Mais recentes</ButtonLink>}
+          {hasNext && <ButtonLink href={`/diario?pagina=${page + 1}`} variant="secondary">Mais antigos →</ButtonLink>}
+        </nav>
+      )}
+    </Page>
   );
 }

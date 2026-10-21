@@ -1,8 +1,9 @@
-import Link from "next/link";
 import { attendanceStatusLabels, isCheckInOpen } from "@dojo/contracts/attendance";
 import { formatSessionRange } from "@dojo/contracts/classes";
+import { Badge, ButtonLink, EmptyState, ItemLink, ItemList, Page, PageHeader } from "@/components/ui";
 import { getCaller } from "@/lib/context";
 import { CheckInButton } from "./check-in-button";
+import styles from "./aulas.module.css";
 
 // Server-side clock read, kept out of the render body (react-hooks/purity).
 const currentTimeMs = () => Date.now();
@@ -40,47 +41,51 @@ export default async function AulasPage() {
   const runByMe = new Set((mine ?? []).map((c) => c.id as string));
 
   return (
-    <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 640 }}>
-      <p><Link href="/perfil">← Meu perfil</Link></p>
-      <h1>Agenda de aulas</h1>
+    <Page width="narrow">
+      <PageHeader title="Agenda de aulas" subtitle="Só a presença confirmada pelo professor conta. Registrar o treino no diário não conta como presença." />
 
       {(mine ?? []).length > 0 && (
-        <section>
-          <h2>Turmas sob minha responsabilidade</h2>
-          <ul>{(mine ?? []).map((c) => <li key={c.id as string}><Link href={`/turmas/${c.id}`}>{c.title}</Link></li>)}</ul>
+        <section className={styles.section} aria-labelledby="minhas-turmas">
+          <h2 id="minhas-turmas" className={styles.sectionTitle}>Turmas sob minha responsabilidade</h2>
+          <ItemList>
+            {(mine ?? []).map((c) => (
+              <li key={c.id as string}><ItemLink href={`/turmas/${c.id as string}`} title={c.title as string} meta="Abrir a turma" /></li>
+            ))}
+          </ItemList>
         </section>
       )}
 
-      <section>
-        <h2>Próximas aulas</h2>
-        <p><small>Só a presença confirmada pelo professor conta. Registrar o treino no diário não conta como presença.</small></p>
+      <section className={styles.section} aria-labelledby="proximas-aulas">
+        <h2 id="proximas-aulas" className={styles.sectionTitle}>Próximas aulas</h2>
         {academyIds.length === 0 ? (
-          <p>Você ainda não faz parte de nenhuma academia.</p>
+          <EmptyState title="Você ainda não faz parte de nenhuma academia">Peça ao gestor da sua academia o link de entrada.</EmptyState>
         ) : (sessions ?? []).length === 0 ? (
-          <p>Nenhuma aula agendada nos próximos 30 dias.</p>
+          <EmptyState title="Nenhuma aula agendada nos próximos 30 dias">Quando o professor agendar, as aulas aparecem aqui.</EmptyState>
         ) : (
-          <ul>
+          <ul className={styles.sessions}>
             {(sessions ?? []).map((s) => {
               const a = academyOf.get(s.academy_id as string);
               const status = statusOf.get(s.id as string);
               const open = isCheckInOpen(s.starts_at as string, s.ends_at as string, s.status as string, nowMs);
               return (
-                <li key={s.id as string}>
-                  {formatSessionRange(s.starts_at as string, s.ends_at as string, a?.timezone ?? "America/Sao_Paulo")} —{" "}
-                  {titleOf.get(s.class_id as string)}
-                  {academyIds.length > 1 && a ? ` · ${a.name}` : ""}
-                  {s.status === "cancelled" ? " (cancelada)" : ""}
-                  {runByMe.has(s.class_id as string) && (
-                    <> · <Link href={`/turmas/${s.class_id}/aulas/${s.id}`}>Presenças</Link></>
-                  )}
-                  {status ? <> · <strong>{attendanceStatusLabels[status]}</strong></> : null}
-                  {!status && open && <> · <CheckInButton sessionId={s.id as string} /></>}
+                <li key={s.id as string} className={styles.session}>
+                  <div className={styles.sessionInfo}>
+                    <strong>{titleOf.get(s.class_id as string)}</strong>
+                    <span className={styles.when}>{formatSessionRange(s.starts_at as string, s.ends_at as string, a?.timezone ?? "America/Sao_Paulo")}</span>
+                    {academyIds.length > 1 && a && <span className={styles.when}>{a.name}</span>}
+                  </div>
+                  <div className={styles.sessionActions}>
+                    {s.status === "cancelled" && <Badge tone="danger">cancelada</Badge>}
+                    {status && <Badge tone={status === "validated" ? "success" : status === "revoked" ? "danger" : "info"}>{attendanceStatusLabels[status]}</Badge>}
+                    {runByMe.has(s.class_id as string) && <ButtonLink href={`/turmas/${s.class_id as string}/aulas/${s.id as string}`} variant="secondary">Presenças</ButtonLink>}
+                    {!status && open && <CheckInButton sessionId={s.id as string} />}
+                  </div>
                 </li>
               );
             })}
           </ul>
         )}
       </section>
-    </main>
+    </Page>
   );
 }

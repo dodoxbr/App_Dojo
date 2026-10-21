@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { membershipRoleLabels, membershipStatusLabels } from "@dojo/contracts/membership";
 import { getCaller } from "@/lib/context";
-import { AppShell } from "@/components/shell/AppShell";
 import { CURRENT_TERMS_VERSION } from "@dojo/contracts/terms";
 import { myMilestoneSchema, rankLabel, staffMilestoneSchema } from "@dojo/contracts/milestone";
 import { BirthDateForm } from "./birth-date-form";
@@ -31,8 +30,7 @@ export default async function PerfilPage() {
   const nameOf = new Map((academies ?? []).map((a) => [a.id, a.name]));
 
   return (
-<AppShell>
-    <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 420 }}>
+<main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 420 }}>
       <h1>Meu perfil</h1>
       {error || !profile ? (
         <p role="alert">Não foi possível carregar o perfil.</p>
@@ -109,6 +107,5 @@ export default async function PerfilPage() {
 
       <form action={signOut}><button type="submit">Sair</button></form>
     </main>
-    </AppShell>
   );
 }

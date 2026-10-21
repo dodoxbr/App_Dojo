@@ -1,0 +1,7 @@
+.filters { display: grid; gap: var(--space-4); }
+.selects { display: grid; gap: var(--space-4); grid-template-columns: 1fr; }
+.pager { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+
+@media (min-width: 640px) {
+  .selects { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}

@@ -249,7 +249,13 @@
 - [ ] Telas antigas dentro do shell ficam como cartão (visual legado) até serem migradas.
 
 ## Redesign (etapa 3: navegação por papel)
-- [ ] Só as telas sob `/academia/[id]/*` têm o menu da equipe; páginas fora desse caminho usadas pela equipe (`/aulas`, `/turmas/[classId]`, `/turmas/[classId]/aulas/[sessionId]`, `/feed/[academyId]`, `/desafios`) ainda abrem sem menu.
+- [x] (etapa 4) O menu agora aparece também nas telas pessoais e compartilhadas, por layouts de `perfil`, `diario`, `tecnicas`, `graduacao`, `aulas`, `trilha`, `desafios`, `financeiro`, `feed`, `medalhas`, `checkin`, `turmas` e `dependentes` (`components/shell/AutoShell.tsx`): aluno e responsável veem o menu do aluno (com "Equipe" se também trabalharem numa academia); quem só trabalha na equipe vê o menu da equipe. Ficam sem menu: login, termos e `/entrar/[slug]`.
 - [ ] O início da equipe usa a primeira academia (a que vier primeiro) de quem trabalha em mais de uma; sem seletor de academia.
 - [ ] "Graduações elegíveis" do brief aparece como "No número de treinos" (aviso por professor, US-020); não existe indicador de elegibilidade pela regra de graduação do gestor.
 - [ ] O menu "Mais" da barra inferior é um `<details>`; não foi testado com leitor de tela.
+
+## Redesign (etapa 4: telas migradas)
+- [x] Visual novo (componentes `Page`, `PageHeader`, `ItemLink`, `Badge`, `EmptyState`, `SelectField`) em **diário** (lista), **catálogo de técnicas** (busca e lista) e **agenda de aulas** (com o botão de check-in no componente `Button`). A lógica e os dados não mudaram.
+- [ ] Ainda no visual antigo (dentro do shell): formulário de registro do diário e detalhe, detalhe da técnica, trilha, graduação do aluno, desafios, financeiro do aluno, feed, medalhas, dependentes, turmas e as telas de gestão (membros, financeiro, saúde, graduação, currículos…).
+- [ ] No celular, a lista de técnicas é longa (cada cartão tem várias etiquetas); avaliar uma versão mais compacta.
+- [ ] Com o servidor de desenvolvimento ligado, `npm run typecheck` pode acusar conflito em `.next/dev/types` depois de criar layouts; apague `apps/admin/.next` (ou pare o servidor) para ver o resultado real. O CI parte de pasta limpa.
