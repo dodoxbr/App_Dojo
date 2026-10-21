@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { skillStatusLabels, summarizeTrail, type SkillStatus } from "@dojo/contracts/curriculum";
+import { Badge, Card, EmptyState, Page, PageHeader, ProgressBar } from "@/components/ui";
 import { getCaller } from "@/lib/context";
 import { SkillSelect } from "./skill-select";
+import styles from "./trilha.module.css";
 
 // The student's trail: the academy's curricula with the student's own progress. Only the teacher can validate.
 export default async function TrilhaPage() {
@@ -29,15 +31,13 @@ export default async function TrilhaPage() {
     new Map((mine ?? []).filter((m) => m.academy_id === academyId).map((m) => [m.technique_id as string, m.status as string]));
 
   return (
-    <main style={{ padding: 16, display: "grid", gap: 24, maxWidth: 720 }}>
-      <p><Link href="/perfil">← Meu perfil</Link></p>
-      <h1>Minha trilha</h1>
-      <p>
-        Marque o que você já estudou ou está praticando. A validação do domínio é feita pelo professor e é independente da
-        presença nas aulas.
-      </p>
+    <Page width="narrow">
+      <PageHeader
+        title="Minha trilha"
+        subtitle="Marque o que você já estudou ou está praticando. A validação do domínio é feita pelo professor e é independente da presença nas aulas."
+      />
 
-      {(curricula ?? []).length === 0 && <p>Sua academia ainda não publicou um currículo.</p>}
+      {(curricula ?? []).length === 0 && <EmptyState title="Sua academia ainda não publicou um currículo">Quando o professor publicar uma trilha, ela aparece aqui.</EmptyState>}
 
       {(curricula ?? []).map((c) => {
         const cItems = (items ?? []).filter((i) => i.curriculum_id === c.id);
@@ -47,22 +47,25 @@ export default async function TrilhaPage() {
           status,
         );
         return (
-          <section key={c.id as string}>
-            <h2>{c.title}{c.level ? ` · ${c.level}` : ""}</h2>
-            <p>
+          <Card key={c.id as string}>
+            <h2 style={{ margin: "0 0 4px", fontSize: "1.25rem" }}>{c.title}{c.level ? ` · ${c.level}` : ""}</h2>
+            <p style={{ margin: "0 0 12px", fontSize: "0.875rem", color: "var(--text-muted)" }}>
               {academyName.get(c.academy_id as string)} — validadas pelo professor: {summary.requiredValidated} de {summary.required} obrigatórias
               ({summary.validated} de {summary.total} no total)
             </p>
-            <ul>
+            {summary.required > 0 && <ProgressBar value={summary.requiredValidated} max={summary.required} label={`Obrigatórias validadas em ${c.title as string}`} />}
+            <ul className={styles.items}>
               {cItems.map((i) => {
                 const t = techniqueOf.get(i.technique_id as string);
                 const current = (status.get(i.technique_id as string) ?? "not_started") as SkillStatus;
                 return (
-                  <li key={`${c.id}-${i.technique_id}`}>
-                    {t ? <Link href={`/tecnicas/${t.id}`}>{t.name as string}</Link> : "Técnica"}
-                    {i.required ? "" : " (opcional)"} —{" "}
+                  <li key={`${c.id}-${i.technique_id}`} className={styles.item}>
+                    <div>
+                      {t ? <Link href={`/tecnicas/${t.id}`}>{t.name as string}</Link> : "Técnica"}
+                      {i.required ? null : <> <Badge>opcional</Badge></>}
+                    </div>
                     {current === "validated" ? (
-                      <strong>{skillStatusLabels.validated}</strong>
+                      <Badge tone="success">{skillStatusLabels.validated}</Badge>
                     ) : (
                       <SkillSelect academyId={c.academy_id as string} techniqueId={i.technique_id as string} current={current} />
                     )}
@@ -70,9 +73,9 @@ export default async function TrilhaPage() {
                 );
               })}
             </ul>
-          </section>
+          </Card>
         );
       })}
-    </main>
+    </Page>
   );
 }

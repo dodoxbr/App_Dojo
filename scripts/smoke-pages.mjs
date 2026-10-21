@@ -142,7 +142,7 @@ try {
   };
 
   // Not signed in
-  await check(null, '/', { has: 'Painel' });
+  await check(null, '/', { has: ['Dojo Platform', 'Entrar', 'Criar conta'] });
   await check(null, '/login', { has: ['Entrar', 'cuidar de um menor de idade', 'Li e aceito os'] });
   await check(null, `/termos/${slug}`, { has: ['Academia Páginas Ltda (teste)', '11.222.333/0001-81', 'Termos de uso'] });
   await check(null, '/termos', { has: ['Termos de uso', 'Política de privacidade', 'Rascunho em revisão jurídica', 'Crianças e adolescentes', 'Instagram', 'Fotos e vídeos dos treinos'] });

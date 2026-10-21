@@ -130,3 +130,90 @@
 .morePanel li { margin: 0; }
 .morePanel .navLink { flex-direction: row; justify-content: flex-start; gap: var(--space-3); min-height: 44px; padding: 0 var(--space-3); font-size: var(--text-sm); }
 .morePanel .navLink[aria-current="page"] { background: var(--bg); }
+
+/* ---------------------------------------------------------------------------------------------------------------------------
+   Ponte visual: as telas ainda não migradas (um <main> sem classe, com elementos HTML simples) ganham o visual do Design System
+   aqui dentro do shell, sem mudar o conteúdo. Só atinge elementos SEM classe: os componentes novos (que têm classe) não são
+   afetados. Quando uma tela migra para os componentes, ela sai desta ponte sozinha.
+   --------------------------------------------------------------------------------------------------------------------------- */
+.content > main:not([class]) {
+  max-width: 1040px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-family: var(--font-sans);
+  color: var(--text);
+}
+
+.content > main:not([class]) :global(h1) { font-size: var(--text-xl); letter-spacing: -0.015em; line-height: var(--leading-tight); color: var(--text); }
+.content > main:not([class]) :global(h2) { font-size: var(--text-lg); color: var(--text); }
+.content > main:not([class]) :global(h3) { font-size: var(--text-md); color: var(--text); }
+.content > main:not([class]) :global(small) { color: var(--text-muted); }
+
+.content > main:not([class]) :global(a:not([class])) { color: var(--primary); font-weight: 600; text-underline-offset: 3px; }
+.content > main:not([class]) :global(a:not([class]):hover) { color: var(--accent-strong); }
+.content > main:not([class]) :global(a:not([class]):focus-visible) { outline: 3px solid var(--focus-ring); outline-offset: 2px; border-radius: 4px; }
+
+.content > main:not([class]) :global(label:not([class])) { font-size: var(--text-sm); font-weight: 600; color: var(--text); }
+
+.content > main:not([class]) :global(input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="file"]):not([type="color"])),
+.content > main:not([class]) :global(select:not([class])),
+.content > main:not([class]) :global(textarea:not([class])) {
+  min-height: var(--control-height);
+  padding: 0 var(--space-3);
+  font-family: inherit;
+  font-size: var(--text-md);
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-control);
+}
+
+.content > main:not([class]) :global(textarea:not([class])) { padding: var(--space-3); }
+.content > main:not([class]) :global(input:not([class]):hover),
+.content > main:not([class]) :global(select:not([class]):hover),
+.content > main:not([class]) :global(textarea:not([class]):hover) { border-color: var(--primary); }
+.content > main:not([class]) :global(input:not([class]):focus-visible),
+.content > main:not([class]) :global(select:not([class]):focus-visible),
+.content > main:not([class]) :global(textarea:not([class]):focus-visible) { outline: 3px solid var(--focus-ring); outline-offset: 1px; border-color: var(--primary); }
+
+.content > main:not([class]) :global(button:not([class])) {
+  min-height: var(--control-height);
+  padding: 0 var(--space-5);
+  font-family: inherit;
+  font-size: var(--text-md);
+  font-weight: 600;
+  color: var(--primary-contrast);
+  background: var(--primary);
+  border: 1px solid var(--primary);
+  border-radius: var(--radius-control);
+}
+
+.content > main:not([class]) :global(button:not([class]):hover:not(:disabled)) { background: var(--primary-strong); border-color: var(--primary-strong); filter: none; }
+.content > main:not([class]) :global(button:not([class]):focus-visible) { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+
+.content > main:not([class]) :global(fieldset) { border-color: var(--border); border-radius: var(--radius-control); }
+.content > main:not([class]) :global(legend) { font-size: var(--text-sm); color: var(--text); }
+
+.content > main:not([class]) :global([role="alert"]:not([class])) { background: var(--danger-surface); border-color: var(--danger); color: #5f1a21; border-radius: var(--radius-control); }
+.content > main:not([class]) :global([role="status"]:not([class])) { background: var(--success-surface); border-color: var(--success); color: #123f27; border-radius: var(--radius-control); }
+.content > main:not([class]) :global([role="note"]:not([class])) { background: var(--info-surface); border-color: var(--info); color: #12305a; border-radius: var(--radius-control); }
+
+.content > main:not([class]) :global(th) { background: var(--bg); color: var(--text); font-size: var(--text-sm); }
+.content > main:not([class]) :global(th),
+.content > main:not([class]) :global(td) { border-bottom-color: var(--border); }
+.content > main:not([class]) :global(code) { background: var(--bg); color: var(--text); }
+.content > main:not([class]) :global(section + section) { margin-top: var(--space-2); }
+
+/* Botões dentro de listas e tabelas (ações por linha, como "Encerrar vínculo") ficam secundários, para não competir com a ação principal. */
+.content > main:not([class]) :global(li button:not([class])),
+.content > main:not([class]) :global(td button:not([class])) {
+  min-height: 40px;
+  padding: 0 var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--primary);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+}
+
+.content > main:not([class]) :global(li button:not([class]):hover:not(:disabled)),
+.content > main:not([class]) :global(td button:not([class]):hover:not(:disabled)) { background: var(--bg); border-color: var(--primary); }

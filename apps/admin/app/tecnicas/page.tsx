@@ -93,19 +93,19 @@ export default async function TecnicasPage({
               <ItemLink
                 href={`/tecnicas/${t.id}`}
                 title={t.name}
-                meta={t.matched_alias ? `sinônimo: ${t.matched_alias}` : undefined}
+                meta={`${t.category}${t.level ? ` · ${t.level}` : ""}`}
                 badges={
-                  <>
-                    <Badge>{t.category}</Badge>
-                    {t.level && <Badge tone="info">{t.level}</Badge>}
-                    {t.technique_type && <Badge>{t.technique_type}</Badge>}
-                    {t.technique_position && <Badge>{t.technique_position}</Badge>}
-                    {t.academy_id && <Badge tone="accent">da academia</Badge>}
-                    {t.classification_status === "proposed" && <Badge tone="info">classificação proposta</Badge>}
-                    {!t.reviewed && <Badge tone="danger">aguardando revisão</Badge>}
-                  </>
+                  t.academy_id || t.classification_status === "proposed" || !t.reviewed ? (
+                    <>
+                      {t.academy_id && <Badge tone="accent">da academia</Badge>}
+                      {t.classification_status === "proposed" && <Badge tone="info">classificação proposta</Badge>}
+                      {!t.reviewed && <Badge tone="danger">aguardando revisão</Badge>}
+                    </>
+                  ) : undefined
                 }
-              />
+              >
+                {[t.technique_type, t.technique_position, t.matched_alias ? `sinônimo: ${t.matched_alias}` : null].filter(Boolean).join(" · ") || null}
+              </ItemLink>
             </li>
           ))}
         </ItemList>

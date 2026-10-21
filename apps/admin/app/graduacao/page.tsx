@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { evaluationSchema, type PromotionEvent } from "@dojo/contracts/graduation";
 import { RankHistory } from "@/components/rank-history";
 import { EvaluationView } from "@/components/evaluation-view";
+import { Alert, Card, EmptyState, Page, PageHeader } from "@/components/ui";
 import { getCaller } from "@/lib/context";
 
 // The student's own progress against the academy's rule for their current rank. A recommendation, never a promotion.
@@ -30,22 +30,20 @@ export default async function GraduacaoAlunoPage() {
   );
 
   return (
-    <main style={{ padding: 16, display: "grid", gap: 24, maxWidth: 720 }}>
-      <p><Link href="/perfil">← Meu perfil</Link></p>
-      <h1>Minha graduação</h1>
-      <p>
-        Sua graduação oficial é registrada pelo gestor da academia; você não a altera. Abaixo, o seu progresso nos critérios que a
-        academia definiu. Só contam presenças confirmadas pelo professor.
-      </p>
-      {results.length === 0 && <p>Você ainda não faz parte de nenhuma academia.</p>}
+    <Page width="narrow">
+      <PageHeader
+        title="Minha graduação"
+        subtitle="Sua graduação oficial é registrada pelo gestor da academia; você não a altera. Abaixo, o seu progresso nos critérios que a academia definiu. Só contam presenças confirmadas pelo professor."
+      />
+      {results.length === 0 && <EmptyState title="Você ainda não faz parte de nenhuma academia">Peça ao gestor da sua academia o link de entrada.</EmptyState>}
       {results.map(({ academy, evaluation, events }) => (
-        <section key={academy.id}>
-          <h2>{academy.name}</h2>
-          {evaluation.success ? <EvaluationView evaluation={evaluation.data} /> : <p role="alert">Não foi possível calcular o seu progresso.</p>}
-          <h3>Histórico de graduações</h3>
+        <Card key={academy.id}>
+          <h2 style={{ margin: "0 0 12px", fontSize: "1.25rem" }}>{academy.name}</h2>
+          {evaluation.success ? <EvaluationView evaluation={evaluation.data} /> : <Alert tone="danger">Não foi possível calcular o seu progresso.</Alert>}
+          <h3 style={{ margin: "24px 0 12px", fontSize: "1rem" }}>Histórico de graduações</h3>
           <RankHistory events={events} />
-        </section>
+        </Card>
       ))}
-    </main>
+    </Page>
   );
 }

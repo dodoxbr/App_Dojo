@@ -1,0 +1,16 @@
+.wrap { display: grid; gap: var(--space-4); }
+.rank { margin: 0; }
+.criteria { display: grid; gap: var(--space-3); margin: 0; padding: 0; list-style: none; }
+
+.criterion {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+}
+
+.head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2); }
+.kind { margin: 0; font-size: var(--text-sm); color: var(--text-muted); }

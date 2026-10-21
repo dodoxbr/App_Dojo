@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { membershipRoleLabels, membershipStatusLabels } from "@dojo/contracts/membership";
+import { Alert, Badge, Button, Card, ItemLink, ItemList, Page, PageHeader } from "@/components/ui";
 import { getCaller } from "@/lib/context";
 import { CURRENT_TERMS_VERSION } from "@dojo/contracts/terms";
 import { myMilestoneSchema, rankLabel, staffMilestoneSchema } from "@dojo/contracts/milestone";
@@ -30,82 +31,85 @@ export default async function PerfilPage() {
   const nameOf = new Map((academies ?? []).map((a) => [a.id, a.name]));
 
   return (
-<main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 420 }}>
-      <h1>Meu perfil</h1>
-      {error || !profile ? (
-        <p role="alert">Não foi possível carregar o perfil.</p>
-      ) : (
-        <ProfileForm displayName={profile.display_name} />
-      )}
+    <Page width="narrow">
+      <PageHeader title="Meu perfil" subtitle="Seus dados, suas academias e atalhos." />
+
+      <Card>
+        {error || !profile ? <Alert tone="danger">Não foi possível carregar o perfil.</Alert> : <ProfileForm displayName={profile.display_name} />}
+      </Card>
 
       {termsVersion !== CURRENT_TERMS_VERSION && (
-        <section role="note">
-          <h2>Termos de uso</h2>
-          <p>Leia os <Link href="/termos">termos de uso e a política de privacidade</Link> (rascunho em revisão) e aceite para continuar usando a plataforma.</p>
-          <form action={acceptTerms}><button type="submit">Li e aceito</button></form>
-        </section>
+        <Alert tone="info">
+          <strong>Termos de uso.</strong> Leia os <Link href="/termos">termos de uso e a política de privacidade</Link> (rascunho em revisão) e aceite para continuar usando a plataforma.
+          <form action={acceptTerms} style={{ marginTop: 12 }}><button type="submit">Li e aceito</button></form>
+        </Alert>
       )}
       {!hasContact && ageStatus !== "minor" && (
-        <p role="note">Falta a sua ficha de cadastro (nome completo, telefone e endereço). Sem ela você não consegue entrar em uma academia. <Link href="/perfil/ficha">Preencher a ficha</Link></p>
+        <Alert tone="info">
+          Falta a sua ficha de cadastro (nome completo, telefone e endereço). Sem ela você não consegue entrar em uma academia.{" "}
+          <Link href="/perfil/ficha">Preencher a ficha</Link>
+        </Alert>
       )}
 
-      {ageStatus === "unknown" && <section><h2>Data de nascimento</h2><BirthDateForm /></section>}
+      {ageStatus === "unknown" && <Card><h2 style={{ margin: "0 0 12px", fontSize: "1.25rem" }}>Data de nascimento</h2><BirthDateForm /></Card>}
       {ageStatus === "minor" && (
-        <p role="note">Você é menor de 18 anos. Menores não usam o app sozinhos: o responsável cadastra o menor e usa o app em nome dele.</p>
+        <Alert tone="info">Você é menor de 18 anos. Menores não usam o app sozinhos: o responsável cadastra o menor e usa o app em nome dele.</Alert>
       )}
 
       {myMilestones.map((m) => (
-        <section key={m.academy_id} role="status">
-          <h2>{m.attendances} treinos!</h2>
-          <p>Você chegou a {m.attendances} treinos confirmados na {m.academy_name} desde a última graduação ({rankLabel(m.belt_code, m.degree, m.rank_since)}). Converse com o seu professor. Quem decide a graduação é o professor e o gestor.</p>
-        </section>
+        <Alert key={m.academy_id} tone="success">
+          <strong>{m.attendances} treinos!</strong> Você chegou a {m.attendances} treinos confirmados na {m.academy_name} desde a última graduação ({rankLabel(m.belt_code, m.degree, m.rank_since)}). Converse com o seu professor. Quem decide a graduação é o professor e o gestor.
+        </Alert>
       ))}
       {staffMilestones.map((m) => (
-        <section key={m.academy_id} role="status">
-          <h2>Alunos no seu número de treinos</h2>
-          <p>{m.students} aluno(s) da {m.academy_name} chegaram ao seu número de treinos desde a última graduação. <Link href={`/academia/${m.academy_id}/graduacao/alunos`}>Ver quem são</Link></p>
-        </section>
+        <Alert key={m.academy_id} tone="success">
+          <strong>Alunos no seu número de treinos.</strong> {m.students} aluno(s) da {m.academy_name} chegaram ao seu número de treinos desde a última graduação.{" "}
+          <Link href={`/academia/${m.academy_id}/graduacao/alunos`}>Ver quem são</Link>
+        </Alert>
       ))}
 
-      <section>
-        <h2>Minhas academias</h2>
+      <Card>
+        <h2 style={{ margin: "0 0 12px", fontSize: "1.25rem" }}>Minhas academias</h2>
         {(mine ?? []).length === 0 ? (
-          <p>Você ainda não faz parte de nenhuma academia. Peça o link ao gestor da sua academia.</p>
+          <p style={{ margin: 0, color: "var(--text-muted)" }}>Você ainda não faz parte de nenhuma academia. Peça o link ao gestor da sua academia.</p>
         ) : (
-          <ul>
+          <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "grid", gap: 12 }}>
             {(mine ?? []).map((m) => (
-              <li key={m.academy_id as string}>
-                {nameOf.get(m.academy_id as string) ?? "Academia"} — {membershipRoleLabels[m.role as string]} ·{" "}
-                {membershipStatusLabels[m.status as string]}
+              <li key={m.academy_id as string} style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center", justifyContent: "space-between" }}>
+                <strong>{nameOf.get(m.academy_id as string) ?? "Academia"}</strong>
+                <span style={{ display: "flex", gap: 8 }}>
+                  <Badge>{membershipRoleLabels[m.role as string]}</Badge>
+                  <Badge tone={m.status === "approved" ? "success" : m.status === "pending" ? "info" : "neutral"}>{membershipStatusLabels[m.status as string]}</Badge>
+                </span>
               </li>
             ))}
           </ul>
         )}
+      </Card>
+
+      <section aria-labelledby="atalhos" style={{ display: "grid", gap: 12 }}>
+        <h2 id="atalhos" style={{ margin: 0, fontSize: "1.25rem" }}>Atalhos</h2>
+        <ItemList>
+          <li><ItemLink href="/perfil/ficha" title={hasContact ? "Minha ficha de cadastro" : "Preencher minha ficha de cadastro"} meta="Contato, endereço e saúde" /></li>
+          <li><ItemLink href="/feed" title="Feed da academia (fotos)" /></li>
+          <li><ItemLink href="/medalhas" title="Medalhas" /></li>
+          <li><ItemLink href="/financeiro" title="Meu financeiro" /></li>
+          <li><ItemLink href="/dependentes" title="Meus dependentes (menores de idade)" /></li>
+          <li><ItemLink href="/desafios" title="Desafios" /></li>
+          <li><ItemLink href="/graduacao" title="Minha graduação" /></li>
+          <li><ItemLink href="/trilha" title="Minha trilha" /></li>
+          <li><ItemLink href="/aulas" title="Agenda de aulas" /></li>
+          <li><ItemLink href="/diario" title="Meu diário" /></li>
+          <li><ItemLink href="/tecnicas" title="Catálogo de técnicas" /></li>
+          {isPlatformAdmin && <li><ItemLink href="/plataforma" title="Plataforma (super admin)" /></li>}
+          {canCreateAcademy && <li><ItemLink href="/academias/nova" title="Criar academia" /></li>}
+          {managedAcademies.map((a) => (
+            <li key={a.id}><ItemLink href={`/academia/${a.id}`} title={`Gerenciar: ${a.name}`} /></li>
+          ))}
+        </ItemList>
       </section>
 
-      <nav aria-label="Atalhos">
-        <h2>Atalhos</h2>
-        <ul>
-          <li><Link href="/perfil/ficha">{hasContact ? "Minha ficha de cadastro" : "Preencher minha ficha de cadastro"}</Link></li>
-          <li><Link href="/feed">Feed da academia (fotos)</Link></li>
-          <li><Link href="/medalhas">Medalhas</Link></li>
-          <li><Link href="/financeiro">Meu financeiro</Link></li>
-          <li><Link href="/dependentes">Meus dependentes (menores de idade)</Link></li>
-          <li><Link href="/desafios">Desafios</Link></li>
-          <li><Link href="/graduacao">Minha graduação</Link></li>
-          <li><Link href="/trilha">Minha trilha</Link></li>
-          <li><Link href="/aulas">Agenda de aulas</Link></li>
-          <li><Link href="/diario">Meu diário</Link></li>
-          <li><Link href="/tecnicas">Catálogo de técnicas</Link></li>
-          {isPlatformAdmin && <li><Link href="/plataforma">Plataforma (super admin)</Link></li>}
-          {canCreateAcademy && <li><Link href="/academias/nova">Criar academia</Link></li>}
-          {managedAcademies.map((a) => (
-            <li key={a.id}><Link href={`/academia/${a.id}`}>Gerenciar: {a.name}</Link></li>
-          ))}
-        </ul>
-      </nav>
-
-      <form action={signOut}><button type="submit">Sair</button></form>
-    </main>
+      <form action={signOut}><Button type="submit" variant="secondary">Sair</Button></form>
+    </Page>
   );
 }

@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { academyMedalSchema, medalSchema, type Medal } from "@dojo/contracts/feed";
+import { Badge, Card, EmptyState, Page, PageHeader } from "@/components/ui";
 import { getCaller } from "@/lib/context";
 
 const fmtDate = (iso: string) => new Date(`${iso}T12:00:00Z`).toLocaleDateString("pt-BR", { timeZone: "UTC" });
@@ -28,24 +28,39 @@ export default async function MedalhasPage() {
   }));
 
   return (
-    <main style={{ padding: 16, display: "grid", gap: 20, maxWidth: 640 }}>
-      <p><Link href="/perfil">← Meu perfil</Link></p>
-      <h1>Medalhas</h1>
-      <p role="note"><small>As medalhas vêm só do que já foi confirmado pelo professor (presenças validadas) e dos desafios de presença encerrados. São um símbolo dentro do app, sem valor em dinheiro. Se uma presença for revogada, a medalha que dependia dela deixa de valer. Os critérios atuais são valores de teste.</small></p>
-      {blocks.length === 0 && <p>As medalhas aparecem para quem faz parte de uma academia.</p>}
+    <Page width="narrow">
+      <PageHeader
+        title="Medalhas"
+        subtitle="As medalhas vêm só do que já foi confirmado pelo professor (presenças validadas) e dos desafios de presença encerrados. São um símbolo dentro do app, sem valor em dinheiro. Se uma presença for revogada, a medalha que dependia dela deixa de valer. Os critérios atuais são valores de teste."
+      />
+      {blocks.length === 0 && <EmptyState title="As medalhas aparecem para quem faz parte de uma academia">Peça ao gestor da sua academia o link de entrada.</EmptyState>}
       {blocks.map(({ academy, ownMedals, people }) => (
-        <section key={academy.id as string}>
-          <h2>{academy.name as string}</h2>
-          <h3>Minhas medalhas</h3>
-          {ownMedals.length === 0 ? <p>Ainda não há medalhas. Elas aparecem conforme suas presenças são confirmadas.</p> : (
-            <ul>{ownMedals.map((m) => <li key={`${m.code}-${m.challenge_id ?? ""}`}>{m.title} — {fmtDate(m.earned_on)}</li>)}</ul>
+        <Card key={academy.id as string}>
+          <h2 style={{ margin: "0 0 12px", fontSize: "1.25rem" }}>{academy.name as string}</h2>
+          <h3 style={{ margin: "0 0 8px", fontSize: "1rem" }}>Minhas medalhas</h3>
+          {ownMedals.length === 0 ? (
+            <EmptyState title="Ainda não há medalhas">Elas aparecem conforme suas presenças são confirmadas.</EmptyState>
+          ) : (
+            <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "grid", gap: 8 }}>
+              {ownMedals.map((m) => (
+                <li key={`${m.code}-${m.challenge_id ?? ""}`}>
+                  <Badge tone="accent">{m.title}</Badge> <small>{fmtDate(m.earned_on)}</small>
+                </li>
+              ))}
+            </ul>
           )}
-          <h3>Quadro da academia (adultos)</h3>
-          {people.length === 0 ? <p>Ninguém mais tem medalhas ainda.</p> : (
-            <ul>{people.map((p) => <li key={p.name}><strong>{p.name}</strong>: {p.medals.map((m) => m.title).join("; ")}</li>)}</ul>
+          <h3 style={{ margin: "24px 0 8px", fontSize: "1rem" }}>Quadro da academia (adultos)</h3>
+          {people.length === 0 ? (
+            <p style={{ margin: 0, color: "var(--text-muted)" }}>Ninguém mais tem medalhas ainda.</p>
+          ) : (
+            <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "grid", gap: 8 }}>
+              {people.map((p) => (
+                <li key={p.name}><strong>{p.name}</strong>: {p.medals.map((m) => m.title).join("; ")}</li>
+              ))}
+            </ul>
           )}
-        </section>
+        </Card>
       ))}
-    </main>
+    </Page>
   );
 }
