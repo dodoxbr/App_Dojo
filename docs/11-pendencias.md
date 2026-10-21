@@ -198,3 +198,13 @@
 - [ ] O texto do consentimento de saúde na ficha precisa citar o **professor** além do gestor; exige revisão jurídica.
 - [ ] O professor vê a saúde de todos os alunos da aula; não há troca de permissão por turma. O professor responsável pela turma é o mesmo que tem a permissão geral de instrutor.
 - [ ] CI: a varredura de segredos (gitleaks) acusava a senha fictícia dos testes locais e falhou em 3 execuções passadas; adicionada exceção em `.gitleaks.toml` só para esse valor (`senha-sintetica-123`).
+
+## US-018 (feed de fotos)
+- [ ] **A foto fica no banco** (ADR-022), não no Storage: acompanhar o tamanho; para vídeo ou volume alto, migrar para Storage com CDN.
+- [ ] **Quem aparece na foto sem ser marcado** não é detectado: o sistema confia em quem posta para marcar os menores (e na denúncia dos outros membros). Não há reconhecimento facial nem revisão antes de publicar.
+- [ ] Adultos que aparecem numa foto não dão consentimento individual: os termos precisam dizer que fotos dos treinos são vistas pelos membros da academia e como pedir a remoção (hoje: denunciar). Revisão jurídica.
+- [ ] O responsável de um menor **não vê o feed** (não é membro da academia); só o gestor e os membros veem. Decidir se o responsável legal passa a ver as fotos em que o menor aparece.
+- [ ] Menor sem login não posta; um responsável posta como ele mesmo.
+- [ ] A retenção de 30 dias é igual para todas as academias; não há "guardar uma foto" nem álbum. Sem reações, comentários, vídeo e notificações (US-019).
+- [ ] O corte de 20 posts por dia e de 800 KB por foto são premissas de custo/antiabuso.
+- [ ] O app mobile não tem o feed.

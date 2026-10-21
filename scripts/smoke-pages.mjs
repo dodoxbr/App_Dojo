@@ -7,6 +7,7 @@ import { spawn, execSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { createServerClient } from '@supabase/ssr';
+import sharp from 'sharp';
 import { localDate, localEnv, makePlatformAdmin, newUser, PASSWORD, saveContact } from './lib/local.mjs';
 
 const { url, anonKey } = localEnv();
@@ -124,7 +125,9 @@ try {
   const check = async (role, route, expect) => {
     const res = await fetch(`${BASE}${route}`, { headers: cookies[role] ? { cookie: cookies[role] } : {}, redirect: 'manual' });
     const label = `${(role ?? 'anônimo').padEnd(8)} ${route}`;
-    if (expect.redirect) {
+    if (expect.status) {
+      assert.equal(res.status, expect.status, `${label}: esperava status ${expect.status}, veio ${res.status}`);
+    } else if (expect.redirect) {
       const loc = res.headers.get('location') ?? '';
       assert([301, 302, 303, 307, 308].includes(res.status) && loc.includes(expect.redirect), `${label}: esperava redirecionar para ${expect.redirect}, veio ${res.status} ${loc}`);
     } else {
@@ -169,6 +172,57 @@ try {
   await check('student', `${A}/painel`, { redirect: '/perfil' });
   await check('student', `${A}/membros`, { redirect: '/perfil' });
   await check('student', '/academias/nova', { redirect: '/perfil' });
+
+  // Feed of photos: a REAL upload through the route, then the stored picture is downloaded and inspected
+  await check(null, `/feed/${academyId}`, { redirect: '/login?next=' });
+  await check('student', '/feed', { redirect: `/feed/${academyId}` });
+  await check('student', `/feed/${academyId}`, { has: ['Feed —', 'Postar uma foto', 'Nenhuma foto ainda', 'Quem aparece na foto', 'somem sozinhas depois de 30 dias'] });
+  await check('guardian', `/feed/${academyId}`, { status: 404 });
+  const photo = await sharp({ create: { width: 2400, height: 1600, channels: 3, background: { r: 30, g: 90, b: 160 } } })
+    .withExif({ IFD0: { Make: 'CameraSecreta', ImageDescription: 'endereco-secreto-da-casa' }, IFD3: { GPSLatitudeRef: 'S', GPSLatitude: '23/1 32/1 0/1' } })
+    .withMetadata({ orientation: 6 }).jpeg().toBuffer();
+  assert(photo.includes(Buffer.from('endereco-secreto-da-casa')), 'a foto de teste tem metadado');
+  const upload = async (role, parts) => {
+    const fd = new FormData();
+    for (const [k, v] of parts) fd.append(k, v);
+    return fetch(`${BASE}/api/feed/upload`, { method: 'POST', body: fd, headers: cookies[role] ? { cookie: cookies[role] } : {}, redirect: 'manual' });
+  };
+  const base = (extra = []) => [['academyId', academyId], ['clientKey', crypto.randomUUID()], ['caption', 'treino de páginas (teste)'], ...extra];
+  let r = await upload('student', [...base(), ['photo', new Blob([photo], { type: 'image/jpeg' }), 'treino.jpg']]);
+  assert.equal(r.status, 303, 'envio redireciona');
+  assert(r.headers.get('location').endsWith(`/feed/${academyId}?ok=1`), `envio concluído: ${r.headers.get('location')}`);
+  results.push('student  POST /api/feed/upload');
+  r = await upload('student', [...base(), ['photo', new Blob(['isto não é uma imagem'], { type: 'text/plain' }), 'x.txt']]);
+  assert(r.headers.get('location').endsWith('?erro=decode'), 'arquivo que não é imagem é recusado');
+  r = await upload('student', [...base(), ['hasMinors', 'on'], ['photo', new Blob([photo], { type: 'image/jpeg' }), 'treino.jpg']]);
+  assert(r.headers.get('location').endsWith('?erro=tag%20minors') || r.headers.get('location').includes('erro=tag'), 'diz que há menor mas não marca ninguém: recusado');
+  r = await upload('student', [['academyId', academyId], ['clientKey', crypto.randomUUID()]]);
+  assert(r.headers.get('location').endsWith('?erro=file'), 'sem foto: recusado');
+  r = await upload('guardian', [...base(), ['photo', new Blob([photo], { type: 'image/jpeg' }), 'treino.jpg']]);
+  assert(r.headers.get('location').endsWith('?erro=forbidden'), 'quem não é da academia não posta');
+  r = await fetch(`${BASE}/api/feed/upload`, { method: 'POST', headers: { 'sec-fetch-site': 'cross-site', cookie: cookies.student }, body: new FormData(), redirect: 'manual' });
+  assert.equal(r.status, 403, 'formulário de outro site é barrado');
+
+  const { data: stored } = await student.client.from('feed_posts').select('id, width, height');
+  assert.equal(stored.length, 1, 'um único post foi gravado');
+  assert.equal(stored[0].height, 1600, 'a foto de lado foi girada e reduzida');
+  const fetchImage = (role) => fetch(`${BASE}/api/feed/image/${stored[0].id}`, { headers: cookies[role] ? { cookie: cookies[role] } : {}, redirect: 'manual' });
+  r = await fetchImage('teacher');
+  assert.equal(r.status, 200, 'o professor (membro) vê a foto');
+  assert.equal(r.headers.get('content-type'), 'image/jpeg');
+  assert.equal(r.headers.get('x-content-type-options'), 'nosniff');
+  const bytes = Buffer.from(await r.arrayBuffer());
+  assert.deepEqual([...bytes.subarray(0, 3)], [0xff, 0xd8, 0xff], 'é um JPEG');
+  for (const secret of ['endereco-secreto-da-casa', 'CameraSecreta', 'GPSLatitude', 'Exif']) assert(!bytes.includes(Buffer.from(secret)), `a foto salva não contém ${secret}`);
+  assert.equal((await sharp(bytes).metadata()).exif, undefined, 'sem EXIF');
+  results.push('teacher  GET /api/feed/image (sem metadados)');
+  assert.equal((await fetchImage('guardian')).status, 404, 'quem não é da academia recebe 404');
+  assert.equal((await fetchImage('owner')).status, 404, 'o super admin recebe 404');
+  const anon = await fetchImage(null);
+  assert([301, 302, 303, 307, 308].includes(anon.status), 'sem login, redireciona');
+  await check('teacher', `/feed/${academyId}`, { has: ['Feed —', 'Foto postada por Smoke aluno', 'treino de páginas (teste)', 'Some em 30 dia', 'Denunciar'] });
+  await check('student', `/feed/${academyId}`, { has: ['Foto postada por Smoke aluno', '(você)', 'Apagar esta foto'] });
+  await check('manager', `/feed/${academyId}`, { has: ['Apagar esta foto'] });
 
   // Guardian (adult account that answers for the minor)
   await check('guardian', '/dependentes', { has: ['Meus dependentes', 'Menor de páginas', 'Responsável legal', 'Sou o responsável financeiro'] });

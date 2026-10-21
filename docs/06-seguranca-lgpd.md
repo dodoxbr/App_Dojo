@@ -7,7 +7,7 @@
 - RLS para todas as entidades privadas; testes negativos entre academias e entre usuários da mesma academia.
 - RPC transacional e autorizada para aprovações, presenças e graduações.
 - Segredos apenas no servidor; `service_role` nunca em app/web; auditoria de eventos críticos.
-- Fotos em storage privado, EXIF removido, limite de tamanho, URLs assinadas e retenção definida.
+- Fotos em tabela privada do banco (ADR-022, em vez de Storage), EXIF removido no servidor, limite de tamanho, entrega sob a regra de acesso do banco e retenção de 30 dias com apagamento real.
 - Backups e plano de restauração; exclusão/anonimização conforme obrigações aplicáveis.
 - LGPD: transparência, minimização, finalidade, direitos do titular e atendimento a solicitações.
 
