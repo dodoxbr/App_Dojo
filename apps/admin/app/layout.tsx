@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Dojo Platform — Painel",
-  description: "Painel administrativo (US-001: base técnica, sem funcionalidades).",
+  description: "Painel da plataforma de academias de Jiu-Jitsu: turmas, presenças, graduações, financeiro e feed.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
