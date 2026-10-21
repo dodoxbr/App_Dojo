@@ -205,10 +205,20 @@
 - [ ] Os termos agora dizem que as fotos são vistas pelos membros, que a academia pode postar no Instagram e como pedir a remoção. Para adultos o aceite é **por participar dos treinos**, sem opção individual de recusar o Instagram: pedir parecer jurídico e avaliar uma caixa de autorização separada para adultos (como existe para menores).
 - [x] O responsável legal passou a ver as fotos do feed em que o filho aparece (decisão do dono do produto).
 - [ ] Menor sem login não posta; um responsável posta como ele mesmo.
-- [ ] A retenção de 30 dias é igual para todas as academias; não há "guardar uma foto" nem álbum. Sem reações, comentários, vídeo e notificações (US-019).
+- [ ] A retenção de 30 dias é igual para todas as academias; não há "guardar uma foto" nem álbum. Reações e comentários entraram na US-019; seguem sem vídeo e sem notificações.
 - [ ] O corte de 20 posts por dia e de 800 KB por foto são premissas de custo/antiabuso.
 - [ ] O app mobile não tem o feed.
 - [ ] A plataforma **não publica no Instagram**: quem decide e publica é a academia, fora do sistema. O aviso "pode/não pode ir para as redes sociais" só considera os menores **marcados**; menor não marcado na foto não é detectado.
 - [ ] Remover uma foto da plataforma não remove cópias já publicadas no Instagram ou baixadas por terceiros; o texto dos termos avisa, mas o processo de retirada nas redes é da academia.
 
 - **Armadilha do Next dev:** nunca use `serverAction.bind(null, …)` dentro de componente cliente passado ao `useActionState` (o servidor de desenvolvimento entra em laço e trava). Use closure `(prev, formData) => action(ids, prev, formData)` ou faça o `bind` em componente servidor. Passeio em navegador real: `node scripts/e2e-browser.mjs` (precisa de `SUPABASE_ANON_KEY`, painel em execução e Supabase local).
+
+## US-019 (reações, comentários e medalhas)
+- [ ] **Os limiares das medalhas são valores de TESTE** (10/25/50/100 presenças, 4/12 semanas seguidas, vencedor de desafio de presença): o dono do produto precisa fixar a lista e os critérios finais (`medal_catalog()` na migração 029).
+- [ ] Decisões tomadas (2026-10-20): um só tipo de reação ("Osu!"); comentários de adultos com denúncia e gestor apaga; medalhas só do que é verificado; menor ganha medalha mas não reage nem comenta; responsável não comenta nem vê comentários.
+- [ ] Os membros adultos veem as medalhas uns dos outros (quadro da academia), sem opção de esconder; menor só para o responsável e o gestor. Confirmar com o dono do produto e, se for o caso, com a revisão jurídica.
+- [ ] Desafios de treino e de golpes (informados pelo aluno) **não** dão medalha, por não serem verificados.
+- [ ] Medalhas são calculadas a cada consulta (ADR-023); revisar o custo se uma academia crescer muito.
+- [ ] Sem edição de comentário, resposta, menção, vários tipos de reação, notificações e medalha manual do gestor.
+- [ ] O app mobile não tem reações, comentários nem medalhas.
+- [ ] **Testes do banco com dados de sobra:** `supabase test db` falha em 4 testes antigos (contagens globais de auditoria e de mensalidades) quando o banco local tem dados de testes manuais; num banco limpo (`supabase db reset`) eles passavam. Não foi feito reset para não apagar as contas de teste em uso.

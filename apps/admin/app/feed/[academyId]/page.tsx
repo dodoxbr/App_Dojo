@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CAPTION_MAX, daysLeft, FEED_RETENTION_DAYS, feedPersonSchema, feedPostSchema, hiddenReasonLabels } from "@dojo/contracts/feed";
+import { CAPTION_MAX, COMMENT_MAX, commentSchema, daysLeft, FEED_RETENTION_DAYS, feedPersonSchema, feedPostSchema, hiddenReasonLabels, type FeedComment } from "@dojo/contracts/feed";
 import { idSchema } from "@dojo/contracts/membership";
 import { getCaller } from "@/lib/context";
 import { feedMessage } from "@/lib/feed-ui";
-import { deletePost, reportPost, restorePost } from "./actions";
+import { addComment, deleteComment, deletePost, reportComment, reportPost, restoreComment, restorePost, toggleReaction } from "./actions";
 
 const PAGE = 20;
 
@@ -45,9 +45,24 @@ export default async function FeedPage({
     }),
   );
 
+  // Comments of each post (a reported one is shown only to its author and the manager); the manager also reads why it was reported.
+  const commentsOf = new Map<string, FeedComment[]>();
+  const commentReasons = new Map<string, string[]>();
+  await Promise.all(
+    posts.map(async (p) => {
+      const { data } = await supabase.rpc("list_feed_comments", { p_post_id: p.id });
+      const list = ((data ?? []) as unknown[]).map((x) => commentSchema.safeParse(x)).flatMap((r) => (r.success ? [r.data] : []));
+      commentsOf.set(p.id, list);
+      await Promise.all(list.filter((c) => p.can_manage && c.status === "hidden").map(async (c) => {
+        const { data: reasons } = await supabase.rpc("list_comment_reports", { p_comment_id: c.id });
+        commentReasons.set(c.id, ((reasons ?? []) as { reason: string }[]).map((r) => r.reason));
+      }));
+    }),
+  );
+
   return (
     <main style={{ padding: 16, display: "grid", gap: 20, maxWidth: 720 }}>
-      <p><Link href="/perfil">← Meu perfil</Link></p>
+      <p><Link href="/perfil">← Meu perfil</Link> · <Link href="/medalhas">Medalhas</Link></p>
       <h1>Feed — {academy.name}</h1>
       <p role="note"><small>Só os membros desta academia veem estas fotos. Elas somem sozinhas depois de {FEED_RETENTION_DAYS} dias. Os dados escondidos da foto (como a localização) são removidos antes de salvar.</small></p>
       {message && <p role="alert">{message}</p>}
@@ -97,6 +112,49 @@ export default async function FeedPage({
               )}
               {p.tags.length > 0 && <p><small>Na foto: {p.tags.map((t) => t.name).join(", ")}</small></p>}
               <p><small>Some em {daysLeft(p.expires_at)} dia(s).</small></p>
+              {p.status === "visible" && (
+                <form action={toggleReaction.bind(null, academyId)}>
+                  <input type="hidden" name="postId" value={p.id} />
+                  <button type="submit" aria-pressed={p.reacted_by_me}>{p.reacted_by_me ? "Osu! (você reagiu)" : "Osu!"} · {p.reactions}</button>
+                </form>
+              )}
+              {(commentsOf.get(p.id) ?? []).length > 0 && (
+                <ul>
+                  {(commentsOf.get(p.id) ?? []).map((c) => (
+                    <li key={c.id}>
+                      <strong>{c.author_name}</strong>{c.mine ? " (você)" : ""}: {c.body}
+                      {c.status === "hidden" && <small> — oculto para os outros: denunciado, aguarda o gestor{(commentReasons.get(c.id) ?? []).length > 0 ? ` (motivo: ${(commentReasons.get(c.id) ?? []).join("; ")})` : ""}</small>}
+                      {c.can_manage && c.status === "hidden" && !c.mine && (
+                        <form action={restoreComment.bind(null, academyId)}>
+                          <input type="hidden" name="commentId" value={c.id} />
+                          <button type="submit">Devolver comentário</button>
+                        </form>
+                      )}
+                      {c.can_manage && (
+                        <form action={deleteComment.bind(null, academyId)}>
+                          <input type="hidden" name="commentId" value={c.id} />
+                          <button type="submit">Apagar comentário</button>
+                        </form>
+                      )}
+                      {!c.mine && c.status === "visible" && !c.reported_by_me && (
+                        <form action={reportComment.bind(null, academyId)}>
+                          <input type="hidden" name="commentId" value={c.id} />
+                          <label>Denunciar: motivo <input name="reason" minLength={3} maxLength={300} required /></label>
+                          <button type="submit">Denunciar comentário</button>
+                        </form>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {p.status === "visible" && (
+                <form action={addComment.bind(null, academyId)}>
+                  <input type="hidden" name="postId" value={p.id} />
+                  <input type="hidden" name="clientKey" value={crypto.randomUUID()} />
+                  <label>Comentar <input name="body" minLength={1} maxLength={COMMENT_MAX} required /></label>
+                  <button type="submit">Enviar comentário</button>
+                </form>
+              )}
               {(reportsOf.get(p.id) ?? []).length > 0 && (
                 <ul>{(reportsOf.get(p.id) ?? []).map((r, i) => <li key={i}>Motivo da denúncia: {r}</li>)}</ul>
               )}

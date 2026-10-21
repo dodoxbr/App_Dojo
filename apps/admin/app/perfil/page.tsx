@@ -70,6 +70,7 @@ export default async function PerfilPage() {
         <ul>
           <li><Link href="/perfil/ficha">{hasContact ? "Minha ficha de cadastro" : "Preencher minha ficha de cadastro"}</Link></li>
           <li><Link href="/feed">Feed da academia (fotos)</Link></li>
+          <li><Link href="/medalhas">Medalhas</Link></li>
           <li><Link href="/financeiro">Meu financeiro</Link></li>
           <li><Link href="/dependentes">Meus dependentes (menores de idade)</Link></li>
           <li><Link href="/desafios">Desafios</Link></li>

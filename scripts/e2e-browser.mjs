@@ -33,6 +33,9 @@ const minorId = (await guardian.client.rpc('create_dependent', { p_display_name:
 assert(minorId, 'dependente criado');
 const classId = (await master.client.rpc('create_class', { p_academy_id: academyId, p_title: 'Turma Navegador', p_instructor_user_id: teacher.id, p_idempotency_key: crypto.randomUUID() })).data;
 
+// A post of the student (tiny fake JPEG bytes through the real operation) so the teacher can react and comment in the browser
+const postId = (await student.client.rpc('create_feed_post', { p_academy_id: academyId, p_caption: 'treino do navegador (teste)', p_image: '\\xffd8ffe000104a46', p_width: 100, p_height: 100, p_has_minors: false, p_tag_ids: [], p_client_key: crypto.randomUUID() })).data;
+assert(postId, 'post criado');
 const A = `/academia/${academyId}`;
 const findings = [];
 const note = (who, where, what) => { findings.push(`${who} ${where}: ${what}`); console.log(`  ! ${who} ${where}: ${what}`); };
@@ -103,9 +106,21 @@ if (b) await b.close();
 
 // ---- professor ---------------------------------------------------------------------------------------------------
 b = await pass('professor', teacher, [
-  ['/aulas', ['Agenda']], [`/turmas/${classId}`, ['Turma Navegador']], [`${A}/avaliacoes`, []], [`${A}/graduacao/alunos`, []], [`${A}/painel`, []], [`/feed/${academyId}`, ['Feed']],
+  ['/aulas', ['Agenda']], [`/turmas/${classId}`, ['Turma Navegador']], [`${A}/avaliacoes`, []], [`${A}/graduacao/alunos`, []], [`${A}/painel`, []], [`/feed/${academyId}`, ['Feed']], ['/medalhas', ['Medalhas']],
 ]);
-if (b) await b.close();
+if (b) {
+  // Reação e comentário (formulários de verdade): "Osu!" liga, o comentário aparece
+  await b.goto(`${BASE}/feed/${academyId}`);
+  try {
+    await b.clickButton('Osu!');
+    await b.waitFor("document.body.innerText.includes('Osu! (você reagiu) · 1')", 8000, 'reação registrada');
+    await b.fill('input[name=body]', 'comentário do navegador (teste)');
+    await b.clickButton('Enviar comentário');
+    await b.waitFor("document.body.innerText.includes('comentário do navegador (teste)')", 8000, 'comentário publicado');
+  } catch (e) { note('professor', '/feed (reação e comentário)', e.message); }
+  await b.screenshot(path.join(SHOTS, `${String(++shotN).padStart(2, '0')}-professor-feed-social.png`));
+  await b.close();
+}
 
 // ---- gestor ------------------------------------------------------------------------------------------------------
 b = await pass('gestor', master, [

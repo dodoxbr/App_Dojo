@@ -33,6 +33,9 @@ export const feedPostSchema = z.object({
   can_manage: z.boolean(),
   reported_by_me: z.boolean(),
   social_ok: z.boolean(),
+  reactions: z.number(),
+  reacted_by_me: z.boolean(),
+  comments: z.number(),
 });
 
 // What the legal guardian sees: only the posts that show their own minor.
@@ -59,6 +62,42 @@ export const reportSchema = z.object({
   reason: z.string().trim().min(3, 'Informe o motivo (mínimo 3 caracteres).').max(300, 'Motivo muito longo.'),
 });
 
+// US-019: comments (adults only, 1 to 300 characters) and medals (computed by the database from validated attendance).
+export const COMMENT_MAX = 300;
+export const COMMENTS_PER_DAY = 30;
+
+export const commentInputSchema = z.object({
+  postId: z.uuid(),
+  body: z.string().trim().min(1, 'Escreva o comentário.').max(COMMENT_MAX, 'O comentário pode ter até 300 caracteres.'),
+  clientKey: z.uuid(),
+});
+
+export const commentSchema = z.object({
+  id: z.uuid(),
+  author_name: z.string(),
+  body: z.string(),
+  created_at: z.string(),
+  status: z.enum(['visible', 'hidden']),
+  mine: z.boolean(),
+  can_manage: z.boolean(),
+  reported_by_me: z.boolean(),
+});
+
+export const commentReportSchema = z.object({
+  commentId: z.uuid(),
+  reason: z.string().trim().min(3, 'Informe o motivo (mínimo 3 caracteres).').max(300, 'Motivo muito longo.'),
+});
+
+export const medalSchema = z.object({
+  code: z.string(),
+  title: z.string(),
+  earned_on: z.string(),
+  challenge_id: z.uuid().nullable(),
+});
+
+export const academyMedalSchema = medalSchema.extend({ user_id: z.uuid(), person_name: z.string() });
+export const dependentMedalSchema = medalSchema.extend({ academy_id: z.uuid(), academy_name: z.string() });
+
 export const hiddenReasonLabels: Record<string, string> = {
   reported: 'denunciada por um membro; aguarda a decisão do gestor',
   'consent revoked': 'o responsável de um menor marcado revogou o consentimento de foto',
@@ -70,5 +109,7 @@ export function daysLeft(expiresAt: string, now: Date = new Date()): number {
 }
 
 export type FeedPost = z.infer<typeof feedPostSchema>;
+export type FeedComment = z.infer<typeof commentSchema>;
+export type Medal = z.infer<typeof medalSchema>;
 export type FeedPerson = z.infer<typeof feedPersonSchema>;
 export type DependentPost = z.infer<typeof dependentPostSchema>;

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { dependentMedalSchema } from "@dojo/contracts/feed";
 import { consentStepLabel, overviewSchema } from "@dojo/contracts/guardians";
 import { idSchema } from "@dojo/contracts/membership";
 import { getCaller } from "@/lib/context";
@@ -14,10 +15,12 @@ export default async function DependentePage({ params }: { params: Promise<{ min
   const { minorId } = await params;
   if (!idSchema.safeParse(minorId).success) notFound();
   const { supabase } = await getCaller();
-  const [{ data, error }, { data: contactRows }] = await Promise.all([
+  const [{ data, error }, { data: contactRows }, { data: medalRows }] = await Promise.all([
     supabase.rpc("guardian_overview", { p_minor_id: minorId }),
     supabase.rpc("get_contact", { p_user_id: minorId }),
+    supabase.rpc("dependent_medals", { p_minor_id: minorId }),
   ]);
+  const medals = ((medalRows ?? []) as unknown[]).map((x) => dependentMedalSchema.safeParse(x)).flatMap((r) => (r.success ? [r.data] : []));
   const hasContact = ((contactRows ?? []) as unknown[]).length > 0;
   const parsed = overviewSchema.safeParse(data);
   if (error || !parsed.success || !parsed.data.minor) notFound();
@@ -48,6 +51,14 @@ export default async function DependentePage({ params }: { params: Promise<{ min
                 <li>Próximas aulas: {(a.next_sessions ?? []).length === 0 ? "nenhuma agendada" : (a.next_sessions ?? []).map((s) => `${s.title} (${fmtWhen(s.starts_at)})`).join("; ")}</li>
                 <li>Fotos no feed da academia: {a.consent_photos ? "autorizado" : "não autorizado"} · redes sociais (Instagram): {a.consent_social ? "autorizado" : "não autorizado"}</li>
               </ul>
+            )}
+            {a.consent_status === "verified" && a.consent_active && (
+              <>
+                <h3>Medalhas</h3>
+                {medals.filter((m) => m.academy_id === a.academy_id).length === 0 ? <p>Ainda sem medalhas.</p> : (
+                  <ul>{medals.filter((m) => m.academy_id === a.academy_id).map((m) => <li key={`${m.code}-${m.challenge_id ?? ""}`}>{m.title} — {new Date(`${m.earned_on}T12:00:00Z`).toLocaleDateString("pt-BR", { timeZone: "UTC" })}</li>)}</ul>
+                )}
+              </>
             )}
             {a.consent_active && (
               <form action={revokeConsent.bind(null, minorId)}>
