@@ -2,7 +2,7 @@ import Link from "next/link";
 import { membershipRoleLabels, membershipStatusLabels } from "@dojo/contracts/membership";
 import { getCaller } from "@/lib/context";
 import { CURRENT_TERMS_VERSION } from "@dojo/contracts/terms";
-import { MILESTONE_THRESHOLD, myMilestoneSchema, rankLabel, staffMilestoneSchema } from "@dojo/contracts/milestone";
+import { myMilestoneSchema, rankLabel, staffMilestoneSchema } from "@dojo/contracts/milestone";
 import { BirthDateForm } from "./birth-date-form";
 import { acceptTerms } from "./ficha/actions";
 import { ProfileForm } from "./profile-form";
@@ -56,14 +56,14 @@ export default async function PerfilPage() {
 
       {myMilestones.map((m) => (
         <section key={m.academy_id} role="status">
-          <h2>{MILESTONE_THRESHOLD} treinos!</h2>
+          <h2>{m.attendances} treinos!</h2>
           <p>Você chegou a {m.attendances} treinos confirmados na {m.academy_name} desde a última graduação ({rankLabel(m.belt_code, m.degree, m.rank_since)}). Converse com o seu professor. Quem decide a graduação é o professor e o gestor.</p>
         </section>
       ))}
       {staffMilestones.map((m) => (
         <section key={m.academy_id} role="status">
-          <h2>Alunos com {MILESTONE_THRESHOLD} treinos</h2>
-          <p>{m.students} aluno(s) da {m.academy_name} chegaram a {MILESTONE_THRESHOLD} treinos desde a última graduação. <Link href={`/academia/${m.academy_id}/graduacao/alunos`}>Ver quem são</Link></p>
+          <h2>Alunos no seu número de treinos</h2>
+          <p>{m.students} aluno(s) da {m.academy_name} chegaram ao seu número de treinos desde a última graduação. <Link href={`/academia/${m.academy_id}/graduacao/alunos`}>Ver quem são</Link></p>
         </section>
       ))}
 

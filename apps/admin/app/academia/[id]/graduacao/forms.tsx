@@ -2,7 +2,7 @@
 
 import { useActionState, useState } from "react";
 import { beltSuggestions } from "@dojo/contracts/belts";
-import { assessManual, correctPromotion, grantPromotion, registerRank } from "./actions";
+import { assessManual, correctPromotion, grantPromotion, registerRank, saveMilestoneSetting } from "./actions";
 import type { FormState } from "../../../login/actions";
 
 export function RegisterRankForm({ academyId, userId }: { academyId: string; userId: string }) {
@@ -75,6 +75,19 @@ export function CorrectPromotionForm({ academyId, promotionId, current }: { acad
       <label>Data correta <input name="effectiveDate" type="date" defaultValue={current.effectiveDate} max={today} required /></label>
       <label>Motivo da retificação <input name="reason" minLength={3} maxLength={500} required /></label>
       <button type="submit" disabled={pending}>{pending ? "Retificando…" : "Retificar registro"}</button>
+      {state.error && <p role="alert">{state.error}</p>}
+      {state.message && <p role="status">{state.message}</p>}
+    </form>
+  );
+}
+
+export function MilestoneSettingForm({ academyId, threshold, enabled }: { academyId: string; threshold: number; enabled: boolean }) {
+  const [state, action, pending] = useActionState<FormState, FormData>((prev, formData) => saveMilestoneSetting(academyId, prev, formData), {});
+  return (
+    <form action={action}>
+      <label>Avisar aos <input name="threshold" type="number" min={1} max={1000} defaultValue={threshold} required style={{ width: 90 }} /> treinos desde a última graduação</label>
+      <label><input type="checkbox" name="enabled" defaultChecked={enabled} /> Aviso ligado</label>
+      <button type="submit" disabled={pending}>{pending ? "Salvando…" : "Salvar o meu número"}</button>
       {state.error && <p role="alert">{state.error}</p>}
       {state.message && <p role="status">{state.message}</p>}
     </form>

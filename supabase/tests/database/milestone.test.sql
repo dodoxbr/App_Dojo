@@ -1,11 +1,12 @@
 -- US-020: aviso quando o aluno chega a 30 treinos desde a última graduação. Dados sintéticos.
 begin;
-select plan(27);
+select plan(39);
 
 insert into auth.users (id, email, raw_user_meta_data) values
  ('00000000-0000-0000-0000-0000000000a1', 'gestor@example.test', '{"display_name":"Gestor Um","birth_date":"1985-05-05"}'),
  ('00000000-0000-0000-0000-0000000000a9', 'admin@example.test', '{"display_name":"Super Admin","birth_date":"1985-05-05"}'),
  ('00000000-0000-0000-0000-0000000000c1', 'prof@example.test', '{"display_name":"Professor Com Permissao","birth_date":"1985-05-05"}'),
+ ('00000000-0000-0000-0000-0000000000c3', 'prof3@example.test', '{"display_name":"Professor Tres","birth_date":"1985-05-05"}'),
  ('00000000-0000-0000-0000-0000000000c2', 'prof2@example.test', '{"display_name":"Professor Sem Permissao","birth_date":"1985-05-05"}'),
  ('00000000-0000-0000-0000-0000000000b1', 'aluno1@example.test', '{"display_name":"Aluno Trinta","birth_date":"1990-01-01"}'),
  ('00000000-0000-0000-0000-0000000000b2', 'aluno2@example.test', '{"display_name":"Aluno Vinte e Nove","birth_date":"1990-01-01"}'),
@@ -20,6 +21,7 @@ insert into public.academies (id, name, slug, owner_user_id) values
 insert into public.memberships (academy_id, user_id, role, status) values
  ('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000a1', 'manager', 'approved'),
  ('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000c1', 'instructor', 'approved'),
+ ('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000c3', 'instructor', 'approved'),
  ('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000c2', 'instructor', 'approved'),
  ('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000b1', 'student', 'approved'),
  ('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000b2', 'student', 'approved'),
@@ -43,7 +45,7 @@ insert into public.guardian_consents (academy_id, minor_user_id, guardian_user_i
 insert into public.profile_contacts (user_id, full_name, phone, postal_code, street, number, neighborhood, city, state, emergency_name, emergency_phone, emergency_relationship, health_notes, health_consent_at, updated_by)
   values ('00000000-0000-0000-0000-0000000000b1', 'Aluno Trinta', '11999990000', '01001000', 'Rua Ficticia', '1', 'Centro', 'Sao Paulo', 'SP', 'Contato', '11977776666', 'mae', 'alergia de teste', now(), '00000000-0000-0000-0000-0000000000b1');
 insert into public.classes (id, academy_id, title, instructor_user_id) values
- ('00000000-0000-0000-0000-0000000000b9', '00000000-0000-0000-0000-00000000ac01', 'Turma Marco', '00000000-0000-0000-0000-0000000000a1');
+ ('00000000-0000-0000-0000-0000000000b9', '00000000-0000-0000-0000-00000000ac01', 'Turma Marco', '00000000-0000-0000-0000-0000000000c1');
 -- 40 aulas passadas, uma por dia (dias -41 a -2)
 insert into public.sessions (id, academy_id, class_id, starts_at, ends_at)
   select ('00000000-0000-0000-0000-00000000' || lpad(k::text, 4, '0'))::uuid, '00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000b9',
@@ -114,6 +116,27 @@ select is((select count(*)::int from public.my_staff_milestones()), 0, 'nem o av
 select throws_ok($$select public.attendances_since_rank('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000b1')$$, '42501', null, 'a função interna não é chamável');
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000a1","role":"authenticated"}', true);
 select is((select count(*)::int from public.list_milestone_students('00000000-0000-0000-0000-00000000ac01')), 2, 'o gestor vê a lista');
+
+-- 4b. Cada professor decide o seu número (padrão 30; pode desligar)
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000c3","role":"authenticated"}', true);
+select is((select count(*)::int from public.list_milestone_students('00000000-0000-0000-0000-00000000ac01')), 0, 'quem não é professor desses alunos não os vê (só o gestor vê todos)');
+select is((select threshold from public.get_my_milestone_setting('00000000-0000-0000-0000-00000000ac01')), 30, 'sem configuração, vale o padrão 30');
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000c1","role":"authenticated"}', true);
+select throws_ok($$select public.set_my_milestone_setting('00000000-0000-0000-0000-00000000ac01', 0, true)$$, '22023', null, 'número inválido');
+select lives_ok($$select public.set_my_milestone_setting('00000000-0000-0000-0000-00000000ac01', 20, true)$$, 'o professor define o próprio número (20)');
+select is((select is_default from public.get_my_milestone_setting('00000000-0000-0000-0000-00000000ac01')), false, 'a configuração é dele');
+select is((select count(*)::int from public.list_milestone_students('00000000-0000-0000-0000-00000000ac01')), 4, 'com 20, ele passa a ver também os dois alunos de 29 treinos');
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000b2","role":"authenticated"}', true);
+select is((select count(*)::int from public.my_milestones()), 1, 'e o aluno de 29 recebe o aviso (o número do professor dele)');
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000a1","role":"authenticated"}', true);
+select is((select count(*)::int from public.list_milestone_students('00000000-0000-0000-0000-00000000ac01')), 2, 'o gestor segue com o número dele (30)');
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000c1","role":"authenticated"}', true);
+select lives_ok($$select public.set_my_milestone_setting('00000000-0000-0000-0000-00000000ac01', 20, false)$$, 'o professor desliga o aviso');
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000b1","role":"authenticated"}', true);
+select is((select count(*)::int from public.my_milestones()), 0, 'o aluno do professor que desligou não recebe aviso');
+select throws_ok($$select public.set_my_milestone_setting('00000000-0000-0000-0000-00000000ac01', 10, true)$$, '42501', null, 'aluno não define número');
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000a1","role":"authenticated"}', true);
+select is((select count(*)::int from public.list_milestone_students('00000000-0000-0000-0000-00000000ac01')), 2, 'e o gestor continua vendo os dele');
 
 -- 5. Uma nova graduação zera a contagem; presença revogada tira do marco
 reset role;

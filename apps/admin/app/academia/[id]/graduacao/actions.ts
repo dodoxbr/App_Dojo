@@ -10,6 +10,7 @@ import {
   registerRankSchema,
   toDbCriteria,
 } from "@dojo/contracts/graduation";
+import { milestoneSettingInputSchema } from "@dojo/contracts/milestone";
 import { getCaller } from "@/lib/context";
 import { rpcErrorMessage } from "@/lib/rpc-errors";
 import type { FormState } from "../../../login/actions";
@@ -172,4 +173,16 @@ function promotionError(error: { code?: string; message: string }): string {
   }
   if (error.code === "23505") return "Este registro já foi retificado. Retifique o registro mais recente.";
   return rpcErrorMessage(error);
+}
+
+// Each teacher (or the manager) decides how many trainings trigger the notice for the students they follow, or turns it off.
+export async function saveMilestoneSetting(academyId: string, _prev: FormState, formData: FormData): Promise<FormState> {
+  const parsed = milestoneSettingInputSchema.safeParse({ threshold: formData.get("threshold"), enabled: formData.get("enabled") === "on" });
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Revise o número de treinos." };
+  const { supabase } = await getCaller();
+  const { error } = await supabase.rpc("set_my_milestone_setting", { p_academy_id: academyId, p_threshold: parsed.data.threshold, p_enabled: parsed.data.enabled });
+  if (error) return { error: rpcErrorMessage(error) };
+  revalidatePath(`/academia/${academyId}/graduacao/alunos`);
+  revalidatePath("/perfil");
+  return { message: parsed.data.enabled ? `Combinado: o aviso aparece aos ${parsed.data.threshold} treinos.` : "Aviso desligado para os seus alunos." };
 }

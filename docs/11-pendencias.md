@@ -228,3 +228,4 @@
 - [ ] O aviso é **só dentro do app** (sem push, e-mail ou WhatsApp). Sem "visto/dispensar".
 - [ ] Para o instrutor o menor aparece só como "menor de idade", sem o nome do responsável.
 - [ ] O app mobile não mostra o aviso.
+- [ ] O número do aviso é **por professor** (padrão 30). Se vários professores acompanham o mesmo aluno, ele recebe o aviso quando o menor número entre os professores dele é atingido; instrutor sem permissão de graduação não configura (vale 30 para as turmas dele). Sem configuração por faixa ou por aluno e o gestor não ajusta o número de outro professor.

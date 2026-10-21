@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { MILESTONE_THRESHOLD, milestoneStudentSchema, rankLabel } from "@dojo/contracts/milestone";
+import { milestoneSettingSchema, milestoneStudentSchema, rankLabel } from "@dojo/contracts/milestone";
 import { getCaller } from "@/lib/context";
-import { RegisterRankForm } from "../forms";
+import { MilestoneSettingForm, RegisterRankForm } from "../forms";
 
 // Students with their current official rank. The manager registers where each person stands today.
 export default async function AlunosGraduacaoPage({ params }: { params: Promise<{ id: string }> }) {
@@ -16,6 +16,8 @@ export default async function AlunosGraduacaoPage({ params }: { params: Promise<
   const { data: academy } = await supabase.from("academies").select("id, name").eq("id", id).maybeSingle();
   if (!academy) notFound();
   const { data: milestoneRaw } = await supabase.rpc("list_milestone_students", { p_academy_id: id });
+  const { data: settingRaw } = await supabase.rpc("get_my_milestone_setting", { p_academy_id: id });
+  const setting = milestoneSettingSchema.safeParse(((settingRaw ?? []) as unknown[])[0]);
   const atMilestone = ((milestoneRaw ?? []) as unknown[]).map((x) => milestoneStudentSchema.safeParse(x)).flatMap((r) => (r.success ? [r.data] : []));
 
   const { data: members } = await supabase.from("memberships").select("user_id").eq("academy_id", id).eq("status", "approved").eq("role", "student");
@@ -34,9 +36,16 @@ export default async function AlunosGraduacaoPage({ params }: { params: Promise<
       <p><Link href={`/academia/${id}/graduacao`}>← Graduação</Link></p>
       <h1>Alunos e graduação atual</h1>
       <p>A graduação oficial só é registrada pelo gestor. O aluno não altera a própria graduação.</p>
+      {setting.success && (
+        <section>
+          <h2>Aviso de treinos</h2>
+          <p>Cada professor decide o seu número. O aluno recebe o aviso quando chega ao número de um dos professores das turmas em que treinou desde a última graduação; você vê os seus alunos{isManager ? " (como gestor, todos os alunos da academia)" : ""}. Sem escolha, o número é 30.</p>
+          <MilestoneSettingForm academyId={id} threshold={setting.data.threshold} enabled={setting.data.enabled} />
+        </section>
+      )}
       {atMilestone.length > 0 && (
         <section role="status">
-          <h2>Chegaram a {MILESTONE_THRESHOLD} treinos desde a última graduação</h2>
+          <h2>Chegaram ao seu número de treinos desde a última graduação</h2>
           <ul>
             {atMilestone.map((s) => (
               <li key={s.user_id}>

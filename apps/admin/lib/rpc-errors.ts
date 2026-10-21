@@ -27,6 +27,7 @@ export function rpcErrorMessage(
       if (m.includes("invalid code")) return "Código inválido, já usado ou vencido.";
       if (m.includes("document must be checked")) return "Confirme que o documento do responsável foi conferido pessoalmente.";
       if (m.includes("birth_date")) return "Informe uma data de nascimento válida de alguém com menos de 18 anos.";
+      if (m.includes("threshold")) return "Informe um número de treinos de 1 a 1000.";
       if (m.includes("relationship")) return "Informe o parentesco (2 a 40 caracteres).";
       if (m.includes("effective_from must be after")) return "A nova versão deve começar depois da data da versão atual.";
       if (m.includes("criteria")) return "Revise os critérios da regra (tipos, valores e nomes diferentes).";

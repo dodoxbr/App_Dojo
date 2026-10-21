@@ -115,8 +115,8 @@ if (b) await b.close();
 
 // ---- professor ---------------------------------------------------------------------------------------------------
 b = await pass('professor', teacher, [
-  ['/aulas', ['Agenda']], [`/turmas/${classId}`, ['Turma Navegador']], [`${A}/avaliacoes`, []], [`${A}/graduacao/alunos`, []], [`${A}/painel`, []], [`/feed/${academyId}`, ['Feed']], ['/medalhas', ['Medalhas']], ['/perfil', ['Alunos com 30 treinos']],
-  [`${A}/graduacao/alunos`, ['Chegaram a 30 treinos', 'Smoke aluno']], [`${A}/graduacao/alunos/${student.id}`, ['Perfil', 'Treinos confirmados desde a última graduação: 30']],
+  ['/aulas', ['Agenda']], [`/turmas/${classId}`, ['Turma Navegador']], [`${A}/avaliacoes`, []], [`${A}/graduacao/alunos`, []], [`${A}/painel`, []], [`/feed/${academyId}`, ['Feed']], ['/medalhas', ['Medalhas']], ['/perfil', ['Alunos no seu número de treinos']],
+  [`${A}/graduacao/alunos`, ['Aviso de treinos', 'Chegaram ao seu número de treinos', 'Smoke aluno']], [`${A}/graduacao/alunos/${student.id}`, ['Perfil', 'Treinos confirmados desde a última graduação: 30']],
 ]);
 if (b) {
   // Reação e comentário (formulários de verdade): "Osu!" liga, o comentário aparece
@@ -129,6 +129,16 @@ if (b) {
     await b.waitFor("document.body.innerText.includes('comentário do navegador (teste)')", 8000, 'comentário publicado');
   } catch (e) { note('professor', '/feed (reação e comentário)', e.message); }
   await b.screenshot(path.join(SHOTS, `${String(++shotN).padStart(2, '0')}-professor-feed-social.png`));
+  // Cada professor decide o seu número: com 40, o aluno de 30 treinos sai da lista dele
+  try {
+    await b.goto(`${BASE}${A}/graduacao/alunos`);
+    await b.fill('input[name=threshold]', '40');
+    await b.clickButton('Salvar o meu número');
+    await b.waitFor("document.body.innerText.includes('o aviso aparece aos 40 treinos')", 8000, 'número salvo');
+    await b.goto(`${BASE}${A}/graduacao/alunos`);
+    if ((await b.text()).includes('Chegaram ao seu número de treinos')) note('professor', `${A}/graduacao/alunos`, 'com 40 o aluno de 30 treinos ainda aparece');
+  } catch (e) { note('professor', `${A}/graduacao/alunos (número do professor)`, e.message); }
+  await b.screenshot(path.join(SHOTS, `${String(++shotN).padStart(2, '0')}-professor-numero.png`));
   await b.close();
 }
 

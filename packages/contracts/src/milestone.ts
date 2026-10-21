@@ -34,6 +34,14 @@ export const milestoneSummarySchema = z.object({
   health_notes: z.string().nullable(),
 });
 
+// Cada professor decide o seu número (padrão 30) ou desliga o aviso.
+export const MILESTONE_MAX = 1000;
+export const milestoneSettingInputSchema = z.object({
+  threshold: z.coerce.number().int('Use um número inteiro.').min(1, 'O número de treinos vai de 1 a 1000.').max(MILESTONE_MAX, 'O número de treinos vai de 1 a 1000.'),
+  enabled: z.boolean(),
+});
+export const milestoneSettingSchema = z.object({ threshold: z.number(), enabled: z.boolean(), is_default: z.boolean() });
+
 export type MyMilestone = z.infer<typeof myMilestoneSchema>;
 export type MilestoneStudent = z.infer<typeof milestoneStudentSchema>;
 

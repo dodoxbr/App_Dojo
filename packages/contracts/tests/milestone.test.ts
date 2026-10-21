@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { MILESTONE_THRESHOLD, milestoneStudentSchema, milestoneSummarySchema, myMilestoneSchema, rankLabel } from '../src/milestone.ts';
+import { MILESTONE_THRESHOLD, milestoneSettingInputSchema, milestoneStudentSchema, milestoneSummarySchema, myMilestoneSchema, rankLabel } from '../src/milestone.ts';
 
 const ID = '11111111-1111-4111-8111-111111111111';
 
@@ -18,4 +18,12 @@ test('o que o banco devolve é aceito, inclusive sem faixa', () => {
   assert.equal(myMilestoneSchema.safeParse({ academy_id: ID, academy_name: 'A', attendances: 30, belt_code: null, degree: null, rank_since: null }).success, true);
   assert.equal(milestoneStudentSchema.safeParse({ user_id: ID, person_name: 'Ana', is_minor: false, belt_code: 'Faixa Teste A', degree: 1, rank_since: '2026-01-01', attendances: 31 }).success, true);
   assert.equal(milestoneSummarySchema.safeParse({ person_name: 'Ana', is_minor: false, belt_code: null, degree: null, rank_since: null, attendances: 3, threshold: 30, health_visible: false, health_notes: null }).success, true);
+});
+
+test('o número do professor vai de 1 a 1000 (texto do formulário é convertido)', () => {
+  assert.equal(milestoneSettingInputSchema.parse({ threshold: '20', enabled: true }).threshold, 20);
+  assert.equal(milestoneSettingInputSchema.safeParse({ threshold: '0', enabled: true }).success, false);
+  assert.equal(milestoneSettingInputSchema.safeParse({ threshold: '1001', enabled: true }).success, false);
+  assert.equal(milestoneSettingInputSchema.safeParse({ threshold: '2.5', enabled: true }).success, false);
+  assert.equal(milestoneSettingInputSchema.safeParse({ threshold: 'abc', enabled: false }).success, false);
 });

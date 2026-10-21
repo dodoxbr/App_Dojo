@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { dependentMedalSchema } from "@dojo/contracts/feed";
-import { MILESTONE_THRESHOLD, myMilestoneSchema, rankLabel } from "@dojo/contracts/milestone";
+import { myMilestoneSchema, rankLabel } from "@dojo/contracts/milestone";
 import { consentStepLabel, overviewSchema } from "@dojo/contracts/guardians";
 import { idSchema } from "@dojo/contracts/membership";
 import { getCaller } from "@/lib/context";
@@ -40,7 +40,7 @@ export default async function DependentePage({ params }: { params: Promise<{ min
 
       {milestones.map((m) => (
         <p key={m.academy_id} role="status">
-          {o.minor?.display_name} chegou a {m.attendances} treinos confirmados na {m.academy_name} desde a última graduação ({rankLabel(m.belt_code, m.degree, m.rank_since)}). Já são {MILESTONE_THRESHOLD} ou mais: converse com o professor. Quem decide a graduação é o professor e o gestor.
+          {o.minor?.display_name} chegou a {m.attendances} treinos confirmados na {m.academy_name} desde a última graduação ({rankLabel(m.belt_code, m.degree, m.rank_since)}). Converse com o professor. Quem decide a graduação é o professor e o gestor.
         </p>
       ))}
 
