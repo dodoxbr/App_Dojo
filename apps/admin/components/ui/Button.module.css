@@ -47,3 +47,6 @@
   .spinner { animation-duration: 1.8s; }
   .button { transition: none; }
 }
+
+.link { text-decoration: none; }
+.link:hover { text-decoration: none; }

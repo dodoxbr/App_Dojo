@@ -90,7 +90,7 @@ async function pass(who, user, routes) {
 
 // ---- aluno -------------------------------------------------------------------------------------------------------
 let b = await pass('aluno', student, [
-  ['/perfil', ['Meu perfil', '30 treinos!', 'Converse com o seu professor']], ['/perfil/ficha', ['Minha ficha de cadastro']], ['/diario', ['Meu diário']], ['/diario/novo', ['Registrar treino']],
+  ['/inicio', ['Olá', 'Meu progresso', 'Registrar treino', 'Esta semana']], ['/perfil', ['Meu perfil', '30 treinos!', 'Converse com o seu professor']], ['/perfil/ficha', ['Minha ficha de cadastro']], ['/diario', ['Meu diário']], ['/diario/novo', ['Registrar treino']],
   ['/tecnicas', ['Catálogo']], ['/aulas', ['Agenda']], ['/trilha', []], ['/graduacao', []], ['/desafios', ['Desafios']], ['/desafios/novo', ['Criar desafio']],
   ['/financeiro', ['Meu financeiro']], [`/feed/${academyId}`, ['Feed']], ['/termos', ['Termos de uso']], [`/entrar/${slug}`, ['Academia Navegador']],
 ]);

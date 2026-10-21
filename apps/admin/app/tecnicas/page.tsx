@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { PAGE_SIZE, techniqueSearchSchema } from "@dojo/contracts/technique";
 import { getCaller } from "@/lib/context";
+import { AppShell } from "@/components/shell/AppShell";
 
 // Catalog search: tolerant to accents, case and synonyms (docs/05). Visibility is decided by RLS.
 export default async function TecnicasPage({
@@ -53,6 +54,7 @@ export default async function TecnicasPage({
   };
 
   return (
+<AppShell>
     <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 720 }}>
       <p><Link href="/perfil">← Meu perfil</Link></p>
       <h1>Catálogo de técnicas</h1>
@@ -111,5 +113,6 @@ export default async function TecnicasPage({
         {hasNext && <Link href={link(params.page + 1)}>Próxima →</Link>}
       </nav>
     </main>
+    </AppShell>
   );
 }

@@ -1,4 +1,5 @@
-import type { ButtonHTMLAttributes } from "react";
+import Link from "next/link";
+import type { ButtonHTMLAttributes, ReactNode } from "react";
 import styles from "./Button.module.css";
 
 export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -16,4 +17,10 @@ export function Button({ variant = "primary", loading = false, fullWidth = false
       {children}
     </button>
   );
+}
+
+// Link com a aparência de botão (navegação, não ação): mesmas variantes do Button.
+export function ButtonLink({ href, variant = "primary", fullWidth = false, children }: { href: string; variant?: ButtonProps["variant"]; fullWidth?: boolean; children: ReactNode }) {
+  const classes = [styles.button, styles[variant], fullWidth ? styles.full : ""].filter(Boolean).join(" ");
+  return <Link href={href} className={`${classes} ${styles.link}`}>{children}</Link>;
 }

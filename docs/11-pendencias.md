@@ -239,3 +239,11 @@
 - [ ] As demais telas ainda usam o visual antigo (`@layer legacy`); migrar na ordem do brief: onboarding/filiação, home do aluno, diário, catálogo, painel do professor. Componentes ainda a criar: AppShell, BottomNavigation, SidebarNavigation, PageHeader, ProgressBar, Badge, EmptyState, LoadingState, Modal/ConfirmDialog, AcademyThemeProvider, TechniqueCard, TrainingLogCard, BeltProgressCard.
 - [ ] Tema escuro e cores por academia (AcademyThemeProvider) ainda não implementados; os tokens já estão prontos para isso.
 - [ ] Capturas das telas de login em 360, 390, 768 e 1280 px: rodar `node scripts/e2e-login.mjs` (cria e apaga uma conta sintética no banco local).
+
+## Redesign (etapa 2: navegação e home do aluno)
+- [x] AppShell (barra lateral no desktop, barra inferior no celular), `NavLinks`, Badge, ProgressBar, EmptyState, PageHeader e ButtonLink criados; home do aluno em `/inicio` com dados reais (progresso pelos critérios da regra de graduação, treinos confirmados na semana, próximo treino, diário recente). Login agora leva a `/inicio`.
+- [ ] O shell com a navegação do aluno só envolve `/inicio`, `/diario`, `/tecnicas`, `/graduacao` e `/perfil`; as demais telas do aluno (aulas, trilha, desafios, financeiro, feed, medalhas…) ainda não têm a navegação persistente.
+- [ ] Gestor e professor ainda não têm barra lateral própria (membros, turmas, graduação, financeiro…): usam os atalhos do perfil. Criar a navegação por papel na etapa seguinte.
+- [ ] A home mostra a primeira academia por ordem de nome; sem seletor de academia para quem treina em mais de uma.
+- [ ] "Meta configurada" do brief: usa os critérios numéricos da regra de graduação da academia (presenças, dias, trilha); sem regra cadastrada mostra aviso, nunca um número inventado. O progresso do aluno não mostra o número do aviso dos 30 treinos (é do professor).
+- [ ] Telas antigas dentro do shell ficam como cartão (visual legado) até serem migradas.

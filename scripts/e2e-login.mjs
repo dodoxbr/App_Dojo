@@ -115,7 +115,7 @@ try {
     await b.waitFor("!location.pathname.startsWith('/login')", 15000, 'sair da tela de login');
     const where = await b.url();
     await b.screenshot(path.join(SHOTS, 'login-390-depois-do-login.png'));
-    if (!where.includes('/perfil')) note('fluxo', `entrou, mas foi para ${where}`);
+    if (!where.includes('/inicio')) note('fluxo', `entrou, mas foi para ${where}`);
     for (const e of b.consoleErrors) note('fluxo', `erro no console: ${String(e).slice(0, 140)}`);
   } finally { await b.close(); }
 } catch (e) {

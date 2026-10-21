@@ -29,7 +29,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
         <Card className={styles.card}>
           <h1 id="auth-title" className={styles.title}>Acesse a sua conta</h1>
           <p className={styles.subtitle}>Entre ou crie a sua conta para acompanhar seus treinos, sua academia e sua evolução.</p>
-          <LoginForms next={safeRedirectPath(next)} initialTab={aba === "criar" ? "criar" : "entrar"} />
+          <LoginForms next={safeRedirectPath(next, "/inicio")} initialTab={aba === "criar" ? "criar" : "entrar"} />
         </Card>
       </section>
     </main>

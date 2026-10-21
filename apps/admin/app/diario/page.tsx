@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { DIARY_PAGE_SIZE } from "@dojo/contracts/diary";
 import { getCaller } from "@/lib/context";
+import { AppShell } from "@/components/shell/AppShell";
 import { approvedAcademies, techniquesByLog } from "@/lib/diary";
 
 // The caller's OWN diary. Always filtered by user, even for the platform admin (who has a separate page).
@@ -26,7 +27,8 @@ export default async function DiarioPage({ searchParams }: { searchParams: Promi
   const academyName = new Map(academies.map((a) => [a.id, a.name]));
 
   return (
-    <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 640 }}>
+    <AppShell>
+      <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 640 }}>
       <p><Link href="/perfil">← Meu perfil</Link></p>
       <h1>Meu diário</h1>
       <p>Somente você vê estes registros. Registrar um treino não conta como presença na academia.</p>
@@ -57,5 +59,6 @@ export default async function DiarioPage({ searchParams }: { searchParams: Promi
         {hasNext && <Link href={`/diario?pagina=${page + 1}`}>Mais antigos →</Link>}
       </nav>
     </main>
+    </AppShell>
   );
 }
