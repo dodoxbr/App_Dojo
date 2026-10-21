@@ -38,8 +38,8 @@ select throws_ok($$select public.create_dependent('Irmao', (current_date - inter
 
 -- limit of dependents per guardian
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000e3","role":"authenticated"}', true);
-select lives_ok($q$do $b$ begin for i in 1..10 loop perform public.create_dependent('Filho ' || i, (current_date - interval '8 years')::date, 'pai', gen_random_uuid()); end loop; end $b$$q$, 'ate 10 dependentes');
-select throws_ok($$select public.create_dependent('Filho 11', (current_date - interval '8 years')::date, 'pai', gen_random_uuid())$$, '22023', null, 'o 11o dependente e recusado (premissa antiabuso)');
+select lives_ok($q$do $b$ begin for i in 1..7 loop perform public.create_dependent('Filho ' || i, (current_date - interval '8 years')::date, 'pai', gen_random_uuid()); end loop; end $b$$q$, 'ate 7 dependentes');
+select throws_ok($$select public.create_dependent('Filho 8', (current_date - interval '8 years')::date, 'pai', gen_random_uuid())$$, '22023', null, 'o 8o dependente e recusado (premissa antiabuso)');
 
 -- the dependent account has no way to sign in
 

@@ -17,7 +17,7 @@ export function rpcErrorMessage(
       if (m.includes("class inactive")) return "Esta turma está inativa. Ative-a para agendar aulas.";
       if (m.includes("adult required")) return "Esta ação é só para maiores de 18 anos. Para um menor, o responsável cadastra o menor em \"Meus dependentes\".";
       if (m.includes("guardian required")) return "Para aprovar um menor, o responsável precisa ter dado o consentimento e o gestor precisa ter conferido o documento dele pessoalmente.";
-      if (m.includes("dependents limit")) return "Limite de 10 menores por responsável atingido.";
+      if (m.includes("dependents limit")) return "Limite de 7 menores por responsável atingido.";
       if (m.includes("invalid code")) return "Código inválido, já usado ou vencido.";
       if (m.includes("document must be checked")) return "Confirme que o documento do responsável foi conferido pessoalmente.";
       if (m.includes("birth_date")) return "Informe uma data de nascimento válida de alguém com menos de 18 anos.";

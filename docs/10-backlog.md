@@ -19,8 +19,11 @@ Cada história deve ter migration, política RLS, testes negativos e interface m
 | US-013 | Fluxo responsável/menores | 004 | Feito: parte 1 (idade) e parte 2 (responsável cria a conta do menor, consentimento verificado pelo gestor, responsável financeiro), ver `docs/features/US-013b.md` |
 
 | US-014 | Desafios entre alunos (presença, treino e golpe) com ativação por mínimo e ranking completo | 012, 013a | Feito, ver `docs/features/US-014.md` |
-| US-015 | Foto da aula no calendário para facilitar a confirmação de presença (armazenamento privado, sem metadados, consentimento) | 013b, 014 | Proposta |
-| US-016 | Reações/comentários moderados e medalhas | 015 | Proposta F2/F4 |
+| US-015 | (absorvida pela US-018) Foto da aula no calendário | — | Substituída: o dono do produto quer a foto como feed da academia, no lugar do WhatsApp |
+| US-016 | Termos aceitos ao criar a conta e ficha de cadastro (nome, e-mail, telefone, endereço) em tabela privada; aos 18 anos o jovem cria uma conta nova | 013b | Próxima (decisões do dono do produto em 2026-10-20) |
+| US-017 | Financeiro: responsável financeiro como funcionalidade; o gestor controla mensalidade e pagamento de cada aluno (baixa manual primeiro); depois plataforma de pagamento (provedor a escolher, com ADR) | 016 | Proposta |
+| US-018 | Feed de fotos da academia, no lugar do WhatsApp dos treinos (armazenamento privado, sem metadados, foto de menor só com consentimento) | 013b, 016 | Proposta |
+| US-019 | Reações/comentários moderados e medalhas | 018 | Proposta F2/F4 |
 
 ## Definition of Done
 - Critérios de aceite atendidos; UI com estados de carregamento, erro e vazio.
@@ -31,5 +34,5 @@ Cada história deve ter migration, política RLS, testes negativos e interface m
 
 ## Futuro
 F2: plano de aula pré-preenche diário, mídia, notificações, competição/pódio, social moderado.
-F3: financeiro e integrações de pagamento.
+F3: integração com plataforma de pagamento (o controle financeiro manual é a US-017).
 F4: equipes/unidades, outras modalidades, recomendações e IA opcional.

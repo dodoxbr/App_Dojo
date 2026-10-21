@@ -152,10 +152,18 @@
 ## US-013 parte 2 (responsável e menor)
 - [ ] **Texto do consentimento é rascunho** (`rascunho-2026-10`); precisa de revisão jurídica (LGPD art. 14) antes de qualquer menor real. Definir também prazo de retenção e como o responsável pede exclusão dos dados do menor.
 - [ ] **Dados financeiros** (CPF, endereço de cobrança, mensalidade, pagamento) não foram criados: não há módulo de cobrança no backlog e a decisão de LGPD está aberta. Hoje só se registra **quem é** o responsável financeiro (por código).
-- [ ] **Aos 18 anos** o acesso do responsável cessa, mas o jovem **ainda não consegue assumir a conta** (definir e-mail próprio e senha). Exige Admin API ou fluxo de convite (ADR própria). Até lá, o dependente que fez 18 anos fica sem acesso.
+- [x] Aos 18 anos o acesso do responsável cessa e o jovem cria uma conta nova (decisão do dono do produto; ver "Decisões após a US-013b").
 - [ ] A conferência do documento é **presencial e declarada pelo gestor**; o sistema não valida o documento nem o parentesco (premissa). Confirmar com a academia se isso basta.
 - [ ] O dependente é criado inserindo em `auth.users` por função do banco (ADR-018). Acompanhar atualizações do Supabase Auth; os testes de banco e o smoke detectam quebra. Nunca foi testado em um projeto Supabase hospedado, só no stack local.
-- [ ] Limite de 10 dependentes por responsável é premissa antiabuso. Ainda não há troca de responsável legal (separação, tutela) nem mais de um responsável legal por menor.
+- [ ] Limite de 7 dependentes por responsável (decisão do dono do produto). Ainda não há troca de responsável legal (separação, tutela) nem mais de um responsável legal por menor.
 - [ ] O pré-preenchimento do cadastro do menor usa o metadado da conta (editável pela própria pessoa); o servidor valida tudo de novo. Sem notificação ao responsável (e-mail/push).
 - [ ] Sem tela no app mobile; telas do painel verificadas só pelo teste de renderização (63 páginas), sem uso humano em navegador.
 - [ ] Foto de menor (US-015) só com o consentimento específico `consent_photos`; a regra ainda não é consumida por nenhuma tela.
+
+## Decisões do dono do produto após a US-013b (2026-10-20)
+- [ ] Termos gerados ao criar a conta (US-016); texto sempre rascunho até revisão jurídica.
+- [ ] Ficha de cadastro com nome, e-mail, telefone e endereço (US-016): dados pessoais em tabela privada, visíveis só ao titular, ao responsável e ao gestor da academia; definir retenção e exclusão.
+- [ ] Aos 18 anos o jovem cria uma **conta nova** (não assume a do menor). Falta decidir o que acontece com o histórico (frequência, graduação) do menor: copiar, vincular ou começar do zero. Isso substitui a pendência de "assunção de conta".
+- [ ] Financeiro (US-017): controle por aluno pelo gestor; escolher a plataforma de pagamento (provedor, taxas, PIX/boleto/cartão, repasse) e registrar ADR; nunca guardar dados de cartão; CPF e endereço de cobrança entram com a ficha.
+- [ ] Feed de fotos (US-018) substitui o grupo de WhatsApp dos treinos: definir quem posta, quem vê, retenção e o consentimento de foto (maiores também).
+- [x] Limite de dependentes por responsável = 7 (migration 022).
