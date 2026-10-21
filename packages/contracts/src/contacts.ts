@@ -39,6 +39,14 @@ export const saveContactSchema = z.object({
   neighborhood: text(2, 80, 'o bairro'),
   city: text(2, 80, 'a cidade'),
   state: ufSchema,
+  emergencyName: text(2, 120, 'o nome do contato de emergência'),
+  emergencyPhone: phoneSchema,
+  emergencyRelationship: text(2, 40, 'o parentesco do contato de emergência'),
+  healthNotes: z.string().trim().max(500, 'Observação de saúde muito longa (máximo 500 caracteres).').optional().transform((v) => (v ? v : undefined)),
+  healthConsent: z.boolean(),
+}).refine((v) => !v.healthNotes || v.healthConsent, {
+  message: 'Para registrar observações de saúde, marque o consentimento específico.',
+  path: ['healthConsent'],
 });
 
 export const contactRowSchema = z.object({
@@ -51,6 +59,11 @@ export const contactRowSchema = z.object({
   neighborhood: z.string(),
   city: z.string(),
   state: z.string(),
+  emergency_name: z.string().nullable(),
+  emergency_phone: z.string().nullable(),
+  emergency_relationship: z.string().nullable(),
+  health_notes: z.string().nullable(),
+  health_consent_at: z.string().nullable(),
   updated_at: z.string(),
 });
 

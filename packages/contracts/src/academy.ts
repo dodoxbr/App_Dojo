@@ -54,9 +54,35 @@ export const themeSchema = z
     path: ['themeSecondary'],
   });
 
+// Company data of the academy: variables of the terms (US-016b). The CNPJ is validated by its check digits.
+export function isValidCnpj(value: string): boolean {
+  if (!/^\d{14}$/.test(value) || /^(\d)\1{13}$/.test(value)) return false;
+  const digit = (weights: number[]) => {
+    const sum = weights.reduce((acc, w, i) => acc + Number(value[i]) * w, 0);
+    const r = sum % 11;
+    return r < 2 ? 0 : 11 - r;
+  };
+  return digit([5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]) === Number(value[12]) && digit([6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]) === Number(value[13]);
+}
+
+export function formatCnpj(d: string): string {
+  return d.length === 14 ? `${d.slice(0, 2)}.${d.slice(2, 5)}.${d.slice(5, 8)}/${d.slice(8, 12)}-${d.slice(12)}` : d;
+}
+
+export const cnpjSchema = z
+  .string()
+  .transform((v) => v.replace(/\D/g, ''))
+  .refine(isValidCnpj, 'CNPJ inválido. Confira os 14 dígitos.');
+
+export const legalNameSchema = z.string().trim().min(2, 'Informe a razão social.').max(200, 'Razão social muito longa.');
+
+export const academyLegalSchema = z.object({ legalName: legalNameSchema, cnpj: cnpjSchema });
+
 export const createAcademySchema = z.object({
   name: academyNameSchema,
   slug: slugSchema,
+  legalName: legalNameSchema,
+  cnpj: cnpjSchema,
   idempotencyKey: z.uuid(),
 });
 

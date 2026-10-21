@@ -1,6 +1,6 @@
 -- US-016: terms accepted at sign-up and the registration form (ficha). Synthetic data only.
 begin;
-select plan(35);
+select plan(45);
 
 insert into auth.users (id, email, raw_user_meta_data) values
  ('00000000-0000-0000-0000-0000000000a1', 'gestor@example.test', '{"birth_date":"1985-05-05","terms_version":"rascunho-2026-10"}'),
@@ -39,21 +39,21 @@ select throws_ok($$insert into public.terms_acceptances (user_id, document, vers
 
 -- The ficha: own data, normalized, validated
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000b1","role":"authenticated"}', true);
-select lives_ok($$select public.save_contact('00000000-0000-0000-0000-0000000000b1', 'Pessoa Um da Silva', '(11) 99999-0000', '01001-000', 'Rua Ficticia', '10', 'ap 2', 'Centro', 'Sao Paulo', 'sp')$$, 'a pessoa preenche a propria ficha');
+select lives_ok($$select public.save_contact('00000000-0000-0000-0000-0000000000b1', 'Pessoa Um da Silva', '(11) 99999-0000', '01001-000', 'Rua Ficticia', '10', 'ap 2', 'Centro', 'Sao Paulo', 'sp', 'Contato de Emergencia', '(11) 97777-6666', 'mae', null, false)$$, 'a pessoa preenche a propria ficha');
 select is((select phone from public.get_contact('00000000-0000-0000-0000-0000000000b1')), '11999990000', 'telefone guardado so com digitos');
 select is((select postal_code || state from public.get_contact('00000000-0000-0000-0000-0000000000b1')), '01001000SP', 'CEP em digitos e UF em maiuscula');
-select throws_ok($$select public.save_contact('00000000-0000-0000-0000-0000000000b1', 'P', '11999990000', '01001000', 'Rua', '1', null, 'Centro', 'Sao Paulo', 'SP')$$, '22023', null, 'nome curto rejeitado');
-select throws_ok($$select public.save_contact('00000000-0000-0000-0000-0000000000b1', 'Pessoa Um', '1234', '01001000', 'Rua', '1', null, 'Centro', 'Sao Paulo', 'SP')$$, '22023', null, 'telefone curto rejeitado');
-select throws_ok($$select public.save_contact('00000000-0000-0000-0000-0000000000b1', 'Pessoa Um', '11999990000', '123', 'Rua', '1', null, 'Centro', 'Sao Paulo', 'SP')$$, '22023', null, 'CEP invalido rejeitado');
-select throws_ok($$select public.save_contact('00000000-0000-0000-0000-0000000000b1', 'Pessoa Um', '11999990000', '01001000', 'Rua', '1', null, 'Centro', 'Sao Paulo', 'SPP')$$, '22023', null, 'UF invalida rejeitada');
-select throws_ok($$select public.save_contact('00000000-0000-0000-0000-0000000000b1', 'Pessoa Um', '11999990000', '01001000', '', '1', null, 'Centro', 'Sao Paulo', 'SP')$$, '22023', null, 'rua vazia rejeitada');
+select throws_ok($$select public.save_contact('00000000-0000-0000-0000-0000000000b1', 'P', '11999990000', '01001000', 'Rua', '1', null, 'Centro', 'Sao Paulo', 'SP', 'Contato de Emergencia', '(11) 97777-6666', 'mae', null, false)$$, '22023', null, 'nome curto rejeitado');
+select throws_ok($$select public.save_contact('00000000-0000-0000-0000-0000000000b1', 'Pessoa Um', '1234', '01001000', 'Rua', '1', null, 'Centro', 'Sao Paulo', 'SP', 'Contato de Emergencia', '(11) 97777-6666', 'mae', null, false)$$, '22023', null, 'telefone curto rejeitado');
+select throws_ok($$select public.save_contact('00000000-0000-0000-0000-0000000000b1', 'Pessoa Um', '11999990000', '123', 'Rua', '1', null, 'Centro', 'Sao Paulo', 'SP', 'Contato de Emergencia', '(11) 97777-6666', 'mae', null, false)$$, '22023', null, 'CEP invalido rejeitado');
+select throws_ok($$select public.save_contact('00000000-0000-0000-0000-0000000000b1', 'Pessoa Um', '11999990000', '01001000', 'Rua', '1', null, 'Centro', 'Sao Paulo', 'SPP', 'Contato de Emergencia', '(11) 97777-6666', 'mae', null, false)$$, '22023', null, 'UF invalida rejeitada');
+select throws_ok($$select public.save_contact('00000000-0000-0000-0000-0000000000b1', 'Pessoa Um', '11999990000', '01001000', '', '1', null, 'Centro', 'Sao Paulo', 'SP', 'Contato de Emergencia', '(11) 97777-6666', 'mae', null, false)$$, '22023', null, 'rua vazia rejeitada');
 select is((select count(*)::int from public.profile_contacts), 1, 'a pessoa le a propria ficha direto');
 select throws_ok($$update public.profile_contacts set phone = '11000000000'$$, '42501', null, 'sem UPDATE direto na ficha');
 
 -- Nobody else reads it: other people, other academies' managers, instructors
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000b2","role":"authenticated"}', true);
 select throws_ok($$select * from public.get_contact('00000000-0000-0000-0000-0000000000b1')$$, '42501', null, 'outra pessoa nao le a ficha');
-select throws_ok($$select public.save_contact('00000000-0000-0000-0000-0000000000b1', 'Invasor', '11999990000', '01001000', 'Rua', '1', null, 'Centro', 'Sao Paulo', 'SP')$$, '42501', null, 'nem altera');
+select throws_ok($$select public.save_contact('00000000-0000-0000-0000-0000000000b1', 'Invasor', '11999990000', '01001000', 'Rua', '1', null, 'Centro', 'Sao Paulo', 'SP', 'Contato de Emergencia', '(11) 97777-6666', 'mae', null, false)$$, '42501', null, 'nem altera');
 select is((select count(*)::int from public.profile_contacts), 0, 'e a tabela nao mostra a ficha alheia');
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000a3","role":"authenticated"}', true);
 select throws_ok($$select * from public.get_member_contact('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000b1')$$, '42501', null, 'instrutor nao le a ficha');
@@ -74,8 +74,31 @@ select throws_ok($$select public.request_membership('00000000-0000-0000-0000-000
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000a1","role":"authenticated"}', true);
 select throws_ok($$select public.add_member('00000000-0000-0000-0000-00000000ac01', 'pessoa3@example.test', 'student')$$, '22023', null, 'gestor tambem nao cadastra quem esta sem ficha');
 
+
+-- Emergency contact is required; health notes are optional, sensitive and need the specific consent
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000b1","role":"authenticated"}', true);
+select throws_ok($$select public.save_contact('00000000-0000-0000-0000-0000000000b1', 'Pessoa Um da Silva', '(11) 99999-0000', '01001-000', 'Rua Ficticia', '10', 'ap 2', 'Centro', 'Sao Paulo', 'SP', '', '(11) 97777-6666', 'mae', null, false)$$, '22023', null, 'contato de emergencia sem nome rejeitado');
+select throws_ok($$select public.save_contact('00000000-0000-0000-0000-0000000000b1', 'Pessoa Um da Silva', '(11) 99999-0000', '01001-000', 'Rua Ficticia', '10', 'ap 2', 'Centro', 'Sao Paulo', 'SP', 'Contato de Emergencia', '123', 'mae', null, false)$$, '22023', null, 'telefone de emergencia invalido rejeitado');
+select throws_ok($$select public.save_contact('00000000-0000-0000-0000-0000000000b1', 'Pessoa Um da Silva', '(11) 99999-0000', '01001-000', 'Rua Ficticia', '10', 'ap 2', 'Centro', 'Sao Paulo', 'SP', 'Contato de Emergencia', '(11) 97777-6666', 'mae', 'asma leve', false)$$, '22023', null, 'observacao de saude sem consentimento rejeitada');
+select lives_ok($$select public.save_contact('00000000-0000-0000-0000-0000000000b1', 'Pessoa Um da Silva', '(11) 99999-0000', '01001-000', 'Rua Ficticia', '10', 'ap 2', 'Centro', 'Sao Paulo', 'SP', 'Contato de Emergencia', '(11) 97777-6666', 'mae', 'asma leve (dado de teste)', true)$$, 'observacao de saude com consentimento especifico');
+select is((select health_notes from public.get_contact('00000000-0000-0000-0000-0000000000b1')), 'asma leve (dado de teste)', 'a pessoa le a propria observacao');
+select is((select health_consent_at is not null from public.get_contact('00000000-0000-0000-0000-0000000000b1')), true, 'o consentimento fica registrado com a data');
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000a1","role":"authenticated"}', true);
+select is((select emergency_name || '/' || health_notes from public.get_member_contact('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000b1')), 'Contato de Emergencia/asma leve (dado de teste)', 'gestor le o contato de emergencia e a observacao de saude');
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000b1","role":"authenticated"}', true);
+select lives_ok($$select public.save_contact('00000000-0000-0000-0000-0000000000b1', 'Pessoa Um da Silva', '(11) 99999-0000', '01001-000', 'Rua Ficticia', '10', 'ap 2', 'Centro', 'Sao Paulo', 'SP', 'Contato de Emergencia', '(11) 97777-6666', 'mae', '  ', false)$$, 'remover a observacao nao exige consentimento');
+select is((select health_consent_at is null and health_notes is null from public.get_contact('00000000-0000-0000-0000-0000000000b1')), true, 'sem observacao, sem consentimento guardado');
+
+-- A ficha without the emergency contact (older row) does not count as complete
 reset role;
-select is((select count(*)::int from public.audit_events where action = 'contact.view' and entity_id = '00000000-0000-0000-0000-0000000000b1'), 1, 'a leitura do gestor foi auditada');
+insert into public.profile_contacts (user_id, full_name, phone, postal_code, street, number, neighborhood, city, state, updated_by)
+  values ('00000000-0000-0000-0000-0000000000b3', 'Pessoa Tres', '11999990000', '01001000', 'Rua Ficticia', '1', 'Centro', 'Sao Paulo', 'SP', '00000000-0000-0000-0000-0000000000b3');
+set local role authenticated;
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000b3","role":"authenticated"}', true);
+select throws_ok($$select public.request_membership('00000000-0000-0000-0000-00000000ac01')$$, '22023', null, 'ficha antiga sem contato de emergencia nao libera a entrada');
+
+reset role;
+select is((select count(*)::int from public.audit_events where action = 'contact.view' and entity_id = '00000000-0000-0000-0000-0000000000b1'), 2, 'a leitura do gestor foi auditada');
 select is((select count(*)::int from public.audit_events where action in ('contact.save', 'contact.view') and metadata::text like '%99999%'), 0, 'a auditoria nao guarda telefone nem endereco');
 
 select * from finish();

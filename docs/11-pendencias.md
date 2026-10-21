@@ -169,12 +169,14 @@
 - [x] Limite de dependentes por responsável = 7 (migration 022).
 
 ## US-016 (termos e ficha)
-- [ ] **Os termos são rascunho** e não citam controlador, CNPJ nem canal de atendimento (não existem ainda). Precisam de revisão jurídica antes de qualquer pessoa real; só então definir a retenção dos dados.
-- [ ] A troca de versão dos termos **só avisa** no perfil; não bloqueia o uso. Decidir se a nova versão passa a exigir novo aceite antes de continuar.
+- [ ] **Os termos são rascunho**: a empresa e o CNPJ vêm dos dados da academia e das variáveis `PLATFORM_LEGAL_NAME`/`PLATFORM_CNPJ`; falta o canal de atendimento. Precisam de revisão jurídica antes de qualquer pessoa real; só então definir a retenção dos dados.
+- [x] A troca de versão dos termos só avisa no perfil (decisão do dono do produto).
 - [ ] A ficha não verifica telefone, e-mail ou endereço (só o formato). Sem consulta de CEP, sem confirmação por SMS.
-- [ ] Sem contato de emergência nem dados de saúde na ficha (não pedidos). Academias de luta costumam precisar; confirmar com a academia.
+- [x] Contato de emergência (obrigatório) e observações de saúde (opcionais, com consentimento) entraram na US-016b.
 - [ ] O gestor lê a ficha de todos os membros da academia (intencional, auditado). Confirmar se o instrutor também precisa de telefone (hoje não vê).
 - [ ] Sem exportação nem exclusão a pedido do titular (LGPD art. 18); falta fluxo e prazo.
 - [ ] CPF e dados de cobrança ficam para a US-017 (coletar só o necessário).
 - [ ] O app mobile pede o aceite no cadastro, mas ainda não tem tela para a ficha nem para os termos.
 - [ ] Contas criadas antes desta versão não têm ficha: ficam sem poder pedir entrada até preencher.
+- [ ] Observações de saúde são dado sensível (LGPD art. 11): hoje só titular, responsável e gestor leem. Decidir se o professor da aula precisa ver (por exemplo, alergias) e com qual regra; exigem revisão jurídica.
+- [ ] A razão social/CNPJ da academia é informada pelo gestor e **não é conferida** em base oficial; só o dígito verificador é validado. A empresa da plataforma depende das variáveis de ambiente do ambiente de produção (ainda não existe).

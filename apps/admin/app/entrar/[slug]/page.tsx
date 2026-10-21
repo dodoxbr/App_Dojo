@@ -81,7 +81,7 @@ export default async function EntrarPage({ params }: { params: Promise<{ slug: s
         <p role="alert">Seu vínculo não está ativo. Fale com o gestor da academia.</p>
       )}
 
-      <p><Link href="/perfil">Meu perfil</Link></p>
+      <p><Link href={`/termos/${slug.toLowerCase()}`}>Termos e privacidade desta academia</Link> · <Link href="/perfil">Meu perfil</Link></p>
     </main>
   );
 }

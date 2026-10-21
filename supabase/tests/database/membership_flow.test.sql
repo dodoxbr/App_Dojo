@@ -15,7 +15,7 @@ insert into auth.users (id, email) values
  ('00000000-0000-0000-0000-0000000000f1', 'semvinculo@example.test');
 -- the fixtures are adults (age gate, migration 019)
 insert into public.profile_private (user_id, birth_date) select id, date '1990-01-01' from auth.users where email like '%@example.test' on conflict (user_id) do nothing;
-insert into public.profile_contacts (user_id, full_name, phone, postal_code, street, number, neighborhood, city, state, updated_by) select id, 'Pessoa de Teste', '11999990000', '01001000', 'Rua Ficticia', '1', 'Centro', 'Sao Paulo', 'SP', id from auth.users where email like '%@example.test' on conflict (user_id) do nothing;
+insert into public.profile_contacts (user_id, full_name, phone, postal_code, street, number, neighborhood, city, state, emergency_name, emergency_phone, emergency_relationship, updated_by) select id, 'Pessoa de Teste', '11999990000', '01001000', 'Rua Ficticia', '1', 'Centro', 'Sao Paulo', 'SP', 'Contato de Emergencia', '11977776666', 'mae', id from auth.users where email like '%@example.test' on conflict (user_id) do nothing;
 insert into public.academies (id, name, slug, owner_user_id) values
  ('00000000-0000-0000-0000-00000000ac01', 'Academia Um', 'academia-um', '00000000-0000-0000-0000-0000000000a1'),
  ('00000000-0000-0000-0000-00000000ac02', 'Academia Dois', 'academia-dois', '00000000-0000-0000-0000-0000000000b2');

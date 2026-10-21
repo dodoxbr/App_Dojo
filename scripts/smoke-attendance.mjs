@@ -37,6 +37,7 @@ async function newUser(label) {
   const ficha = await client.rpc('save_contact', {
     p_user_id: inn.data.user.id, p_full_name: `Smoke ${label}`, p_phone: '(11) 99999-0000', p_postal_code: '01001-000',
     p_street: 'Rua Ficticia', p_number: '1', p_complement: null, p_neighborhood: 'Centro', p_city: 'Sao Paulo', p_state: 'SP',
+    p_emergency_name: 'Contato de Emergencia', p_emergency_phone: '(11) 97777-6666', p_emergency_relationship: 'mae', p_health_notes: null, p_health_consent: false,
   });
   assert.equal(ficha.error, null, `ficha de ${label}`);
   return { client, email, id: inn.data.user.id };

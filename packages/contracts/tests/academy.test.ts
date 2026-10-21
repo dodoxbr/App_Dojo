@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import {
   contrastRatio,
   createAcademySchema,
+  formatCnpj,
+  isValidCnpj,
   instructorPermissions,
   slugSchema,
   themeSchema,
@@ -29,10 +31,21 @@ test('slug is normalized and restricted', () => {
   assert.equal(slugSchema.safeParse('-inicio').success, false);
 });
 
-test('create academy needs an idempotency key', () => {
-  const base = { name: 'Academia Teste', slug: 'academia-teste' };
+test('create academy needs an idempotency key, the company name and a valid CNPJ', () => {
+  const base = { name: 'Academia Teste', slug: 'academia-teste', legalName: 'Academia Teste Ltda (teste)', cnpj: '11.222.333/0001-81' };
   assert.equal(createAcademySchema.safeParse(base).success, false);
-  assert.equal(createAcademySchema.safeParse({ ...base, idempotencyKey: crypto.randomUUID() }).success, true);
+  const ok = createAcademySchema.parse({ ...base, idempotencyKey: crypto.randomUUID() });
+  assert.equal(ok.cnpj, '11222333000181', 'o CNPJ vira só dígitos');
+  assert.equal(createAcademySchema.safeParse({ ...base, cnpj: '11.222.333/0001-80', idempotencyKey: crypto.randomUUID() }).success, false);
+  assert.equal(createAcademySchema.safeParse({ ...base, legalName: ' ', idempotencyKey: crypto.randomUUID() }).success, false);
+});
+
+test('CNPJ check digits', () => {
+  assert.equal(isValidCnpj('11222333000181'), true);
+  assert.equal(isValidCnpj('11222333000182'), false);
+  assert.equal(isValidCnpj('11111111111111'), false);
+  assert.equal(isValidCnpj('123'), false);
+  assert.equal(formatCnpj('11222333000181'), '11.222.333/0001-81');
 });
 
 test('diary is never an instructor permission', () => {

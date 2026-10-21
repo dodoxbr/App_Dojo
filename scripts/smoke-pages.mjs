@@ -32,6 +32,7 @@ makePlatformAdmin(owner.email);
 assert.equal((await owner.client.rpc('grant_academy_creator', { p_email: master.email })).error, null);
 const slug = `paginas-${run}`;
 const academyId = (await master.client.rpc('create_academy', { p_name: 'Academia Páginas', p_slug: slug, p_idempotency_key: crypto.randomUUID() })).data;
+assert.equal((await master.client.rpc('set_academy_legal', { p_academy_id: academyId, p_legal_name: 'Academia Páginas Ltda (teste)', p_cnpj: '11.222.333/0001-81' })).error, null);
 assert.equal((await master.client.rpc('add_member', { p_academy_id: academyId, p_email: teacher.email, p_role: 'instructor' })).error, null);
 for (const p of ['validate_attendance', 'recommend_graduation', 'assess_skills', 'view_progress']) {
   assert.equal((await master.client.rpc('set_instructor_permission', { p_academy_id: academyId, p_permission: p, p_granted: true })).error, null);
@@ -133,6 +134,7 @@ try {
   // Not signed in
   await check(null, '/', { has: 'Painel' });
   await check(null, '/login', { has: ['Entrar', 'cuidar de um menor de idade', 'Li e aceito os'] });
+  await check(null, `/termos/${slug}`, { has: ['Academia Páginas Ltda (teste)', '11.222.333/0001-81', 'Termos de uso'] });
   await check(null, '/termos', { has: ['Termos de uso', 'Política de privacidade', 'Rascunho em revisão jurídica', 'Crianças e adolescentes'] });
   await check(null, '/dependentes', { redirect: '/login?next=%2Fdependentes' });
   await check(null, '/perfil', { redirect: '/login?next=%2Fperfil' });
@@ -140,7 +142,7 @@ try {
 
   // Student
   await check('student', '/perfil', { has: ['Meu perfil', 'Minhas academias', 'Academia Páginas', 'Minha ficha de cadastro', 'Li e aceito'] });
-  await check('student', '/perfil/ficha', { has: ['Minha ficha de cadastro', 'Nome completo', 'Rua Ficticia', '(11) 99999-0000', '01001-000', 'Salvar ficha'] });
+  await check('student', '/perfil/ficha', { has: ['Minha ficha de cadastro', 'Nome completo', 'Rua Ficticia', '(11) 99999-0000', '01001-000', 'Salvar ficha', 'Contato de emergência', 'Saúde (opcional)'] });
   await check('student', '/diario', { has: ['Meu diário', 'Tesoura'] });
   await check('student', '/diario/novo', { has: 'Registrar treino' });
   await check('student', `/diario/${logId}`, { has: ['Treino de', 'Excluir este registro'] });
@@ -181,10 +183,10 @@ try {
 
   // Manager
   await check('manager', '/perfil', { has: ['Meu perfil', 'Gerenciar: Academia Páginas', 'Criar academia'] });
-  await check('manager', A, { has: ['Academia Páginas', 'Identidade visual', 'O que o instrutor pode fazer'] });
+  await check('manager', A, { has: ['Academia Páginas', 'Identidade visual', 'O que o instrutor pode fazer', 'Dados da empresa', 'Academia Páginas Ltda (teste)', '11.222.333/0001-81'] });
   await check('manager', `${A}/membros`, { has: ['Membros', 'Cadastrar aluno ou colaborador'] });
   await check('manager', `${A}/membros`, { has: ['Menor de páginas', 'menor · falta conferir o responsável', 'Ficha'] });
-  await check('manager', `${A}/membros/${student.id}`, { has: ['Ficha de Smoke aluno', 'Rua Ficticia', '(11) 99999-0000', 'registrada na auditoria'] });
+  await check('manager', `${A}/membros/${student.id}`, { has: ['Ficha de Smoke aluno', 'Rua Ficticia', '(11) 99999-0000', 'registrada na auditoria', 'Contato de emergência', 'Contato de Emergencia', 'Observações de saúde'] });
   await check('manager', `${A}/responsaveis`, { has: ['Menores e responsáveis', 'Aguardando conferência', 'Menor de páginas', 'Smoke responsavel', 'Confirmar conferência'] });
   await check('manager', `${A}/turmas`, { has: ['Turmas', 'Turma de páginas', 'Nova turma'] });
   await check('manager', `/turmas/${classId}`, { has: ['Turma de páginas', 'Editar turma'] });
@@ -202,7 +204,7 @@ try {
   await check('manager', `/desafios/${challengeId}`, { has: ['Desafio de páginas', 'Ranking', 'Moderação'] });
   await check('manager', '/desafios', { has: ['Desafios', 'Desafio de páginas'] });
   await check('manager', '/tecnicas/nova', { has: 'Cadastrar técnica' });
-  await check('manager', '/academias/nova', { has: 'Criar academia' });
+  await check('manager', '/academias/nova', { has: ['Criar academia', 'Razão social', 'CNPJ'] });
 
   // Platform owner (test phase)
   await check('owner', '/plataforma', { has: ['Plataforma', 'Liberar criação de academias', 'Academia Páginas'] });

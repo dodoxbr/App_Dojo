@@ -34,6 +34,10 @@ export default async function FichaDoMembroPage({ params }: { params: Promise<{ 
             {c.street}, {c.number}{c.complement ? ` — ${c.complement}` : ""}<br />
             {c.neighborhood} · {c.city}/{c.state} · CEP {formatPostalCode(c.postal_code)}
           </dd>
+          <dt>Contato de emergência</dt>
+          <dd>{c.emergency_name} ({c.emergency_relationship}) · {c.emergency_phone ? formatPhone(c.emergency_phone) : "—"}</dd>
+          <dt>Observações de saúde</dt>
+          <dd>{c.health_notes ?? "nenhuma informada"}</dd>
         </dl>
       )}
       <p><small>Dados pessoais protegidos: esta consulta foi registrada na auditoria da academia.</small></p>

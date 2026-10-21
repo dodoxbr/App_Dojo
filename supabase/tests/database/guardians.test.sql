@@ -59,7 +59,7 @@ select is((select count(*)::int from public.guardianships), 0, 'e nao enxerga vi
 
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000e1","role":"authenticated"}', true);
 select throws_ok($$select public.request_dependent_membership((select id from dep), '00000000-0000-0000-0000-00000000ac01', false)$$, '22023', null, 'sem a ficha do menor nao ha pedido de vaga');
-select lives_ok($$select public.save_contact((select id from dep), 'Crianca Teste da Silva', '(11) 98888-7777', '01001-000', 'Rua Ficticia', '10', null, 'Centro', 'Sao Paulo', 'sp')$$, 'o responsavel preenche a ficha do menor');
+select lives_ok($$select public.save_contact((select id from dep), 'Crianca Teste da Silva', '(11) 98888-7777', '01001-000', 'Rua Ficticia', '10', null, 'Centro', 'Sao Paulo', 'sp', 'Contato de Emergencia', '(11) 97777-6666', 'mae', null, false)$$, 'o responsavel preenche a ficha do menor');
 select lives_ok($$select public.request_dependent_membership((select id from dep), '00000000-0000-0000-0000-00000000ac01', false)$$, 'responsavel pede a vaga e consente');
 select lives_ok($$select public.request_dependent_membership((select id from dep), '00000000-0000-0000-0000-00000000ac01', false)$$, 'repetir o pedido nao duplica');
 select is((select consent_photos from public.guardian_consents), false, 'foto desligada por padrao');

@@ -9,7 +9,7 @@ insert into auth.users (id, email)
   from (values ('b1','gestor@example.test'),('c1','instrutor@example.test'),
                ('d1','aluno1@example.test'),('d2','aluno2@example.test'),('d3','aluno3@example.test'),('d4','aluno4@example.test'),('d5','aluno5@example.test'),
                ('d6','menor@example.test'),('d7','pendente@example.test'),('f1','externo@example.test'),('e1','gestor2@example.test')) as n(id, email);
-insert into public.profile_contacts (user_id, full_name, phone, postal_code, street, number, neighborhood, city, state, updated_by) select id, 'Pessoa de Teste', '11999990000', '01001000', 'Rua Ficticia', '1', 'Centro', 'Sao Paulo', 'SP', id from auth.users where email like '%@example.test' on conflict (user_id) do nothing;
+insert into public.profile_contacts (user_id, full_name, phone, postal_code, street, number, neighborhood, city, state, emergency_name, emergency_phone, emergency_relationship, updated_by) select id, 'Pessoa de Teste', '11999990000', '01001000', 'Rua Ficticia', '1', 'Centro', 'Sao Paulo', 'SP', 'Contato de Emergencia', '11977776666', 'mae', id from auth.users where email like '%@example.test' on conflict (user_id) do nothing;
 insert into public.profile_private (user_id, birth_date)
   select u.id, case when u.email = 'menor@example.test' then (current_date - interval '12 years')::date else date '1990-01-01' end
   from auth.users u where u.email in ('gestor@example.test','instrutor@example.test','aluno1@example.test','aluno2@example.test','aluno3@example.test',

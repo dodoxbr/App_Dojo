@@ -4,6 +4,15 @@ export const CURRENT_TERMS_VERSION = 'rascunho-2026-10';
 
 export type TermsSection = { id: string; title: string; paragraphs: string[] };
 
+// Variables of the texts: {{empresa}} and {{cnpj}} (the academy, controller of the data of its members) and {{operador}} and
+// {{operador_cnpj}} (the company that runs the platform). Missing values read "a definir".
+export type TermsVars = Partial<Record<'empresa' | 'cnpj' | 'operador' | 'operador_cnpj', string | null | undefined>>;
+
+export function fillTerms(sections: TermsSection[], vars: TermsVars): TermsSection[] {
+  const sub = (text: string) => text.replace(/\{\{(empresa|cnpj|operador|operador_cnpj)\}\}/g, (_m, key: keyof TermsVars) => vars[key]?.trim() || 'a definir');
+  return sections.map((s) => ({ ...s, title: sub(s.title), paragraphs: s.paragraphs.map(sub) }));
+}
+
 export const termsOfUse: TermsSection[] = [
   {
     id: 'objeto',
@@ -93,7 +102,8 @@ export const privacyPolicy: TermsSection[] = [
     title: '5. Seus direitos',
     paragraphs: [
       'Você pode pedir acesso, correção e exclusão dos seus dados, e revogar consentimentos, conforme a LGPD.',
-      'O canal de atendimento e o nome do controlador dos dados serão informados aqui antes da abertura para o público.',
+      'Em cada academia, quem decide como os dados dos seus membros são usados (o controlador) é a própria academia: {{empresa}}, CNPJ {{cnpj}}.',
+      'A plataforma é operada por {{operador}}, CNPJ {{operador_cnpj}}. O canal de atendimento será informado aqui antes da abertura para o público.',
     ],
   },
   {

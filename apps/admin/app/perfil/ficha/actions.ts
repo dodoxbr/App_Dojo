@@ -20,6 +20,11 @@ export async function saveContact(userId: string, _prev: FormState, formData: Fo
     neighborhood: formData.get("neighborhood"),
     city: formData.get("city"),
     state: formData.get("state"),
+    emergencyName: formData.get("emergencyName"),
+    emergencyPhone: formData.get("emergencyPhone"),
+    emergencyRelationship: formData.get("emergencyRelationship"),
+    healthNotes: formData.get("healthNotes") ?? undefined,
+    healthConsent: formData.get("healthConsent") === "on",
   });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Revise os campos da ficha." };
 
@@ -36,6 +41,11 @@ export async function saveContact(userId: string, _prev: FormState, formData: Fo
     p_neighborhood: c.neighborhood,
     p_city: c.city,
     p_state: c.state,
+    p_emergency_name: c.emergencyName,
+    p_emergency_phone: c.emergencyPhone,
+    p_emergency_relationship: c.emergencyRelationship,
+    p_health_notes: c.healthNotes ?? null,
+    p_health_consent: c.healthConsent,
   });
   if (error) return { error: rpcErrorMessage(error) };
   revalidatePath("/perfil");

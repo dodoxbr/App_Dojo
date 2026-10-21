@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { instructorPermissionLabels, instructorPermissions } from "@dojo/contracts/academy";
 import { getCaller } from "@/lib/context";
+import { formatCnpj } from "@dojo/contracts/academy";
+import { LegalForm } from "./legal-form";
 import { SettingsForm } from "./settings-form";
 import { setPermission } from "./actions";
 
@@ -13,7 +15,7 @@ export default async function AcademiaPage({ params }: { params: Promise<{ id: s
 
   const { data: academy } = await supabase
     .from("academies")
-    .select("id, name, slug, theme_primary, theme_secondary")
+    .select("id, name, slug, theme_primary, theme_secondary, legal_name, cnpj")
     .eq("id", id)
     .maybeSingle();
   if (!academy) notFound();
@@ -43,6 +45,12 @@ export default async function AcademiaPage({ params }: { params: Promise<{ id: s
           themePrimary={academy.theme_primary}
           themeSecondary={academy.theme_secondary}
         />
+      </section>
+
+      <section>
+        <h2>Dados da empresa</h2>
+        <p>Aparecem nos termos de uso e na política de privacidade da academia (<Link href={`/termos/${academy.slug}`}>ver os termos</Link>).</p>
+        <LegalForm academyId={academy.id} legalName={(academy.legal_name as string | null) ?? ""} cnpj={academy.cnpj ? formatCnpj(academy.cnpj as string) : ""} />
       </section>
 
       <section>

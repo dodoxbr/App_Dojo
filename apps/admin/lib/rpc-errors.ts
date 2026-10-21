@@ -16,6 +16,10 @@ export function rpcErrorMessage(
       if (m.includes("instructor")) return "O instrutor precisa ser instrutor ou gestor aprovado desta academia.";
       if (m.includes("class inactive")) return "Esta turma está inativa. Ative-a para agendar aulas.";
       if (m.includes("adult required")) return "Esta ação é só para maiores de 18 anos. Para um menor, o responsável cadastra o menor em \"Meus dependentes\".";
+      if (m.includes("cnpj")) return "CNPJ inválido. Confira os 14 dígitos.";
+      if (m.includes("legal_name")) return "Informe a razão social da empresa (2 a 200 caracteres).";
+      if (m.includes("emergency contact")) return "Informe o contato de emergência: nome, telefone com DDD e parentesco.";
+      if (m.includes("health consent")) return "Para registrar observações de saúde marque o consentimento específico (máximo 500 caracteres).";
       if (m.includes("contact required")) return "Complete a ficha de cadastro (nome completo, telefone e endereço) antes de continuar.";
       if (m.includes("full_name") || m.includes("phone") || m.includes("postal_code") || m.includes("state") || m.includes("address")) return "Revise a ficha: nome completo, telefone com DDD (10 ou 11 dígitos), CEP (8 dígitos), UF e endereço.";
       if (m.includes("guardian required")) return "Para aprovar um menor, o responsável precisa ter dado o consentimento e o gestor precisa ter conferido o documento dele pessoalmente.";

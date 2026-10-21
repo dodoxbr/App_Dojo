@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { formatPhone, formatPostalCode, phoneSchema, postalCodeSchema, saveContactSchema, ufSchema } from '../src/contacts.ts';
-import { CURRENT_TERMS_VERSION, privacyPolicy, termsOfUse } from '../src/terms.ts';
+import { CURRENT_TERMS_VERSION, fillTerms, privacyPolicy, termsOfUse } from '../src/terms.ts';
 
 const person = {
   userId: '11111111-1111-4111-8111-111111111111',
@@ -13,6 +13,10 @@ const person = {
   neighborhood: 'Centro',
   city: 'Sao Paulo',
   state: 'sp',
+  emergencyName: 'Contato de Emergencia',
+  emergencyPhone: '(11) 97777-6666',
+  emergencyRelationship: 'mãe',
+  healthConsent: false,
 };
 
 test('phone and postal code accept masks and keep only digits', () => {
@@ -35,6 +39,22 @@ test('the ficha needs name, phone, address; complement is optional', () => {
   assert.equal(saveContactSchema.safeParse({ ...person, street: '' }).success, false);
   assert.equal(saveContactSchema.safeParse({ ...person, fullName: 'P' }).success, false);
   assert.equal(saveContactSchema.safeParse({ ...person, userId: 'nao-e-uuid' }).success, false);
+});
+
+test('the emergency contact is required; health notes need the specific consent', () => {
+  assert.equal(saveContactSchema.safeParse({ ...person, emergencyName: '' }).success, false);
+  assert.equal(saveContactSchema.safeParse({ ...person, emergencyPhone: '123' }).success, false);
+  assert.equal(saveContactSchema.safeParse({ ...person, healthNotes: 'asma leve' }).success, false, 'sem consentimento');
+  assert.equal(saveContactSchema.safeParse({ ...person, healthNotes: 'asma leve', healthConsent: true }).success, true);
+  assert.equal(saveContactSchema.parse({ ...person, healthNotes: '   ' }).healthNotes, undefined, 'observação vazia some');
+  assert.equal(saveContactSchema.safeParse({ ...person, healthNotes: 'x'.repeat(501), healthConsent: true }).success, false);
+});
+
+test('the terms fill the company variables and say "a definir" when missing', () => {
+  const text = (vars: Parameters<typeof fillTerms>[1]) => fillTerms(privacyPolicy, vars).flatMap((s) => s.paragraphs).join(' ');
+  assert.match(text({ empresa: 'Academia Teste Ltda', cnpj: '11.222.333/0001-81' }), /Academia Teste Ltda, CNPJ 11\.222\.333\/0001-81/);
+  assert.match(text({}), /CNPJ a definir/);
+  assert.doesNotMatch(text({ empresa: 'X', cnpj: 'Y', operador: 'Z', operador_cnpj: 'W' }), /\{\{/);
 });
 
 test('display helpers', () => {
