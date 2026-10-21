@@ -96,7 +96,7 @@ export default async function MembrosPage({
               <li key={m.id as string}>
                 {nameOf.get(m.user_id as string) ?? "Pessoa"}{minorTag(m.user_id as string)} — {membershipRoleLabels[m.role as string]} ·{" "}
                 {membershipStatusLabels[m.status as string]}
-                {" "}<Link href={`/academia/${id}/membros/${m.user_id as string}`}>Ficha</Link>
+                {" "}<Link href={`/academia/${id}/membros/${m.user_id as string}`}>Ficha</Link>{m.role === "student" && m.status === "approved" && <> · <Link href={`/academia/${id}/financeiro/alunos/${m.user_id as string}`}>Financeiro</Link></>}
                 {m.role !== "manager" && (
                   <form action={endMembership.bind(null, id)} style={{ display: "inline", marginLeft: 8 }}>
                     <input type="hidden" name="membershipId" value={m.id as string} />

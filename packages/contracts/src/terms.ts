@@ -50,7 +50,9 @@ export const termsOfUse: TermsSection[] = [
     id: 'pagamentos',
     title: '5. Mensalidades e pagamentos',
     paragraphs: [
-      'O controle financeiro entrará em uma etapa futura, com termos próprios para o responsável financeiro. Este texto será atualizado e você será avisado.',
+      'O controle financeiro da academia é feito pelo gestor, que registra manualmente as mensalidades e os pagamentos recebidos. A plataforma não recebe, intermedeia nem processa pagamentos.',
+      'O aluno consulta as próprias cobranças. Em caso de menor, o responsável legal e o responsável financeiro consultam as cobranças do menor.',
+      'Se a academia passar a usar uma plataforma de pagamento, estes termos serão atualizados e você será avisado antes.',
     ],
   },
   {

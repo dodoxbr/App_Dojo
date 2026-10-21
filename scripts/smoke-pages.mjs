@@ -39,6 +39,10 @@ for (const p of ['validate_attendance', 'recommend_graduation', 'assess_skills',
 }
 const request = await student.client.rpc('request_membership', { p_academy_id: academyId });
 assert.equal((await master.client.rpc('decide_membership', { p_membership_id: request.data, p_decision: 'approved', p_reason: null, p_idempotency_key: crypto.randomUUID() })).data, 'approved');
+// Finance: a plan, the month's charge and a one-off charge for the student
+assert.equal((await master.client.rpc('set_member_plan', { p_academy_id: academyId, p_user_id: student.id, p_amount_cents: 15000, p_due_day: 10, p_starts_on: localDate(30), p_active: true })).error, null);
+assert.equal((await master.client.rpc('generate_monthly_charges', { p_academy_id: academyId, p_month: `${localDate(0).slice(0, 7)}-01`, p_idempotency_key: crypto.randomUUID() })).data, 1);
+assert.equal((await master.client.rpc('create_charge', { p_academy_id: academyId, p_user_id: student.id, p_description: 'Taxa de exame de páginas', p_amount_cents: 5000, p_due_date: localDate(0), p_idempotency_key: crypto.randomUUID() })).error, null);
 const tesoura = (await student.client.rpc('search_techniques', { p_query: 'tesoura', p_limit: 1 })).data[0].id;
 const curriculumId = (await master.client.rpc('create_curriculum', { p_academy_id: academyId, p_title: 'Trilha de páginas', p_level: 'Básico', p_idempotency_key: crypto.randomUUID() })).data;
 await master.client.rpc('add_curriculum_item', { p_curriculum_id: curriculumId, p_technique_id: tesoura, p_required: true });
@@ -157,6 +161,8 @@ try {
   await check('student', '/desafios', { has: ['Desafios', 'Desafio de páginas', 'Em andamento'] });
   await check('student', '/desafios/novo', { has: ['Criar desafio', 'Mínimo de participantes'] });
   await check('student', `/desafios/${challengeId}`, { has: ['Desafio de páginas', 'Ranking', 'Registrar treino', 'Meus registros', 'Smoke aluno'] });
+  await check('student', '/financeiro', { has: ['Meu financeiro', 'Minhas cobranças', 'Academia Páginas', 'Mensalidade', 'Taxa de exame de páginas', 'R$'] });
+  await check('student', `${A}/financeiro`, { redirect: '/perfil' });
   await check('student', '/plataforma', { redirect: '/perfil' });
   await check('student', `${A}/painel`, { redirect: '/perfil' });
   await check('student', `${A}/membros`, { redirect: '/perfil' });
@@ -164,6 +170,7 @@ try {
 
   // Guardian (adult account that answers for the minor)
   await check('guardian', '/dependentes', { has: ['Meus dependentes', 'Menor de páginas', 'Responsável legal', 'Sou o responsável financeiro'] });
+  await check('guardian', '/financeiro', { has: ['Meu financeiro', 'Menor de páginas'] });
   await check('guardian', '/dependentes/novo', { has: ['Cadastrar um menor', 'Seu parentesco'] });
   await check('guardian', `/dependentes/${minorId}/ficha`, { has: ['Ficha de Menor de páginas', 'Menor de Páginas da Silva', 'Salvar ficha'] });
   await check('guardian', `/dependentes/${minorId}`, { has: ['Menor de páginas', 'Academia Páginas', 'Aguardando o gestor conferir', 'Revogar consentimento', 'Responsável financeiro'] });
@@ -181,6 +188,8 @@ try {
   await check('teacher', `${A}/graduacao/alunos/${student.id}`, { has: ['Smoke aluno', 'Progresso nos critérios', 'Comprometimento'] });
   await check('teacher', `${A}/painel`, { has: ['Painel de frequência', 'Frequência'] });
 
+  await check('teacher', `${A}/financeiro`, { redirect: '/perfil' });
+
   // Manager
   await check('manager', '/perfil', { has: ['Meu perfil', 'Gerenciar: Academia Páginas', 'Criar academia'] });
   await check('manager', A, { has: ['Academia Páginas', 'Identidade visual', 'O que o instrutor pode fazer', 'Dados da empresa', 'Academia Páginas Ltda (teste)', '11.222.333/0001-81'] });
@@ -188,6 +197,9 @@ try {
   await check('manager', `${A}/membros`, { has: ['Menor de páginas', 'menor · falta conferir o responsável', 'Ficha'] });
   await check('manager', `${A}/membros/${student.id}`, { has: ['Ficha de Smoke aluno', 'Rua Ficticia', '(11) 99999-0000', 'registrada na auditoria', 'Contato de emergência', 'Contato de Emergencia', 'Observações de saúde'] });
   await check('manager', `${A}/responsaveis`, { has: ['Menores e responsáveis', 'Aguardando conferência', 'Menor de páginas', 'Smoke responsavel', 'Confirmar conferência'] });
+  await check('manager', `${A}/financeiro`, { has: ['Financeiro —', 'Resumo do mês', 'Gerar as mensalidades do mês', 'Smoke aluno', 'Marcar como pago', 'Controle manual'] });
+  await check('manager', `${A}/financeiro/planos`, { has: ['Planos dos alunos', 'Smoke aluno', 'Salvar plano', 'hoje:'] });
+  await check('manager', `${A}/financeiro/alunos/${student.id}`, { has: ['Financeiro de Smoke aluno', 'Nova cobrança avulsa', 'Histórico de alterações', 'Taxa de exame de páginas'] });
   await check('manager', `${A}/turmas`, { has: ['Turmas', 'Turma de páginas', 'Nova turma'] });
   await check('manager', `/turmas/${classId}`, { has: ['Turma de páginas', 'Editar turma'] });
   await check('manager', `/turmas/${classId}/aulas/${sessionId}`, { has: ['Presenças', 'Smoke aluno'] });

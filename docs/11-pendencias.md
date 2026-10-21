@@ -180,3 +180,14 @@
 - [ ] Contas criadas antes desta versão não têm ficha: ficam sem poder pedir entrada até preencher.
 - [ ] Observações de saúde são dado sensível (LGPD art. 11): hoje só titular, responsável e gestor leem. Decidir se o professor da aula precisa ver (por exemplo, alergias) e com qual regra; exigem revisão jurídica.
 - [ ] A razão social/CNPJ da academia é informada pelo gestor e **não é conferida** em base oficial; só o dígito verificador é validado. A empresa da plataforma depende das variáveis de ambiente do ambiente de produção (ainda não existe).
+
+## US-017 (financeiro manual)
+- [ ] **Validar com a academia** se o fluxo manual (plano por aluno, gerar o mês, marcar o pagamento) atende; só depois decidir a plataforma de pagamento.
+- [ ] Sem juros, multa, desconto, pagamento parcial, 2ª via nem comprovante: o gestor registra o valor cheio; para outro valor, cancele e crie uma avulsa.
+- [ ] Sem lembrete de vencimento nem aviso ao aluno ou responsável (não há notificações na plataforma ainda).
+- [ ] Sem relatório exportável (planilha) nem visão consolidada de vários meses; só o resumo do mês.
+- [ ] Mensalidade só para alunos; instrutores e outros colaboradores não têm plano. Confirmar se haverá desconto para família (irmãos) ou bolsa.
+- [ ] Gerar o mês é uma ação do gestor (não automática no dia 1). Avaliar geração automática com a academia.
+- [ ] Os dados financeiros são pessoais: o gestor vê o que cada pessoa deve; definir retenção e o que acontece com as cobranças quando a pessoa sai da academia (hoje ficam).
+- [ ] O responsável financeiro só consulta; ele não marca pagamento. O app mobile não tem telas de financeiro.
+- [ ] O super admin não vê o financeiro das academias (decisão de privacidade); suporte a problemas exigirá um procedimento à parte.

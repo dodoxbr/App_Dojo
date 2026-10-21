@@ -50,6 +50,7 @@ jobs:
           node scripts/smoke-promotion.mjs
           node scripts/smoke-challenges.mjs
           node scripts/smoke-guardians.mjs
+          node scripts/smoke-finance.mjs
           node scripts/e2e-pilot.mjs
       - name: Renderiza as telas do painel (todos os papéis)
         run: |

@@ -21,7 +21,7 @@ Cada história deve ter migration, política RLS, testes negativos e interface m
 | US-014 | Desafios entre alunos (presença, treino e golpe) com ativação por mínimo e ranking completo | 012, 013a | Feito, ver `docs/features/US-014.md` |
 | US-015 | (absorvida pela US-018) Foto da aula no calendário | — | Substituída: o dono do produto quer a foto como feed da academia, no lugar do WhatsApp |
 | US-016 | Termos aceitos ao criar a conta e ficha de cadastro (nome, e-mail, telefone, endereço) em tabela privada; aos 18 anos o jovem cria uma conta nova | 013b | Feito, ver `docs/features/US-016.md` |
-| US-017 | Financeiro: responsável financeiro como funcionalidade; o gestor controla mensalidade e pagamento de cada aluno (baixa manual primeiro); depois plataforma de pagamento (provedor a escolher, com ADR) | 016 | Proposta |
+| US-017 | Financeiro: responsável financeiro como funcionalidade; o gestor controla mensalidade e pagamento de cada aluno (baixa manual primeiro); depois plataforma de pagamento (provedor a escolher, com ADR) | 016 | Feito (parte manual), ver `docs/features/US-017.md`; a plataforma de pagamento fica para depois da validação |
 | US-018 | Feed de fotos da academia, no lugar do WhatsApp dos treinos (armazenamento privado, sem metadados, foto de menor só com consentimento) | 013b, 016 | Proposta |
 | US-019 | Reações/comentários moderados e medalhas | 018 | Proposta F2/F4 |
 

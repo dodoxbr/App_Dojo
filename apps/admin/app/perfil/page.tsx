@@ -69,6 +69,7 @@ export default async function PerfilPage() {
         <h2>Atalhos</h2>
         <ul>
           <li><Link href="/perfil/ficha">{hasContact ? "Minha ficha de cadastro" : "Preencher minha ficha de cadastro"}</Link></li>
+          <li><Link href="/financeiro">Meu financeiro</Link></li>
           <li><Link href="/dependentes">Meus dependentes (menores de idade)</Link></li>
           <li><Link href="/desafios">Desafios</Link></li>
           <li><Link href="/graduacao">Minha graduação</Link></li>
