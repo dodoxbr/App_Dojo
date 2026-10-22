@@ -281,3 +281,9 @@
 - [ ] Ainda só no painel web: ficha de cadastro, termos, financeiro, feed, desafios, medalhas, aviso de treinos, recuperar senha (o app abre o painel se `EXPO_PUBLIC_WEB_URL` estiver definido), QR de check-in e tudo de gestor, professor e responsável de menores.
 - [ ] Cadastro no app não oferece "conta para cuidar de menor" (o painel oferece); sem modo offline; `expo` pede atualização de patch (58.0.16 → ~58.0.17) e de outros 5 pacotes (`npx expo install --check`).
 - [ ] Um aluno só aparece com a primeira academia em que é aluno aprovado (sem seletor), como no painel.
+
+## Alpha e ideias de produto (2026-10-21)
+- [x] **Alpha no computador:** kit de demonstração com dados fictícios (`scripts/seed-demo.mjs`, `scripts/demo-tour.mjs`) e roteiro em `docs/17-roteiro-de-demonstracao.md`. Sem empresa, sem hospedagem e sem dado real nesta fase (decisão do dono do produto).
+- [ ] **Ideia — pacotes e liberação de funcionalidades por academia** (ex.: inicial, médio, avançado): um conjunto de funcionalidades ligado por academia (financeiro, feed, desafios, medalhas, responsáveis, painel…), com o super admin escolhendo o pacote. Precisa ser aplicado **no banco** (funções e RLS), nunca só escondido na tela; funcionalidades de proteção de menores não devem virar item pago. Os pacotes e preços são decisão do dono do produto; começar com tudo ligado.
+- [ ] **Ideia — medir o consumo por academia** (alunos ativos, fotos guardadas, e-mails enviados) para a futura precificação e para saber quando migrar fotos para Storage com CDN. Estimativas externas de custo (ex.: Supabase Pro US$ 25/mês + Vercel Pro US$ 20/mês, câmbio hipotético) são planejamento, não medição do Dojo; confirmar preços e limites nas fontes oficiais antes de decidir.
+- [ ] O plano gratuito da Vercel é para uso pessoal e não comercial; para operação comercial é preciso o plano pago ou outra hospedagem (ver `docs/15`).
