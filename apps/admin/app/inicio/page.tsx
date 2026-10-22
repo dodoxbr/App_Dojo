@@ -3,11 +3,11 @@ import { redirect } from "next/navigation";
 import { formatSessionRange } from "@dojo/contracts/classes";
 import { evaluationSchema } from "@dojo/contracts/graduation";
 import { membershipStatusLabels } from "@dojo/contracts/membership";
+import { trainedDays, weekDays } from "@dojo/contracts/week";
 import { AppShell } from "@/components/shell/AppShell";
-import { Alert, Badge, ButtonLink, Card, EmptyState, ProgressBar } from "@/components/ui";
+import { Alert, BeltBar, ButtonLink, Card, EmptyState, Hero, ProgressBar, ProgressRing, WeekStrip } from "@/components/ui";
 import { getCaller } from "@/lib/context";
 import { techniquesByLog } from "@/lib/diary";
-import { countInWeek } from "@/lib/week";
 import styles from "./inicio.module.css";
 
 // Server-side clock read, kept out of the render body (react-hooks/purity).
@@ -36,23 +36,24 @@ export default async function InicioPage() {
   const academies = (academyRows ?? []) as AcademyRow[];
   const academyOf = new Map(academies.map((a) => [a.id, a]));
   const primary = academies.find((a) => approvedIds.includes(a.id));
+  const tz = primary?.timezone ?? "America/Sao_Paulo";
 
   // Dados da academia principal (a primeira por ordem de nome)
-  let rankLabel: string | null = null;
+  let rank: { belt_code: string; degree: number } | null = null;
   let criteria: { id: string; label: string; kind: string; current: number | null; target: number | null }[] = [];
   let hasRule = false;
-  let weekCount = 0;
+  let recentStarts: string[] = [];
   let nextSession: { title: string; range: string } | null = null;
   if (primary) {
     const since = new Date(now.getTime() - 9 * 24 * 60 * 60 * 1000).toISOString();
-    const [{ data: rank }, { data: evaluationRaw }, { data: validated }, { data: upcoming }] = await Promise.all([
+    const [{ data: rankRow }, { data: evaluationRaw }, { data: validated }, { data: upcoming }] = await Promise.all([
       supabase.from("current_ranks").select("belt_code, degree").eq("academy_id", primary.id).eq("user_id", userId).maybeSingle(),
       supabase.rpc("evaluate_promotion", { p_academy_id: primary.id, p_user_id: userId }),
       supabase.from("attendances").select("session_id").eq("academy_id", primary.id).eq("user_id", userId).eq("status", "validated"),
       supabase.from("sessions").select("id, class_id, starts_at, ends_at").eq("academy_id", primary.id).eq("status", "scheduled")
         .gte("starts_at", now.toISOString()).order("starts_at").limit(1),
     ]);
-    if (rank) rankLabel = `${rank.belt_code as string} · grau ${rank.degree as number}`;
+    if (rankRow) rank = { belt_code: rankRow.belt_code as string, degree: rankRow.degree as number };
     const evaluation = evaluationSchema.safeParse(evaluationRaw);
     if (evaluation.success && evaluation.data.has_rule) {
       hasRule = true;
@@ -61,7 +62,7 @@ export default async function InicioPage() {
     const validatedIds = (validated ?? []).map((a) => a.session_id as string);
     if (validatedIds.length) {
       const { data: recent } = await supabase.from("sessions").select("starts_at").in("id", validatedIds).gte("starts_at", since);
-      weekCount = countInWeek((recent ?? []).map((s) => s.starts_at as string), now, primary.timezone);
+      recentStarts = (recent ?? []).map((s) => s.starts_at as string);
     }
     const next = (upcoming ?? [])[0];
     if (next) {
@@ -70,22 +71,38 @@ export default async function InicioPage() {
     }
   }
 
+  const days = weekDays(now, tz);
+  const trained = trainedDays(recentStarts, tz);
+  const weekCount = days.filter((d) => trained.has(d.date)).length;
+  // Percentual geral: média de quanto cada critério numérico já foi atendido (só para o anel; o detalhe está logo abaixo).
+  const measurable = criteria.filter((c) => (c.target ?? 0) > 0);
+  const overall = measurable.length ? (measurable.reduce((sum, c) => sum + Math.min((c.current ?? 0) / (c.target as number), 1), 0) / measurable.length) * 100 : null;
+
   const { data: logs } = await supabase.from("training_logs").select("id, trained_at, notes").eq("user_id", userId).order("trained_at", { ascending: false }).limit(3);
   const techniques = await techniquesByLog(supabase, (logs ?? []).map((l) => l.id as string));
-  const fmtDay = (iso: string) => new Intl.DateTimeFormat("pt-BR", { timeZone: primary?.timezone ?? "America/Sao_Paulo", day: "2-digit", month: "2-digit" }).format(new Date(iso));
+  const fmtDay = (iso: string) => new Intl.DateTimeFormat("pt-BR", { timeZone: tz, day: "2-digit", month: "2-digit" }).format(new Date(iso));
 
   return (
     <AppShell userName={(profile?.display_name as string | undefined) ?? undefined}>
       <main className={styles.home}>
-        <header className={styles.hero}>
-          <p className={styles.eyebrow}>{primary ? primary.name : "Dojo Platform"}</p>
-          <h1 className={styles.title}>Olá, {firstName}</h1>
-          {primary && (
-            <div className={styles.rank}>
-              <Badge tone={rankLabel ? "accent" : "neutral"}>{rankLabel ?? "Sem graduação registrada"}</Badge>
+        <Hero>
+          <div className={styles.heroTop}>
+            <div className={styles.heroText}>
+              <p className={styles.eyebrow}>{primary ? primary.name : "Oss"}</p>
+              <h1 className={styles.title}>Oss, {firstName}!</h1>
+              {primary && (
+                <p className={styles.rankLine}>{rank ? `${rank.belt_code} · grau ${rank.degree}` : "Sem graduação registrada"}</p>
+              )}
             </div>
-          )}
-        </header>
+            {overall !== null && <ProgressRing percent={overall} label="Progresso geral nos critérios de graduação" size={112} />}
+          </div>
+          {primary && rank && <BeltBar belt={rank.belt_code} degree={rank.degree} size="lg" />}
+          <div className={styles.heroActions}>
+            <ButtonLink href="/diario/novo" variant="accent">Registrar treino</ButtonLink>
+            {primary && <ButtonLink href="/aulas" variant="secondary">Agenda e check-in</ButtonLink>}
+          </div>
+          {primary && <p className={styles.heroNote}>Só contam treinos confirmados pelo professor. A graduação só muda com a aprovação do mestre.</p>}
+        </Hero>
 
         {staffIds.length > 0 && (
           <Alert tone="info">
@@ -106,6 +123,28 @@ export default async function InicioPage() {
           </EmptyState>
         ) : (
           <div className={styles.grid}>
+            <Card className={styles.week}>
+              <div className={styles.cardHead}>
+                <h2 className={styles.cardTitle}>Esta semana</h2>
+                <p className={styles.count}><strong>{weekCount}</strong> {weekCount === 1 ? "treino confirmado" : "treinos confirmados"}</p>
+              </div>
+              <WeekStrip days={days} trained={trained} />
+              <p className={styles.muted}>Segunda a domingo. Um dia marcado quer dizer que o professor confirmou a sua presença.</p>
+            </Card>
+
+            <Card className={styles.next}>
+              <h2 className={styles.cardTitle}>Próximo treino</h2>
+              {nextSession ? (
+                <>
+                  <p className={styles.strong}>{nextSession.title}</p>
+                  <p className={styles.muted}>{nextSession.range}</p>
+                </>
+              ) : (
+                <p className={styles.muted}>Nenhuma aula agendada por enquanto.</p>
+              )}
+              <ButtonLink href="/aulas" variant="secondary">Ver agenda e check-in</ButtonLink>
+            </Card>
+
             <Card className={styles.progress}>
               <h2 className={styles.cardTitle}>Meu progresso</h2>
               {!hasRule || criteria.length === 0 ? (
@@ -123,27 +162,7 @@ export default async function InicioPage() {
                   ))}
                 </ul>
               )}
-              <p className={styles.note}>Só contam treinos confirmados pelo professor. A graduação só muda com a aprovação do mestre.</p>
-              <Link href="/graduacao">Ver a minha evolução</Link>
-            </Card>
-
-            <Card>
-              <h2 className={styles.cardTitle}>Esta semana</h2>
-              <p className={styles.bigNumber}>{weekCount}</p>
-              <p className={styles.muted}>{weekCount === 1 ? "treino confirmado" : "treinos confirmados"} (segunda a domingo)</p>
-            </Card>
-
-            <Card>
-              <h2 className={styles.cardTitle}>Próximo treino</h2>
-              {nextSession ? (
-                <>
-                  <p className={styles.strong}>{nextSession.title}</p>
-                  <p className={styles.muted}>{nextSession.range}</p>
-                  <ButtonLink href="/aulas" variant="secondary">Ver agenda e check-in</ButtonLink>
-                </>
-              ) : (
-                <p className={styles.muted}>Nenhuma aula agendada por enquanto.</p>
-              )}
+              <Link href="/graduacao" className={styles.more}>Ver a minha evolução →</Link>
             </Card>
           </div>
         )}
@@ -151,7 +170,7 @@ export default async function InicioPage() {
         <section className={styles.section} aria-labelledby="diario-recente">
           <div className={styles.sectionHead}>
             <h2 id="diario-recente" className={styles.sectionTitle}>Diário recente</h2>
-            <ButtonLink href="/diario/novo">Registrar treino</ButtonLink>
+            <ButtonLink href="/diario" variant="secondary">Ver tudo</ButtonLink>
           </div>
           {(logs ?? []).length === 0 ? (
             <EmptyState title="Seu diário ainda está vazio">Registre o que treinou hoje. O diário é privado: só você vê.</EmptyState>

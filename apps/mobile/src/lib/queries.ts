@@ -1,5 +1,4 @@
 import { evaluationSchema, type Evaluation } from '@dojo/contracts/graduation';
-import { countInWeek } from '@dojo/contracts/week';
 import { supabase } from './supabase';
 
 // Consultas do app. Tudo passa pelo banco com a sessão da pessoa: a RLS decide o que ela vê (o app só mostra).
@@ -32,7 +31,7 @@ export async function loadHome(userId: string) {
 
   let rank: RankRow | null = null;
   let evaluation: Evaluation | null = null;
-  let weekCount = 0;
+  let recentStarts: string[] = [];
   let next: { id: string; title: string; starts_at: string; ends_at: string } | null = null;
   if (primary) {
     const since = new Date(now.getTime() - 9 * 24 * 60 * 60 * 1000).toISOString();
@@ -48,7 +47,7 @@ export async function loadHome(userId: string) {
     const ids = ((validated.data ?? []) as { session_id: string }[]).map((a) => a.session_id);
     if (ids.length) {
       const { data: recent } = await supabase.from('sessions').select('starts_at').in('id', ids).gte('starts_at', since);
-      weekCount = countInWeek(((recent ?? []) as { starts_at: string }[]).map((s) => s.starts_at), now, primary.timezone);
+      recentStarts = ((recent ?? []) as { starts_at: string }[]).map((s) => s.starts_at);
     }
     const first = ((upcoming.data ?? []) as { id: string; class_id: string; starts_at: string; ends_at: string }[])[0];
     if (first) {
@@ -63,7 +62,8 @@ export async function loadHome(userId: string) {
     primary,
     rank,
     evaluation,
-    weekCount,
+    recentStarts,
+    nowIso: now.toISOString(),
     next,
     logs: (logs ?? []) as { id: string; trained_at: string; notes: string | null }[],
     waiting: memberships.filter((m) => m.status !== 'approved').map((m) => ({ ...m, name: academies.find((a) => a.id === m.academy_id)?.name ?? 'A academia' })),

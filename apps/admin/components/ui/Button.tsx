@@ -3,7 +3,7 @@ import type { ButtonHTMLAttributes, ReactNode } from "react";
 import styles from "./Button.module.css";
 
 export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: "primary" | "secondary" | "ghost";
+  variant?: "primary" | "secondary" | "ghost" | "accent";
   /** Mostra o indicador de carregamento e bloqueia novos cliques. O texto (ex.: "Entrando…") fica por conta de quem usa. */
   loading?: boolean;
   fullWidth?: boolean;

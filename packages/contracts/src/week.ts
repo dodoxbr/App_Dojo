@@ -29,3 +29,23 @@ export function countInWeek(instants: string[], now: Date, timeZone: string): nu
     return day >= start && day <= last;
   }).length;
 }
+
+export type WeekDay = { date: string; label: string; isToday: boolean; isFuture: boolean };
+
+/** Os 7 dias (segunda a domingo) da semana local de `now`, para a faixa "Esta semana" da home. */
+export function weekDays(now: Date, timeZone: string): WeekDay[] {
+  const start = weekStartLocal(now, timeZone);
+  const today = localDay(now, timeZone);
+  const labels = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+  return labels.map((label, i) => {
+    const d = new Date(`${start}T12:00:00Z`);
+    d.setUTCDate(d.getUTCDate() + i);
+    const date = d.toISOString().slice(0, 10);
+    return { date, label, isToday: date === today, isFuture: date > today };
+  });
+}
+
+/** Dias locais (AAAA-MM-DD) em que houve algum dos instantes. */
+export function trainedDays(instants: string[], timeZone: string): Set<string> {
+  return new Set(instants.map((i) => localDay(i, timeZone)));
+}

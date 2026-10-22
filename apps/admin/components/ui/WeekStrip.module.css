@@ -1,0 +1,22 @@
+.strip { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: var(--space-1); margin: 0; padding: 0; list-style: none; }
+.day { position: relative; display: grid; justify-items: center; gap: 6px; margin: 0; }
+.label { font-size: var(--text-xs); font-weight: 600; color: var(--text-muted); }
+
+.dot {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--text-muted);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+}
+
+.future .dot { opacity: 0.55; }
+.today .dot { border: 2px solid var(--primary); color: var(--primary); }
+.done .dot { color: #ffffff; background: var(--accent); border-color: var(--accent); }
+.today .label { color: var(--primary); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

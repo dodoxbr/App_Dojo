@@ -12,7 +12,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ c
     <main className={styles.page}>
       <Card className={styles.card}>
         <BrandLogo />
-        <h1 className={styles.title}>Dojo Platform</h1>
+        <h1 className={styles.title}>Oss!</h1>
         <p className={styles.lead}>Treino, presença e evolução da sua academia de Jiu-Jitsu.</p>
         {code && !failed && (
           <Alert tone="success">

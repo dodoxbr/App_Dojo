@@ -3,7 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { formatSessionRange } from "@dojo/contracts/classes";
 import { idSchema } from "@dojo/contracts/membership";
 import { staffMilestoneSchema } from "@dojo/contracts/milestone";
-import { Badge, ButtonLink, Card, EmptyState } from "@/components/ui";
+import { Badge, ButtonLink, Card, EmptyState, Hero } from "@/components/ui";
 import { getCaller } from "@/lib/context";
 import styles from "./staff.module.css";
 
@@ -48,26 +48,31 @@ export default async function AcademiaInicioPage({ params }: { params: Promise<{
 
   return (
     <main className={styles.page}>
-      <header className={styles.hero}>
-        <p className={styles.eyebrow}>{isManager ? "Gestor" : "Instrutor"}</p>
+      <Hero>
+        <p className={styles.eyebrow}>{isManager ? "Gestor" : "Instrutor"} · {new Intl.DateTimeFormat("pt-BR", { timeZone: tz, weekday: "long", day: "2-digit", month: "long" }).format(new Date(nowIso()))}</p>
         <h1 className={styles.title}>{academy.name as string}</h1>
-      </header>
+        <p className={styles.heroLine}>Oss! Aqui estão os números do dia.</p>
+        <div className={styles.heroActions}>
+          {isManager && <ButtonLink href={`${a}/turmas`} variant="accent">Criar aula</ButtonLink>}
+          <ButtonLink href="/aulas" variant="secondary">Validar presença</ButtonLink>
+        </div>
+      </Hero>
 
       <section className={styles.stats} aria-label="Números da academia">
-        <Card><p className={styles.statLabel}>Alunos ativos</p><p className={styles.statValue}>{students}</p></Card>
+        <Card className={`${styles.stat} ${styles.tealStat}`}><p className={styles.statLabel}>Alunos ativos</p><p className={styles.statValue}>{students}</p></Card>
         {isManager && (
-          <Card>
+          <Card className={`${styles.stat} ${styles.amberStat}`}>
             <p className={styles.statLabel}>Pedidos de entrada</p>
             <p className={styles.statValue}>{pendingMembers}</p>
             {pendingMembers > 0 && <Link href={`${a}/membros`}>Revisar</Link>}
           </Card>
         )}
-        <Card>
+        <Card className={`${styles.stat} ${styles.blueStat}`}>
           <p className={styles.statLabel}>Presenças a confirmar</p>
           <p className={styles.statValue}>{pendingAttendances}</p>
           {pendingAttendances > 0 && <Link href="/aulas">Validar nas aulas</Link>}
         </Card>
-        <Card>
+        <Card className={`${styles.stat} ${styles.purpleStat}`}>
           <p className={styles.statLabel}>No número de treinos</p>
           <p className={styles.statValue}>{atMilestone}</p>
           {atMilestone > 0 && <Link href={`${a}/graduacao/alunos`}>Ver quem são</Link>}

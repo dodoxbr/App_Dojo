@@ -66,7 +66,7 @@ export function Button({
 }: {
   title: string;
   onPress: () => void;
-  variant?: 'primary' | 'secondary' | 'danger';
+  variant?: 'primary' | 'secondary' | 'danger' | 'accent';
   loading?: boolean;
   disabled?: boolean;
   accessibilityLabel?: string;
@@ -76,6 +76,7 @@ export function Button({
     primary: { bg: colors.primary, fg: colors.primaryContrast, border: colors.primary },
     secondary: { bg: colors.surface, fg: colors.primary, border: colors.borderStrong },
     danger: { bg: colors.surface, fg: colors.danger, border: colors.danger },
+    accent: { bg: '#14B8A6', fg: '#052E2A', border: '#14B8A6' },
   }[variant];
   return (
     <Pressable
@@ -213,6 +214,7 @@ export function Row({ children, wrap = true }: { children: ReactNode; wrap?: boo
   return <View style={{ flexDirection: 'row', flexWrap: wrap ? 'wrap' : 'nowrap', gap: space[2], alignItems: 'center' }}>{children}</View>;
 }
 
+export { BeltBar, Hero, WeekStrip } from './visual';
 export { colors, font, radius, space };
 
 const styles = StyleSheet.create({

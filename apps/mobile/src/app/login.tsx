@@ -3,7 +3,7 @@ import { CURRENT_TERMS_VERSION } from '@dojo/contracts/terms';
 import { useState } from 'react';
 import { Linking, Pressable, Switch, Text, View } from 'react-native';
 import { supabase } from '@/lib/supabase';
-import { Alert, Button, Card, Muted, Screen, TextField, colors, font, space } from '@/ui';
+import { Alert, BeltBar, Button, Card, Hero, Screen, TextField, colors, font, space } from '@/ui';
 
 // Endereço do painel web (opcional): a recuperação de senha acontece lá (o link do e-mail abre no navegador).
 const WEB_URL = process.env.EXPO_PUBLIC_WEB_URL?.replace(/\/+$/, '');
@@ -49,10 +49,19 @@ export default function Login() {
 
   return (
     <Screen>
-      <View style={{ gap: space[2], paddingTop: space[5] }}>
-        <Text accessibilityRole="header" style={{ fontSize: font.xxl, fontWeight: '700', color: colors.primary, letterSpacing: -0.5 }}>Dojo Platform</Text>
-        <Muted>Seu treino, sua evolução, sua academia.</Muted>
-      </View>
+      <Hero>
+        <Text accessibilityRole="header" style={{ fontSize: 52, fontWeight: '800', color: '#FFFFFF', letterSpacing: -2 }}>
+          Oss<Text style={{ color: '#14B8A6' }}>!</Text>
+        </Text>
+        <Text style={{ color: 'rgba(255,255,255,0.85)', fontSize: font.md }}>Seu treino, sua evolução, sua academia.</Text>
+        <View style={{ gap: 6, transform: [{ rotate: '-3deg' }], width: '78%' }}>
+          <BeltBar belt="Branca" height={16} />
+          <BeltBar belt="Azul" degree={2} height={16} />
+          <BeltBar belt="Roxa" degree={3} height={16} />
+          <BeltBar belt="Marrom" degree={1} height={16} />
+          <BeltBar belt="Preta" degree={4} height={16} />
+        </View>
+      </Hero>
 
       <Card>
         <View accessibilityRole="tablist" style={{ flexDirection: 'row', gap: space[1], padding: space[1], backgroundColor: colors.bg, borderRadius: 10, borderWidth: 1, borderColor: colors.border }}>

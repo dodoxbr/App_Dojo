@@ -3,8 +3,8 @@ import "../styles/tokens.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Dojo Platform — Painel",
-  description: "Painel da plataforma de academias de Jiu-Jitsu: turmas, presenças, graduações, financeiro e feed.",
+  title: "Oss — Painel",
+  description: "Oss: a plataforma das academias de Jiu-Jitsu. Turmas, presenças, graduações, financeiro e feed.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

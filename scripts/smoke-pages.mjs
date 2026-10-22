@@ -142,7 +142,7 @@ try {
   };
 
   // Not signed in
-  await check(null, '/', { has: ['Dojo Platform', 'Entrar', 'Criar conta'] });
+  await check(null, '/', { has: ['Oss', 'Entrar', 'Criar conta'] });
   await check(null, '/login', { has: ['Esqueci minha senha'] });
   await check(null, '/login?senha=ok', { has: ['Entrar'] });
   await check(null, '/recuperar-senha', { has: ['Recuperar a senha', 'E-mail da sua conta', 'Enviar o link', 'Voltar para entrar'] });
@@ -159,7 +159,7 @@ try {
 
   // Student
   await check(null, '/inicio', { redirect: '/login?next=%2Finicio' });
-  await check('student', '/inicio', { has: ['Olá, ', 'Meu progresso', 'Esta semana', 'Próximo treino', 'Registrar treino', 'Diário recente', 'Início', 'Evolução'] });
+  await check('student', '/inicio', { has: ['Oss, ', 'Meu progresso', 'Esta semana', 'Próximo treino', 'Registrar treino', 'Diário recente', 'Início', 'Evolução'] });
   await check('student', '/perfil', { has: ['Meu perfil', 'Minhas academias', 'Academia Páginas', 'Minha ficha de cadastro', 'Li e aceito'] });
   await check('student', '/perfil/ficha', { has: ['Minha ficha de cadastro', 'Nome completo', 'Rua Ficticia', '(11) 99999-0000', '01001-000', 'Salvar ficha', 'Contato de emergência', 'Saúde (opcional)'] });
   await check('student', '/diario', { has: ['Meu diário', 'Tesoura'] });

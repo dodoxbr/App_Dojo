@@ -131,3 +131,43 @@
 @media (max-width: 400px) {
   .panel { padding-left: var(--space-3); padding-right: var(--space-3); }
 }
+
+/* ---- Visual reforçado (marca Oss) ---- */
+
+/* Celular: faixa de marca marinho no topo e o card "sobe" sobre ela. */
+.compactBrand {
+  display: grid;
+  gap: var(--space-3);
+  justify-items: start;
+  padding: var(--space-6) var(--space-5) calc(var(--space-7) + var(--space-3));
+  color: #ffffff;
+  background: repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.045) 0 2px, transparent 2px 16px), linear-gradient(135deg, var(--primary-strong), var(--primary) 70%, #1d5b78);
+}
+
+.compactTagline { margin: 0; font-size: var(--text-sm); opacity: 0.85; }
+
+.belts { display: grid; gap: 10px; width: 100%; max-width: 420px; transform: rotate(-4deg); transform-origin: left center; position: relative; z-index: 1; }
+.beltsCompact { gap: 6px; max-width: 220px; margin-top: var(--space-2); }
+
+@media (max-width: 959px) {
+  .page { background: var(--bg); }
+  .panel { margin-top: calc(-1 * var(--space-6)); padding-top: 0; justify-content: flex-start; }
+  .brand { display: none; }
+}
+
+@media (min-width: 960px) {
+  .compactBrand { display: none; }
+
+  .brand {
+    background:
+      radial-gradient(circle at 85% 8%, rgba(20, 184, 166, 0.38), transparent 42%),
+      repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.045) 0 2px, transparent 2px 16px),
+      linear-gradient(165deg, var(--primary-strong) 0%, var(--primary) 100%);
+  }
+
+  .brand::after { display: none; }
+  .headline { font-size: 2.6rem; font-weight: 800; letter-spacing: -0.035em; }
+  .highlights li::before { background: var(--accent-bright); box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.3); }
+}
+
+.card { border-top: 4px solid var(--accent-bright); }

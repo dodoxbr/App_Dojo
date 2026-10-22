@@ -13,3 +13,15 @@ test('belt suggestions are only names: unique, non-empty and within the database
 test('suggestions carry no numbers (ages, times and degrees are never imposed)', () => {
   for (const b of beltSuggestions) assert.equal(/\d/.test(b), false, b);
 });
+
+test('cor da faixa só para desenhar: reconhece o nome da cor e ignora o resto', async () => {
+  const { beltPaint } = await import('../src/belts.ts');
+  assert.equal(beltPaint('Azul')?.base, '#2B6CD3');
+  assert.equal(beltPaint('faixa roxa')?.base, '#7A3FB8');
+  assert.equal(beltPaint('  PRETA ')?.stripe, null);
+  const youth = beltPaint('Cinza e Preta');
+  assert.equal(youth?.base, '#9AA3AE');
+  assert.equal(youth?.stripe, '#15181D');
+  assert.equal(beltPaint('Faixa Teste A'), null, 'nome sem cor conhecida não ganha cor');
+  assert.equal(beltPaint(null), null);
+});

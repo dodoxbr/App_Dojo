@@ -130,15 +130,15 @@ from public.sessions s where s.academy_id = '${academyId}' and s.class_id = '${c
 `);
 
 console.log('Graduação (valores de TESTE), trilha e habilidades…');
-const faixas = ['Faixa Teste A', 'Faixa Teste A', 'Faixa Teste A', 'Faixa Teste B', 'Faixa Teste B', 'Faixa Teste A', 'Faixa Teste A', 'Faixa Teste A'];
+const faixas = ['Faixa Azul (teste)', 'Faixa Azul (teste)', 'Faixa Azul (teste)', 'Faixa Roxa (teste)', 'Faixa Roxa (teste)', 'Faixa Azul (teste)', 'Faixa Azul (teste)', 'Faixa Azul (teste)'];
 for (const [i, a] of alunos.entries()) {
   assert.equal((await gestor.client.rpc('register_initial_rank', { p_academy_id: academyId, p_user_id: a.id, p_belt_code: faixas[i], p_degree: i === 0 ? 1 : 0, p_effective_date: localDate(i === 0 ? 55 : 30 + i * 3), p_reason: null, p_idempotency_key: key() })).error, null);
 }
-assert.equal((await gestor.client.rpc('register_initial_rank', { p_academy_id: academyId, p_user_id: minorId, p_belt_code: 'Faixa Teste A', p_degree: 0, p_effective_date: localDate(45), p_reason: null, p_idempotency_key: key() })).error, null);
+assert.equal((await gestor.client.rpc('register_initial_rank', { p_academy_id: academyId, p_user_id: minorId, p_belt_code: 'Faixa Azul (teste)', p_degree: 0, p_effective_date: localDate(45), p_reason: null, p_idempotency_key: key() })).error, null);
 const curriculumId = (await gestor.client.rpc('create_curriculum', { p_academy_id: academyId, p_title: 'Trilha Básica (demo)', p_level: 'Básico', p_idempotency_key: key() })).data;
 assert.equal((await gestor.client.rpc('add_curriculum_items_from_level', { p_curriculum_id: curriculumId, p_level: 'Básico' })).error, null);
 // Regras de TESTE (números fictícios, só para demonstrar o cálculo): faixa A grau 0 e 1, faixa B grau 0
-for (const [belt, degree, factor] of [['Faixa Teste A', 0, 1], ['Faixa Teste A', 1, 2], ['Faixa Teste B', 0, 3]]) {
+for (const [belt, degree, factor] of [['Faixa Azul (teste)', 0, 1], ['Faixa Azul (teste)', 1, 2], ['Faixa Roxa (teste)', 0, 3]]) {
   const criteria = [
     { kind: 'min_days', label: 'Tempo na faixa (teste)', min_days: 30 * factor },
     { kind: 'attendance', label: 'Presenças validadas (teste)', min_attendances: 20 * factor, window_days: 120 },

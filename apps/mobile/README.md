@@ -1,4 +1,4 @@
-# Dojo Platform — app mobile (Expo)
+# Oss — app mobile (Expo)
 
 App do **aluno** (Expo Router, React Native). Usa o mesmo banco e as mesmas regras do painel web: toda leitura e escrita passa pelo Supabase com a sessão da pessoa e a RLS decide o que ela vê. O app só mostra; nunca confia no que o cliente diz sobre papel ou academia.
 

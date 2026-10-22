@@ -15,9 +15,10 @@
   color: var(--text);
 }
 
-.hero { display: grid; gap: var(--space-1); }
-.eyebrow { margin: 0; font-size: var(--text-sm); font-weight: 600; color: var(--text-muted); }
-.title { margin: 0; font-size: var(--text-xl); line-height: var(--leading-tight); letter-spacing: -0.015em; color: var(--text); }
+.eyebrow { margin: 0; font-size: var(--text-sm); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.75; }
+.title { margin: 0; font-size: var(--text-2xl); font-weight: 800; line-height: 1.05; letter-spacing: -0.03em; color: #ffffff; }
+.heroLine { margin: 0; opacity: 0.85; }
+.heroActions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
 
 .stats { display: grid; gap: var(--space-4); grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .statLabel { margin: 0 0 var(--space-2); font-size: var(--text-sm); font-weight: 600; color: var(--text-muted); }
@@ -53,3 +54,11 @@
   .page { padding: var(--space-5); }
   .stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
+
+/* Cartões de número com uma cor de apoio (só para diferenciar rápido; o texto diz tudo). */
+.stat { border-top: 4px solid var(--accent); }
+.tealStat { border-top-color: var(--accent-bright); }
+.amberStat { border-top-color: #f2a516; }
+.blueStat { border-top-color: #2b6cd3; }
+.purpleStat { border-top-color: #7a3fb8; }
+.stat .statValue { font-size: 2.6rem; font-weight: 800; letter-spacing: -0.03em; }

@@ -16,9 +16,9 @@ enable_confirmations = true
 
 # Textos dos e-mails em português. Em hospedagem real, cole o mesmo conteúdo no painel do Supabase (Authentication > Email Templates).
 [auth.email.template.confirmation]
-subject = "Confirme o seu cadastro no Dojo Platform"
+subject = "Confirme o seu cadastro no Oss"
 content_path = "./supabase/templates/confirmation.html"
 
 [auth.email.template.recovery]
-subject = "Redefinir a sua senha no Dojo Platform"
+subject = "Redefinir a sua senha no Oss"
 content_path = "./supabase/templates/recovery.html"

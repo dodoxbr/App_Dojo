@@ -27,6 +27,7 @@
   --primary-contrast: #ffffff;
   --accent: var(--color-accent);
   --accent-strong: var(--color-accent-strong);
+  --accent-bright: #14b8a6;
   --bg: var(--color-bg);
   --surface: var(--color-surface);
   --text: var(--color-text);
@@ -54,6 +55,8 @@
   --radius-card: 16px;
   --radius-control: 10px;
   --radius-pill: 999px;
+  --radius-hero: 24px;
+  --shadow-hero: 0 18px 44px rgba(16, 40, 64, 0.28);
   --shadow-card: 0 8px 28px rgba(16, 40, 64, 0.07);
   --control-height: 48px;
 

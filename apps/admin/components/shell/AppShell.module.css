@@ -14,8 +14,8 @@
   display: flex;
   align-items: center;
   padding: var(--space-3) var(--space-4);
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
+  background: linear-gradient(135deg, var(--primary-strong), var(--primary));
+  box-shadow: 0 4px 16px rgba(16, 40, 64, 0.25);
 }
 
 .content { padding: 0 0 96px; }
@@ -77,8 +77,8 @@
     gap: var(--space-5);
     height: 100vh;
     padding: var(--space-5) var(--space-4);
-    background: var(--surface);
-    border-right: 1px solid var(--border);
+    background: linear-gradient(180deg, var(--primary-strong) 0%, #0b1c30 100%);
+    box-shadow: 4px 0 24px rgba(16, 40, 64, 0.18);
   }
 
   .brand { padding: 0 var(--space-2); }
@@ -98,10 +98,33 @@
     border-radius: var(--radius-control);
   }
 
-  .sideNav .navLink:hover { background: var(--bg); }
-  .sideNav .navLink[aria-current="page"] { background: var(--bg); color: var(--primary); box-shadow: inset 3px 0 0 var(--accent); }
+  .sideNav .navLink { color: rgba(255, 255, 255, 0.72); }
+  .sideNav .navLink:hover { background: rgba(255, 255, 255, 0.08); color: #ffffff; }
+  .sideNav .navLink[aria-current="page"] { background: rgba(255, 255, 255, 0.12); color: #ffffff; box-shadow: inset 3px 0 0 var(--accent-bright); }
+  .sideNav .navLink:focus-visible { outline-color: #ffffff; }
 
-  .user { margin: auto 0 0; padding: var(--space-3); font-size: var(--text-sm); color: var(--text-muted); border-top: 1px solid var(--border); }
+  .user {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin: auto 0 0;
+    padding: var(--space-3) var(--space-2) 0;
+    font-size: var(--text-sm);
+    color: rgba(255, 255, 255, 0.8);
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
+  }
+
+  .avatar {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 34px;
+    height: 34px;
+    font-weight: 800;
+    color: #052e2a;
+    background: var(--accent-bright);
+    border-radius: 50%;
+  }
 }
 
 /* "Mais" na barra inferior: abre um painel acima da barra com os itens secundários. */

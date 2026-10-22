@@ -1,0 +1,38 @@
+.hero {
+  position: relative;
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  overflow: hidden;
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--primary-strong) 0%, var(--primary) 62%, #1d5b78 100%);
+  border-radius: var(--radius-hero);
+  box-shadow: var(--shadow-hero);
+}
+
+/* Trama de listras diagonais (lembra o tecido da faixa) e um brilho turquesa no canto. */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.045) 0 2px, transparent 2px 16px);
+  pointer-events: none;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  right: -60px;
+  top: -80px;
+  width: 260px;
+  height: 260px;
+  background: radial-gradient(circle, rgba(20, 184, 166, 0.4), transparent 68%);
+  pointer-events: none;
+}
+
+.hero > * { position: relative; z-index: 1; }
+.hero h1, .hero h2, .hero p { color: inherit; }
+
+@media (min-width: 768px) {
+  .hero { padding: var(--space-6); }
+}

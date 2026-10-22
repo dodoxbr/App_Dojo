@@ -1,4 +1,4 @@
-# Roteiro de demonstração (alpha, no computador)
+# Roteiro de demonstração do Oss (alpha, no computador)
 
 Tudo roda **na sua máquina**, com dados **fictícios**. Nada vai para a internet e nenhuma empresa ou dado real entra nesta fase.
 

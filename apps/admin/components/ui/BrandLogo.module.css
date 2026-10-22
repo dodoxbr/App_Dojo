@@ -18,7 +18,10 @@
 .light .knot { stroke: #14304f; }
 
 .name {
-  font-size: var(--text-lg);
-  font-weight: 700;
-  letter-spacing: -0.01em;
+  font-size: var(--text-xl);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
 }
+
+.bang { color: var(--accent-bright); }

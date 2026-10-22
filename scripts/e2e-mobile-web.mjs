@@ -60,7 +60,7 @@ const waitText = (t, ms = 15000) => br.waitFor(`document.body.innerText.includes
 try {
   // 1. login com senha errada, depois certo
   await br.goto(BASE);
-  await waitText('Dojo Platform');
+  await waitText('Oss');
   await br.fill(field('E-mail'), student.email);
   await br.fill(field('Senha'), 'senha-errada-123');
   assert(await clickLabel('Entrar'), 'botão Entrar');
@@ -68,13 +68,13 @@ try {
   await shot('login-erro');
   await br.fill(field('Senha'), PASSWORD);
   assert(await clickLabel('Entrar'));
-  await waitText('Olá, ');
+  await waitText('Oss, ');
 
   // 2. início
   await waitText('Meu progresso');
   const home = await text();
   for (const t of ['Academia Mobile', 'Faixa Teste A', 'Esta semana', 'Próximo treino', 'Diário recente', 'Registrar treino', 'Início', 'Diário', 'Técnicas', 'Evolução', 'Perfil']) {
-    if (!home.includes(t)) note(`início: não mostra "${t}"`);
+    if (!home.toLowerCase().includes(t.toLowerCase())) note(`início: não mostra "${t}"`); // o nome da academia aparece em maiúsculas (estilo)
   }
   if (await br.overflowsHorizontally()) note('início: rolagem horizontal');
   await shot('inicio');

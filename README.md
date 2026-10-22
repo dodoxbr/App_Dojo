@@ -1,4 +1,4 @@
-# Dojo Platform — Especificação v1.0 + starter técnico
+# Oss (Dojo Platform) — Especificação v1.0 + starter técnico
 
 **Status:** baseline para revisão, não produto pronto. Nome comercial provisório.
 

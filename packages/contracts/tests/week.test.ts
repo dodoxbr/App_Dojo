@@ -30,3 +30,12 @@ test("conta só os treinos da semana local, de segunda a domingo", () => {
   assert.equal(countInWeek(instants, now, TZ), 3);
   assert.equal(countInWeek([], now, TZ), 0);
 });
+
+test('os 7 dias da semana local e o marcador de hoje', async () => {
+  const { weekDays, trainedDays } = await import('../src/week.ts');
+  const days = weekDays(new Date('2026-10-21T18:00:00Z'), TZ);
+  assert.deepEqual(days.map((d) => d.date), ['2026-10-19', '2026-10-20', '2026-10-21', '2026-10-22', '2026-10-23', '2026-10-24', '2026-10-25']);
+  assert.equal(days.find((d) => d.isToday)?.label, 'Qua');
+  assert.equal(days.filter((d) => d.isFuture).length, 4);
+  assert.deepEqual([...trainedDays(['2026-10-20T22:00:00Z', '2026-10-21T02:00:00Z'], TZ)], ['2026-10-20']);
+});
