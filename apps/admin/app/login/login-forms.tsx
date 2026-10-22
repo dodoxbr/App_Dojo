@@ -19,7 +19,7 @@ function Feedback({ state }: { state: FormState }) {
   return null;
 }
 
-function SignInForm({ next, passwordChanged }: { next: string; passwordChanged: boolean }) {
+function SignInForm({ next, passwordChanged, notice }: { next: string; passwordChanged: boolean; notice?: { message: string; email: string } }) {
   const [saved, setSaved] = useState<Saved>({});
   const [state, action, pending] = useActionState<FormState, FormData>((prev, formData) => {
     setSaved(keep(formData, ["email"]));
@@ -28,9 +28,10 @@ function SignInForm({ next, passwordChanged }: { next: string; passwordChanged: 
   return (
     <form action={action} className={styles.form} aria-label="Entrar">
       <input type="hidden" name="next" value={next} />
-      <TextField label="E-mail" name="email" type="email" autoComplete="email" inputMode="email" placeholder="voce@exemplo.com" defaultValue={saved.email ?? ""} required />
+      <TextField key={notice?.email ?? "e"} label="E-mail" name="email" type="email" autoComplete="email" inputMode="email" placeholder="voce@exemplo.com" defaultValue={saved.email ?? notice?.email ?? ""} required />
       <PasswordField label="Senha" name="password" autoComplete="current-password" minLength={8} required />
       <Link href="/recuperar-senha" className={styles.forgot}>Esqueci minha senha</Link>
+      {notice && <Alert tone="success">{notice.message}</Alert>}
       {passwordChanged && !state.error && <Alert tone="success">Senha alterada. Entre com a nova senha.</Alert>}
       <Feedback state={state} />
       <Button type="submit" fullWidth loading={pending}>{pending ? "Entrando…" : "Entrar"}</Button>
@@ -38,13 +39,17 @@ function SignInForm({ next, passwordChanged }: { next: string; passwordChanged: 
   );
 }
 
-function SignUpForm() {
+function SignUpForm({ onDone }: { onDone: (message: string, email: string) => void }) {
   // A confirmação da senha é conferida aqui; o servidor continua recebendo exatamente os mesmos campos de antes.
   const [saved, setSaved] = useState<Saved>({});
   const [state, action, pending] = useActionState<FormState, FormData>((prev, formData) => {
     setSaved(keep(formData, ["displayName", "birthDate", "dependentName", "dependentBirthDate", "email", "acceptTerms"]));
     if (formData.get("password") !== formData.get("confirmPassword")) return Promise.resolve({ error: "As senhas não conferem. Digite a mesma senha nos dois campos." });
-    return signUp(prev, formData);
+    return signUp(prev, formData).then((result) => {
+      // Cadastro recebido: volta para a aba "Entrar" (com o e-mail preenchido) e mostra o aviso lá.
+      if (result.message) onDone(result.message, String(formData.get("email") ?? ""));
+      return result;
+    });
   }, initial);
   const [forMinor, setForMinor] = useState(false);
   return (
@@ -73,13 +78,16 @@ function SignUpForm() {
 }
 
 export function LoginForms({ next, initialTab = "entrar", passwordChanged = false }: { next: string; initialTab?: "entrar" | "criar"; passwordChanged?: boolean }) {
+  const [tab, setTab] = useState<string>(initialTab);
+  const [notice, setNotice] = useState<{ message: string; email: string }>();
   return (
     <Tabs
       label="Entrar ou criar conta"
-      initial={initialTab}
+      selected={tab}
+      onSelect={setTab}
       items={[
-        { id: "entrar", label: "Entrar", content: <SignInForm next={next} passwordChanged={passwordChanged} /> },
-        { id: "criar", label: "Criar conta", content: <SignUpForm /> },
+        { id: "entrar", label: "Entrar", content: <SignInForm next={next} passwordChanged={passwordChanged} notice={notice} /> },
+        { id: "criar", label: "Criar conta", content: <SignUpForm onDone={(message, email) => { setNotice({ message, email }); setTab("entrar"); }} /> },
       ]}
     />
   );

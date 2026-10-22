@@ -7,9 +7,12 @@ export type TabItem = { id: string; label: string; content: ReactNode };
 
 // Abas acessíveis (setas, Home e End). Todos os painéis ficam montados e os inativos ficam ocultos: o que a pessoa já digitou
 // numa aba não se perde ao trocar de aba.
-export function Tabs({ items, initial, label }: { items: TabItem[]; initial?: string; label: string }) {
+export function Tabs({ items, initial, label, selected, onSelect }: { items: TabItem[]; initial?: string; label: string; selected?: string; onSelect?: (id: string) => void }) {
   const base = useId();
-  const [active, setActive] = useState(items.some((i) => i.id === initial) ? (initial as string) : (items[0]?.id ?? ""));
+  const [own, setOwn] = useState(items.some((i) => i.id === initial) ? (initial as string) : (items[0]?.id ?? ""));
+  // Controlada quando `selected` é passado (quem usa decide a aba); senão a aba é guardada aqui.
+  const active = selected ?? own;
+  const setActive = (id: string) => { setOwn(id); onSelect?.(id); };
   const refs = useRef<Record<string, HTMLButtonElement | null>>({});
 
   const move = (index: number) => {
