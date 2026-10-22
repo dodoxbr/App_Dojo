@@ -142,7 +142,7 @@ try {
   };
 
   // Not signed in
-  await check(null, '/', { has: ['Oss', 'Entrar', 'Criar conta'] });
+  await check(null, '/', { has: ['Oss', 'Entrar', 'Começar agora'] });
   await check(null, '/login', { has: ['Esqueci minha senha'] });
   await check(null, '/login?senha=ok', { has: ['Entrar'] });
   await check(null, '/recuperar-senha', { has: ['Recuperar a senha', 'E-mail da sua conta', 'Enviar o link', 'Voltar para entrar'] });

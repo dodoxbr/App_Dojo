@@ -309,3 +309,10 @@
 - [ ] **Definir os pacotes finais e preços** (hoje valores de TESTE; editáveis em `/plataforma/pacotes`).
 - [ ] Decidir se dados de funcionalidade desligada devem ficar ocultos também na leitura no banco (hoje só a interface esconde).
 - [ ] Aplicar a migration 033 no ambiente local com `npx supabase migration up` (sem reset).
+
+## Landing e login (Claude Design, 2026-10-22)
+- [ ] Landing sem "Planos" e sem e-mail de contato (a referência trazia os dois como espaço reservado): definir preços/pacotes e o e-mail de contato antes de divulgar.
+- [ ] "Quero para minha academia" leva ao cadastro; hoje só o super admin libera a criação de academia. Definir o fluxo comercial de entrada de novas academias.
+- [ ] Botões Google e Apple da referência **não** foram incluídos (não há login social no banco). Se vierem, exigem configuração do provedor.
+- [ ] Os celulares da landing são ilustração com dados fictícios; trocar por capturas reais quando o app estiver estável.
+- [ ] Logo ainda provisória (sem fundo transparente; hoje fundida ao fundo escuro com `mix-blend-mode: lighten`, o que só funciona sobre fundo escuro).

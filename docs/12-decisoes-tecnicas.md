@@ -75,3 +75,6 @@
 
 ## ADR-025 — Pacotes por academia aplicados no banco (mecanismo de funcionalidades)
 **Status:** aceita. **Decisão:** a academia tem `plan_code`; tabelas `plans` e `feature_catalog`; `academy_has_feature` e gatilhos `require_feature` barram, no banco, a criação de dados de funcionalidades desligadas (`0A000`). A interface só esconde menus e telas como conveniência. Padrão: pacote Avançado (tudo ligado). Só o super admin altera, com auditoria. Sem dependência nova. **Consequência:** novas funcionalidades opcionais exigem entrada no catálogo, gatilho e item em `packages/contracts/src/features.ts`. Conteúdo dos pacotes é de teste.
+
+## ADR-026 — Fontes da marca (Archivo e Figtree) servidas pelo próprio site via `next/font`
+**Status:** aceita. **Contexto:** a landing e o login aprovados no Claude Design usam Archivo (títulos) e Figtree (texto). Revisa a decisão de fonte da ADR-024 ("nada é baixado de terceiros") só para essas duas telas. **Decisão:** `next/font/google` (recurso do próprio Next, **sem dependência nova**) baixa as fontes **durante o build** e as serve do domínio do painel; o navegador do usuário não contata o Google (sem vazamento de IP, compatível com a LGPD). **Consequência:** o build precisa de internet na primeira vez. As demais telas seguem na fonte do sistema.

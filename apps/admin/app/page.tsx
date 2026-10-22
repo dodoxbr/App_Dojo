@@ -1,141 +1,206 @@
 import Link from "next/link";
-import { Alert, BeltBar, BrandLogo, ButtonLink } from "@/components/ui";
+import { Alert } from "@/components/ui";
+import { Icon } from "./landing-icons";
 import styles from "./home.module.css";
 
+const bullets = [
+  { icon: "book", text: "Registro de treinos e técnicas" },
+  { icon: "check", text: "Presença validada pelo professor" },
+  { icon: "medal", text: "Graduação oficial decidida pelo mestre" },
+  { icon: "people", text: "Comunidade da academia" },
+  { icon: "clipboard", text: "Gestão completa para mestres e professores" },
+];
+
 const features = [
-  { title: "Presença que vale", text: "O aluno faz check-in e o professor confirma. Só presença confirmada conta para a graduação e para as medalhas." },
-  { title: "Diário de treino privado", text: "Anotações, técnicas e sensações de cada treino. O diário é só do aluno; compartilhar com o professor exige permissão explícita." },
-  { title: "Graduação com critério", text: "Cada academia define suas faixas, graus e critérios. O aluno acompanha o progresso; a graduação oficial é sempre registrada pelo gestor." },
-  { title: "Turmas e aulas", text: "Agenda, turmas, instrutores e lista de presença de cada aula, sem planilha." },
-  { title: "Menores com proteção reforçada", text: "Crianças e adolescentes exigem responsáveis cadastrados e conferidos. Esse cuidado nunca é opcional." },
-  { title: "Várias academias, um só atleta", text: "O atleta tem uma identidade só e pode treinar em mais de uma academia. Os dados de cada academia ficam separados." },
+  { icon: "book", text: "Biblioteca de técnicas com vídeos e detalhes" },
+  { icon: "chart", text: "Acompanhe sua evolução de faixa e graus" },
+  { icon: "check", text: "Registre seus treinos e acompanhe seu progresso" },
+  { icon: "people", text: "Conecte-se com sua academia e colegas" },
+  { icon: "shield", text: "Menores com proteção reforçada" },
+  { icon: "medal", text: "Várias academias, um só atleta" },
 ];
 
-const optional = ["Financeiro manual", "Feed de fotos", "Desafios entre alunos", "Medalhas", "Painel de frequência", "Trilhas e avaliações de domínio"];
-
-const roles = [
-  { who: "Aluno", items: ["Registrar o treino em segundos", "Ver a evolução e a agenda da semana", "Fazer check-in nas aulas"] },
-  { who: "Professor", items: ["Confirmar presenças da aula", "Recomendar graduações", "Ver o progresso dos alunos"] },
-  { who: "Gestor", items: ["Aprovar membros e responsáveis", "Definir faixas e critérios", "Acompanhar a academia em um painel"] },
+const forGyms = [
+  { title: "Alunos e turmas", text: "Cadastro, faixa atual e histórico de cada aluno em um só lugar." },
+  { title: "Presença validada", text: "O aluno faz check-in, o professor confirma. Sem lista de papel." },
+  { title: "Graduação por treinos", text: "Veja quem está pronto para o próximo grau. A decisão final é do mestre." },
+  { title: "Financeiro manual", text: "Controle de pagamentos e pendências de cada aluno (conforme o pacote da academia)." },
 ];
 
-// Página inicial pública. O link de confirmação do e-mail de cadastro também cai aqui (`?code=` = e-mail confirmado, `?error=` = link vencido).
-// Só textos fixos: nada da URL é exibido. Não há depoimentos, números de clientes nem preços: o produto está em alpha.
+const security = [
+  { title: "Dados separados por academia", text: "Cada academia só enxerga os próprios dados. A regra é aplicada no banco de dados, não apenas na tela." },
+  { title: "Diário privado", text: "Ninguém lê o seu diário sem a sua permissão, nem mesmo o gestor da academia." },
+  { title: "Ações críticas registradas", text: "Aprovações, presenças validadas e graduações ficam registradas e não podem ser alteradas depois." },
+];
+
+// Página inicial pública (visual aprovado no Claude Design). O link de confirmação do e-mail de cadastro também cai aqui
+// (`?code=` = e-mail confirmado, `?error=` = link vencido). Só textos fixos: nada da URL é exibido. As telas dos celulares são ILUSTRAÇÃO
+// (dados fictícios); não há depoimentos, números de clientes nem preços: o produto está em alpha.
 export default async function Home({ searchParams }: { searchParams: Promise<{ code?: string; error?: string; error_code?: string }> }) {
   const { code, error, error_code } = await searchParams;
   const failed = Boolean(error || error_code);
 
   return (
-    <div className={styles.page}>
+    <div className={styles.page} id="inicio">
       <header className={styles.nav}>
-        <BrandLogo tone="light" />
+        <a href="#inicio" aria-label="Oss, início" className={styles.logoLink}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/brand/oss-site-logo.webp" alt="Oss, seu companheiro de treino" width={1000} height={547} className={styles.logo} />
+        </a>
         <nav className={styles.navLinks} aria-label="Principal">
-          <a href="#recursos">Recursos</a>
-          <a href="#para-quem">Para quem</a>
+          <a className={styles.navActive} href="#inicio">Início</a>
+          <a href="#funcionalidades">Funcionalidades</a>
+          <a href="#academias">Para academias</a>
           <a href="#seguranca">Segurança</a>
         </nav>
-        <div className={styles.navActions}>
-          <ButtonLink href="/login" variant="secondary">Entrar</ButtonLink>
-        </div>
+        <Link href="/login" className={styles.ghost}>Entrar</Link>
       </header>
 
       <main>
         <section className={styles.hero}>
-          <div className={styles.heroInner}>
-            <div className={styles.heroText}>
-              <p className={styles.eyebrow}>Jiu-Jitsu · gestão e evolução</p>
-              <h1 className={styles.headline}>Oss! O treino da sua academia, em um só lugar.</h1>
-              <p className={styles.lead}>Presença confirmada, diário de treino, graduação com critério e gestão da academia. Para quem treina, para quem ensina e para quem cuida.</p>
-              {code && !failed && (
-                <Alert tone="success">
-                  E-mail confirmado. Agora <Link href="/login">entre com o seu e-mail e a sua senha</Link>.
-                </Alert>
-              )}
-              {failed && (
-                <Alert tone="danger">
-                  Este link de confirmação venceu ou já foi usado. Se o seu e-mail já foi confirmado, <Link href="/login">entre com a sua senha</Link>;
-                  se não, crie a conta de novo na mesma tela.
-                </Alert>
-              )}
-              <div className={styles.actions}>
-                <ButtonLink href="/login?aba=criar" variant="accent">Criar conta</ButtonLink>
-                <ButtonLink href="/login" variant="secondary">Entrar</ButtonLink>
-              </div>
-              <p className={styles.note}>Versão alpha, em testes com dados fictícios.</p>
-            </div>
-
-            <div className={styles.preview} aria-hidden="true">
-              <div className={styles.previewCard}>
-                <p className={styles.previewLabel}>Sua graduação</p>
-                <p className={styles.previewBelt}>Azul · grau 2</p>
-                <BeltBar belt="Azul" degree={2} size="lg" />
-                <p className={styles.previewLabel}>Esta semana</p>
-                <div className={styles.week}>
-                  {["S", "T", "Q", "Q", "S", "S", "D"].map((d, i) => (
-                    <span key={i} className={[0, 2, 4].includes(i) ? styles.dayOn : styles.day}>{d}</span>
-                  ))}
-                </div>
-                <p className={styles.previewHint}>Ilustração. Só treino confirmado pelo professor conta.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="recursos" className={styles.section}>
-          <h2 className={styles.h2}>Tudo o que a academia precisa, sem complicar</h2>
-          <div className={styles.grid}>
-            {features.map((f) => (
-              <article key={f.title} className={styles.feature}>
-                <h3 className={styles.h3}>{f.title}</h3>
-                <p>{f.text}</p>
-              </article>
-            ))}
-          </div>
-          <div className={styles.optional}>
-            <p className={styles.optionalTitle}>Recursos extras, liberados conforme o pacote da academia</p>
-            <ul className={styles.chips}>
-              {optional.map((o) => <li key={o}>{o}</li>)}
+          <div className={styles.heroText}>
+            {code && !failed && (
+              <Alert tone="success">
+                E-mail confirmado. Agora <Link href="/login">entre com o seu e-mail e a sua senha</Link>.
+              </Alert>
+            )}
+            {failed && (
+              <Alert tone="danger">
+                Este link de confirmação venceu ou já foi usado. Se o seu e-mail já foi confirmado, <Link href="/login">entre com a sua senha</Link>;
+                se não, crie a conta de novo na mesma tela.
+              </Alert>
+            )}
+            <h1 className={styles.headline}>Seu treino,<br />sua evolução,<br /><span>sua academia.</span></h1>
+            <p className={styles.lead}>A plataforma completa para academias de Jiu-Jitsu. Do controle de presença ao acompanhamento da sua evolução técnica, tudo em um só lugar.</p>
+            <ul className={styles.bullets}>
+              {bullets.map((b) => (
+                <li key={b.text}><span className={styles.bulletIcon}><Icon name={b.icon} /></span>{b.text}</li>
+              ))}
             </ul>
+            <div className={styles.heroActions}>
+              <Link href="/login?aba=criar" className={styles.primary}>Começar agora <Icon name="arrow" /></Link>
+              <a href="#funcionalidades" className={styles.ghostWide}>Conheça todas as funcionalidades</a>
+            </div>
+            <p className={styles.note}>Versão alpha, em testes com dados fictícios.</p>
+          </div>
+
+          <div className={styles.phones} aria-hidden="true">
+            <div className={`${styles.phone} ${styles.phoneDark}`}>
+              <div className={styles.phoneBody}>
+                <div className={styles.phoneTop}>
+                  <span className={styles.avatar}>FS</span>
+                  <span className={styles.greet}>Boa noite,<br /><strong>Atleta!</strong></span>
+                  <span className={styles.bell}><Icon name="bell" size={20} /></span>
+                </div>
+                <div className={styles.lightCard}>
+                  <span className={styles.small}>Faixa atual</span>
+                  <span className={styles.beltName}>Azul · 2 graus</span>
+                  <svg viewBox="0 0 240 26" className={styles.beltSvg}>
+                    <rect x="0" width="150" height="26" fill="#2457C5" />
+                    <rect x="155" width="54" height="26" fill="#151515" />
+                    <rect x="214" width="26" height="26" fill="#2457C5" />
+                    <rect x="163" width="5" height="26" fill="#fff" />
+                    <rect x="173" width="5" height="26" fill="#fff" />
+                  </svg>
+                  <span className={styles.meter}><span style={{ width: "68%" }} /></span>
+                  <span className={styles.small}>68% do caminho até o próximo grau</span>
+                </div>
+                <div className={styles.lightCard}>
+                  <strong className={styles.cardTitle}>Próxima aula</strong>
+                  <span className={styles.classRow}>
+                    <span className={styles.classIcon}><Icon name="calendar" size={16} /></span>
+                    <span className={styles.small}><strong>Jiu-Jitsu · Gi</strong><br />Hoje · 19:00–20:30</span>
+                  </span>
+                  <span className={styles.btnRow}>
+                    <span className={styles.miniGhost}>Ver detalhes</span>
+                    <span className={styles.miniPrimary}>Fazer check-in</span>
+                  </span>
+                </div>
+                <strong className={styles.weekTitle}>Resumo da semana</strong>
+                <div className={styles.stats}>
+                  <span><b>3</b>Treinos</span>
+                  <span><b>92%</b>Frequência</span>
+                  <span><b>5</b>Técnicas</span>
+                </div>
+              </div>
+              <div className={styles.tabbar}>
+                <span className={styles.tabOn}><Icon name="home" />Início</span>
+                <span><Icon name="book" />Treinos</span>
+                <span><Icon name="clipboard" />Técnicas</span>
+                <span><Icon name="chart" />Evolução</span>
+                <span><Icon name="user" />Perfil</span>
+              </div>
+            </div>
+
+            <div className={`${styles.phone} ${styles.phoneLight}`}>
+              <div className={styles.techHead}>
+                <strong>Passagem de guarda toureando</strong>
+                <span className={styles.tags}><span>Passagem</span><span>Intermediário</span></span>
+              </div>
+              <div className={styles.video}><span className={styles.play} /><span className={styles.progress}><span /></span></div>
+              <div className={styles.tabs}><span className={styles.tabsOn}>Detalhes</span><span>Passo a passo</span><span>Variações</span></div>
+              <div className={styles.techBody}>
+                <strong className={styles.cardTitle}>Descrição</strong>
+                <p>Passagem em pé que controla as calças do oponente e redireciona as pernas para o lado, abrindo caminho até o controle lateral.</p>
+                <strong className={styles.cardTitle}>Técnicas relacionadas</strong>
+                <div className={styles.related}>
+                  <span><i />Quebra de guarda</span>
+                  <span><i />Controle de quadril</span>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
-        <section id="para-quem" className={`${styles.section} ${styles.alt}`}>
-          <h2 className={styles.h2}>Para quem treina, ensina e cuida</h2>
-          <div className={styles.grid3}>
-            {roles.map((r) => (
-              <article key={r.who} className={styles.role}>
-                <h3 className={styles.h3}>{r.who}</h3>
-                <ul>
-                  {r.items.map((i) => <li key={i}>{i}</li>)}
-                </ul>
-              </article>
+        <section id="funcionalidades" className={styles.features}>
+          {features.map((f) => (
+            <div key={f.text} className={styles.featureCard}>
+              <span className={styles.featureIcon}><Icon name={f.icon} size={20} /></span>
+              <span>{f.text}</span>
+            </div>
+          ))}
+        </section>
+
+        <section id="academias" className={styles.light}>
+          <div className={styles.lightInner}>
+            <div className={styles.lightText}>
+              <p className={styles.eyebrow}>Para academias</p>
+              <h2 className={styles.h2}>O tatame organizado, do check-in à graduação.</h2>
+              <p className={styles.lightLead}>Mestres e professores acompanham alunos, validam presenças e decidem graduações com base no histórico real de treinos.</p>
+              <Link href="/login?aba=criar" className={styles.dark}>Quero para minha academia</Link>
+            </div>
+            <div className={styles.gymGrid}>
+              {forGyms.map((g) => (
+                <div key={g.title} className={styles.gymCard}>
+                  <h3>{g.title}</h3>
+                  <p>{g.text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="seguranca" className={styles.security}>
+          <p className={styles.eyebrowDark}>Segurança</p>
+          <h2 className={styles.h2Dark}>Privacidade levada a sério</h2>
+          <div className={styles.secGrid}>
+            {security.map((s) => (
+              <div key={s.title} className={styles.featureCard}>
+                <div><h3>{s.title}</h3><p>{s.text}</p></div>
+              </div>
             ))}
-          </div>
-        </section>
-
-        <section id="seguranca" className={styles.section}>
-          <h2 className={styles.h2}>Privacidade levada a sério</h2>
-          <div className={styles.grid3}>
-            <article className={styles.feature}><h3 className={styles.h3}>Dados separados por academia</h3><p>Cada academia só enxerga os próprios dados. A regra é aplicada no banco de dados, não apenas na tela.</p></article>
-            <article className={styles.feature}><h3 className={styles.h3}>Diário privado</h3><p>Ninguém lê o seu diário sem a sua permissão, nem mesmo o gestor da academia.</p></article>
-            <article className={styles.feature}><h3 className={styles.h3}>Ações críticas registradas</h3><p>Aprovações, presenças validadas e graduações ficam registradas e não podem ser alteradas depois.</p></article>
-          </div>
-        </section>
-
-        <section className={styles.cta}>
-          <h2 className={styles.ctaTitle}>Pronto para o próximo treino?</h2>
-          <p>Crie a sua conta e peça o link de entrada ao gestor da sua academia.</p>
-          <div className={styles.actions}>
-            <ButtonLink href="/login?aba=criar" variant="accent">Criar conta</ButtonLink>
-            <ButtonLink href="/login" variant="secondary">Entrar</ButtonLink>
           </div>
         </section>
       </main>
 
       <footer className={styles.footer}>
-        <BrandLogo tone="light" />
-        <p>Oss! é a saudação do Jiu-Jitsu. Versão alpha.</p>
-        <p><Link href="/termos">Termos e privacidade</Link></p>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/brand/oss-site-logo.webp" alt="Oss" width={1000} height={547} className={styles.footLogo} />
+        <span>Oss, a saudação do tatame.</span>
+        <span className={styles.footLinks}>
+          <Link href="/termos">Termos e privacidade</Link>
+          <Link href="/login">Entrar</Link>
+        </span>
       </footer>
     </div>
   );
