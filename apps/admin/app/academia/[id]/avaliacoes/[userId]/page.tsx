@@ -33,7 +33,7 @@ export default async function AvaliarAlunoPage({ params }: { params: Promise<{ i
   const status = new Map((assessments ?? []).map((a) => [a.technique_id as string, a.status as string]));
 
   return (
-    <main style={{ padding: 16, display: "grid", gap: 24, maxWidth: 800 }}>
+    <main style={{ padding: 16, display: "grid", gap: 24, maxWidth: 960 }}>
       <p><Link href={`/academia/${id}/avaliacoes`}>← Avaliações</Link></p>
       <h1>{profile.display_name}</h1>
       {canAssess !== true && <p role="note">Você pode ver o progresso, mas não tem permissão para avaliar.</p>}

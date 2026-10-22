@@ -46,7 +46,7 @@ export default async function FinanceiroPage({
   const here = `/academia/${id}/financeiro?mes=${month}`;
 
   return (
-    <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 900 }}>
+    <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 960 }}>
       <p><Link href={`/academia/${id}`}>← {academy.name}</Link></p>
       <h1>Financeiro — {monthLabel(month)}</h1>
       <p>

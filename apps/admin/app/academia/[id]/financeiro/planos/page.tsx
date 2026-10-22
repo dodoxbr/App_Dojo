@@ -26,7 +26,7 @@ export default async function PlanosPage({
   const message = financeMessage(erro);
 
   return (
-    <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 800 }}>
+    <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 960 }}>
       <p><Link href={`/academia/${id}/financeiro`}>← Financeiro</Link></p>
       <h1>Planos dos alunos</h1>
       <p>Defina o valor da mensalidade e o dia de vencimento de cada aluno. Só alunos com plano <strong>ativo</strong> recebem cobrança ao gerar o mês.</p>

@@ -60,7 +60,7 @@ export default async function DesafioPage({
   const today = new Date().toISOString().slice(0, 10);
 
   return (
-    <main style={{ padding: 16, display: "grid", gap: 20, maxWidth: 800 }}>
+    <main style={{ padding: 16, display: "grid", gap: 20, maxWidth: 960 }}>
       <p><Link href="/desafios">← Desafios</Link></p>
       <h1>{c.title}</h1>
       <p>

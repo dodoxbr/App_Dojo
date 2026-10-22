@@ -31,7 +31,7 @@ export default async function FeedDoDependentePage({
   const last = posts[posts.length - 1];
 
   return (
-    <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 720 }}>
+    <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 960 }}>
       <p><Link href={`/dependentes/${minorId}`}>← {dep.minor_name}</Link></p>
       <h1>Treino de {dep.minor_name}</h1>
       <p role="note"><small>Fotos que os membros da academia postaram e em que {dep.minor_name} aparece, enquanto o seu consentimento de fotos estiver ativo. Elas somem sozinhas depois de 30 dias.</small></p>

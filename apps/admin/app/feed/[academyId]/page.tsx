@@ -61,7 +61,7 @@ export default async function FeedPage({
   );
 
   return (
-    <main style={{ padding: 16, display: "grid", gap: 20, maxWidth: 720 }}>
+    <main style={{ padding: 16, display: "grid", gap: 20, maxWidth: 960 }}>
       <p><Link href="/perfil">← Meu perfil</Link> · <Link href="/medalhas">Medalhas</Link></p>
       <h1>Feed — {academy.name}</h1>
       <p role="note"><small>Só os membros desta academia veem estas fotos. Elas somem sozinhas depois de {FEED_RETENTION_DAYS} dias. Os dados escondidos da foto (como a localização) são removidos antes de salvar.</small></p>

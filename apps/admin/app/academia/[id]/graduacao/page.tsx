@@ -31,7 +31,7 @@ export default async function GraduacaoPage({ params }: { params: Promise<{ id: 
   ]);
 
   return (
-    <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 760 }}>
+    <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 960 }}>
       <p><Link href={`/academia/${id}`}>← {academy.name}</Link></p>
       <h1>Graduação</h1>
       <p role="note">

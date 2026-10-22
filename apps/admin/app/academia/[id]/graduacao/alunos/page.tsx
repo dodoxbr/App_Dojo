@@ -32,7 +32,7 @@ export default async function AlunosGraduacaoPage({ params }: { params: Promise<
     .sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
 
   return (
-    <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 800 }}>
+    <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 960 }}>
       <p><Link href={`/academia/${id}/graduacao`}>← Graduação</Link></p>
       <h1>Alunos e graduação atual</h1>
       <p>A graduação oficial só é registrada pelo gestor. O aluno não altera a própria graduação.</p>

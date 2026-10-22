@@ -1,6 +1,6 @@
 # Proposta F2 — Desafios da academia (estilo "Gymrats")
 
-**Status:** decisões respondidas em 2026-10-20; **US-014 implementada** (desafios automáticos, de treino e de golpes). Restam a foto da aula (US-015) e reações/medalhas (US-016). Entra no backlog depois da US-012 (painel) e da US-013 (menores), porque envolve ranking entre pessoas e não pode incluir crianças antes do fluxo de responsáveis.
+**Status:** decisões respondidas em 2026-10-20; **US-014 implementada** (desafios automáticos, de treino e de golpes). A foto da aula virou o feed da academia (US-018, a US-015 foi absorvida por ela) e as reações, comentários e medalhas são a US-019 (implementada); a numeração US-015/US-016 desta proposta ficou só como histórico. Entra no backlog depois da US-012 (painel) e da US-013 (menores), porque envolve ranking entre pessoas e não pode incluir crianças antes do fluxo de responsáveis.
 
 ## Ideia
 Desafios entre os alunos de uma academia, com pontuação e ranking, para estimular frequência e prática: **desafios de treino** (assiduidade, sequência semanal, treinos extras) e **desafios de golpes** (praticar uma técnica, repetições, avançar na trilha). Inspiração: apps de desafio em grupo, mas dentro das regras do produto (academia como fronteira, diário privado, presença só validada).
@@ -18,8 +18,8 @@ Desafios entre os alunos de uma academia, com pontuação e ranking, para estimu
 | ID | História | Observação |
 |---|---|---|
 | US-014 | Desafios automáticos (presença validada e sequência semanal) + participação opt-in + ranking | Não exige digitação do aluno; pontua pelo que já é verificado |
-| US-015 | Desafios de treino e de golpes com registro do aluno e verificação pelo professor | Introduz "entrada não verificada" vs "verificada" |
-| US-016 | Reações/comentários moderados, medalhas e histórico de desafios | Só depois de moderação definida (F4 de `docs/10`) |
+| US-015 | Desafios de treino e de golpes com registro do aluno e verificação pelo professor | Entrou na própria US-014 (entradas "não verificadas" vs "verificadas"); o número US-015 no backlog ficou para o feed, absorvido pela US-018 |
+| US-016 | Reações/comentários moderados, medalhas e histórico de desafios | **Implementada como US-019** (ver `docs/features/US-019.md`); o número US-016 no backlog é de termos e ficha de cadastro |
 
 ## Decisões do dono do produto (respondidas em 2026-10-20) — implementadas na US-014
 1. **Quem cria:** alunos e professores (membros adultos aprovados); criador e gestor moderam.

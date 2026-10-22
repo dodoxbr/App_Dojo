@@ -31,7 +31,7 @@ export default async function DesafiosPage() {
   const isAdult = ageStatus === "adult";
 
   return (
-    <main style={{ padding: 16, display: "grid", gap: 24, maxWidth: 760 }}>
+    <main style={{ padding: 16, display: "grid", gap: 24, maxWidth: 960 }}>
       <p><Link href="/perfil">← Meu perfil</Link></p>
       <h1>Desafios</h1>
       <p>

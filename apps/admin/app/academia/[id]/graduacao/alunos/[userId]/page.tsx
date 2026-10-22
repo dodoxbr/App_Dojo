@@ -35,7 +35,7 @@ export default async function AvaliacaoAlunoPage({ params }: { params: Promise<{
   const canDecide = isManager && userId !== callerId;
 
   return (
-    <main style={{ padding: 16, display: "grid", gap: 24, maxWidth: 800 }}>
+    <main style={{ padding: 16, display: "grid", gap: 24, maxWidth: 960 }}>
       <p><Link href={`/academia/${id}/graduacao/alunos`}>← Alunos</Link></p>
       <h1>{profile.display_name}</h1>
 

@@ -25,7 +25,9 @@ Alunos anotam técnicas em WhatsApp ou notas isoladas; professores planejam cont
 | RF-11 | Responsável por menor | P0 para operação com menores | Sem exposição pública, vinculação verificável |
 
 ## Fora do MVP
-Feed social (os **desafios entre alunos** foram aprovados como evolução F2, ver `docs/features/F2-desafios.md`), competições/pódios, pagamentos, cobrança automática, reconhecimento facial, IA generativa, marketplace e apps white-label publicados individualmente.
+Competições/pódios, pagamento online e cobrança automática, reconhecimento facial, IA generativa, marketplace e apps white-label publicados individualmente.
+
+**Entraram depois do MVP original, por decisão do dono do produto (2026-10-20):** desafios entre alunos (US-014, `docs/features/F2-desafios.md`); responsável por menores com consentimento verificado (US-013b); ficha de cadastro privada e termos (US-016); **controle financeiro manual** pelo gestor, sem gateway de pagamento (US-017); **feed de fotos da academia**, no lugar do grupo de WhatsApp dos treinos (US-018); reações, comentários moderados e medalhas (US-019); aviso de treinos desde a última graduação, com número escolhido por cada professor (US-020). Pagamento online continua fora, para depois da validação do financeiro manual.
 
 ## Requisitos não funcionais
 - **Segurança:** RLS, mínimo privilégio, logs auditáveis, tokens efêmeros e revogação.

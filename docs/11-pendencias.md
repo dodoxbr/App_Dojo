@@ -268,3 +268,7 @@
 - [ ] O pedido de redefinição não mostra erro de limite de envios (para não revelar nada); se o e-mail não chegar, a pessoa tenta de novo mais tarde. Sem monitoramento de falhas de envio.
 - [ ] A senha só é trocada por quem abre o link no mesmo navegador do pedido (padrão PKCE). Abrir o link no celular depois de pedir no computador leva à tela "link venceu ou já foi usado".
 - [ ] Contas que já fizeram ações auditadas não podem ser apagadas (a auditoria referencia a conta e agora é imutável); a rotina de exclusão de dados (LGPD) precisa de decisão de anonimização.
+
+## Documentação e largura das telas (2026-10-21)
+- [x] `docs/02-arquitetura.md` (seção de fotos e diagrama), `docs/01-prd.md` (o que entrou depois do MVP) e `docs/features/F2-desafios.md` (numeração das histórias) atualizados para refletir o que foi implementado.
+- [x] Telas de gestão e de dados (financeiro, saúde, graduação, painel, currículos, avaliações, feed, desafios, turmas…) que fixavam 720 a 900 px agora usam 960 px dentro do shell. Formulários e listas curtas (420 a 640 px) ficam estreitos de propósito. Termos e a página de diários da plataforma, fora do shell, não mudaram.

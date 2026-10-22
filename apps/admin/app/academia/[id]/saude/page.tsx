@@ -14,7 +14,7 @@ export default async function SaudePage({ params }: { params: Promise<{ id: stri
   const rows = ((raw ?? []) as unknown[]).map((x) => healthNoteSchema.safeParse(x)).flatMap((r) => (r.success ? [r.data] : []));
 
   return (
-    <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 720 }}>
+    <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 960 }}>
       <p><Link href={`/academia/${id}`}>← {academy.name}</Link></p>
       <h1>Saúde e contato de emergência</h1>
       <p role="note"><small>Dados sensíveis informados pelos próprios alunos (ou pelos responsáveis dos menores) com consentimento. Os instrutores com a permissão &quot;ver observações de saúde&quot; veem estes dados na tela da aula. Cada consulta é registrada.</small></p>

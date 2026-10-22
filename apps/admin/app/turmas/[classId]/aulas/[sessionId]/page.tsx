@@ -68,7 +68,7 @@ export default async function PresencasPage({
   const message = errorFromCode(erro, { conflict: "Esta presença foi revogada e não pode ser confirmada de novo." });
 
   return (
-    <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 720 }}>
+    <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 960 }}>
       <p><Link href={`/turmas/${classId}`}>← {klass?.title}</Link></p>
       <h1>Presenças</h1>
       <p>

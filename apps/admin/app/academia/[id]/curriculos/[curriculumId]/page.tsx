@@ -45,7 +45,7 @@ export default async function CurriculoPage({
   const message = errorFromCode(erro);
 
   return (
-    <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 720 }}>
+    <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 960 }}>
       <p><Link href={`/academia/${id}/curriculos`}>← Currículos</Link></p>
       <h1>{curriculum.title}{curriculum.is_active ? "" : " (inativo)"}</h1>
       {message && <p role="alert">{message}</p>}

@@ -41,7 +41,7 @@ export default async function FinanceiroAlunoPage({
   const titleOf = new Map(f.charges.map((c) => [c.id, chargeTitle(c)]));
 
   return (
-    <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 800 }}>
+    <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 960 }}>
       <p><Link href={`/academia/${id}/financeiro`}>← Financeiro de {academy.name}</Link></p>
       <h1>Financeiro de {f.name ?? "aluno"}</h1>
       {message && <p role="alert">{message}</p>}

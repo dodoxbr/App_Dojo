@@ -47,7 +47,7 @@ export default async function NovaRegraPage({
   }
 
   return (
-    <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 720 }}>
+    <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 960 }}>
       <p><Link href={`/academia/${id}/graduacao`}>← Graduação</Link></p>
       <h1>{initial ? "Nova versão da regra" : "Cadastrar regra"}</h1>
       <p>

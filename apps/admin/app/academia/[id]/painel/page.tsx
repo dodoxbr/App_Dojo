@@ -37,7 +37,7 @@ export default async function PainelPage({
   const nameOf = new Map((profiles ?? []).map((p) => [p.id as string, p.display_name as string]));
 
   return (
-    <main style={{ padding: 16, display: "grid", gap: 24, maxWidth: 800 }}>
+    <main style={{ padding: 16, display: "grid", gap: 24, maxWidth: 960 }}>
       <p><Link href={`/academia/${id}`}>← {academy.name}</Link></p>
       <h1>Painel de frequência e indicadores</h1>
       <nav aria-label="Período">

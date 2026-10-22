@@ -32,7 +32,7 @@ export default async function MeuFinanceiroPage() {
   );
 
   return (
-    <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 720 }}>
+    <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 960 }}>
       <p><Link href="/perfil">← Meu perfil</Link></p>
       <h1>Meu financeiro</h1>
       <p role="note"><small>Consulta apenas: quem registra os pagamentos é o gestor da academia. A plataforma não recebe pagamentos.</small></p>
