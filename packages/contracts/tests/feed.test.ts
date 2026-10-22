@@ -6,7 +6,7 @@ const ID = '11111111-1111-4111-8111-111111111111';
 const KEY = '22222222-2222-4222-8222-222222222222';
 
 test('comentário: 1 a 300 caracteres, com espaços das pontas removidos', () => {
-  assert.equal(commentInputSchema.parse({ postId: ID, body: '  Osu!  ', clientKey: KEY }).body, 'Osu!');
+  assert.equal(commentInputSchema.parse({ postId: ID, body: '  Oss!  ', clientKey: KEY }).body, 'Oss!');
   assert.equal(commentInputSchema.safeParse({ postId: ID, body: '   ', clientKey: KEY }).success, false);
   assert.equal(commentInputSchema.safeParse({ postId: ID, body: 'x'.repeat(COMMENT_MAX + 1), clientKey: KEY }).success, false);
   assert.equal(commentInputSchema.safeParse({ postId: ID, body: 'x'.repeat(COMMENT_MAX), clientKey: KEY }).success, true);

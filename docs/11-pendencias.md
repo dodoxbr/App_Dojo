@@ -215,7 +215,7 @@
 
 ## US-019 (reações, comentários e medalhas)
 - [ ] **Os limiares das medalhas são valores de TESTE** (10/25/50/100 presenças, 4/12 semanas seguidas, vencedor de desafio de presença): o dono do produto precisa fixar a lista e os critérios finais (`medal_catalog()` na migração 029).
-- [ ] Decisões tomadas (2026-10-20): um só tipo de reação ("Osu!"); comentários de adultos com denúncia e gestor apaga; medalhas só do que é verificado; menor ganha medalha mas não reage nem comenta; responsável não comenta nem vê comentários.
+- [ ] Decisões tomadas (2026-10-20): um só tipo de reação ("Oss!"); comentários de adultos com denúncia e gestor apaga; medalhas só do que é verificado; menor ganha medalha mas não reage nem comenta; responsável não comenta nem vê comentários.
 - [ ] Os membros adultos veem as medalhas uns dos outros (quadro da academia), sem opção de esconder; menor só para o responsável e o gestor. Confirmar com o dono do produto e, se for o caso, com a revisão jurídica.
 - [ ] Desafios de treino e de golpes (informados pelo aluno) **não** dão medalha, por não serem verificados.
 - [ ] Medalhas são calculadas a cada consulta (ADR-023); revisar o custo se uma academia crescer muito.
@@ -293,7 +293,7 @@
 - [x] Visual reforçado nas duas aplicações: destaque marinho com trama de listras e brilho turquesa, **faixa desenhada** na cor do nome cadastrado (azul, roxa, marrom, preta, cinza, amarela, laranja, verde; nome sem cor conhecida fica turquesa) com ponta preta e um risco por grau, semana com dias marcados, anel de progresso (painel), barra lateral marinho, topo marinho no celular, painel da marca no login com as faixas, cartões coloridos no início da equipe e botão de destaque turquesa. Só CSS e componentes; nenhuma imagem de terceiros.
 - [ ] **Marca provisória:** o símbolo (faixa atada) e a escrita "Oss!" são desenhados no código. Fazer **busca de marca no INPI e de domínio** antes de divulgar o nome; trocar só o componente `BrandLogo` (painel) quando houver logotipo oficial.
 - [ ] A cor da faixa vem do **nome** que a academia cadastrou (ex.: "Azul"); é só enfeite e não muda nenhuma regra de graduação. Nomes de graduação de TESTE do demo agora são "Faixa Azul (teste)" e "Faixa Roxa (teste)" para mostrar as cores (só vale ao rodar o seed de novo).
-- [x] Destaque escuro (`PageHero`), faixa desenhada e avatar levados para: graduação do aluno (faixa e anel), medalhas (contador e discos), desafios (cartões, barra até o mínimo e pódio no ranking), feed (cartões com avatar e "Osu!" em destaque), perfil, financeiro do aluno, dependentes e o acompanhamento do menor; no app: Início, Evolução e Perfil.
+- [x] Destaque escuro (`PageHero`), faixa desenhada e avatar levados para: graduação do aluno (faixa e anel), medalhas (contador e discos), desafios (cartões, barra até o mínimo e pódio no ranking), feed (cartões com avatar e "Oss!" em destaque), perfil, financeiro do aluno, dependentes e o acompanhamento do menor; no app: Início, Evolução e Perfil.
 - [ ] Ainda só com a ponte visual (aparência nova, estrutura antiga): telas de gestão (membros, turmas, graduação de alunos, financeiro, saúde, currículos, avaliações, painel), formulários de diário, ficha e termos.
 - [ ] O app (versão web) só reflete mudanças depois de reiniciar o servidor com `npm run web -- --clear` quando o cache estiver velho.
 

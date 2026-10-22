@@ -241,7 +241,7 @@ try {
   // US-019: the teacher reacts and comments (through the operations), then the pages show them; a reported comment is hidden from the others
   assert.equal((await teacher.client.rpc('toggle_feed_reaction', { p_post_id: stored[0].id })).data, true, 'o professor reage');
   assert.equal((await teacher.client.rpc('add_feed_comment', { p_post_id: stored[0].id, p_body: 'comentário de páginas (teste)', p_client_key: crypto.randomUUID() })).error, null, 'o professor comenta');
-  await check('student', `/feed/${academyId}`, { has: ['Osu! · 1', 'comentário de páginas (teste)', 'Smoke professor', 'Enviar comentário', 'Denunciar comentário'] });
+  await check('student', `/feed/${academyId}`, { has: ['Oss! · 1', 'comentário de páginas (teste)', 'Smoke professor', 'Enviar comentário', 'Denunciar comentário'] });
   await check('manager', `/feed/${academyId}`, { has: ['Apagar comentário'] });
   await check('guardian', `/feed/${academyId}`, { status: 404 });
   await check('student', '/medalhas', { has: ['Medalhas', 'Academia Páginas', 'Minhas medalhas', 'Quadro da academia', 'valores de teste'] });

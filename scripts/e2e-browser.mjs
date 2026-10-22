@@ -119,11 +119,11 @@ b = await pass('professor', teacher, [
   [`${A}/graduacao/alunos`, ['Aviso de treinos', 'Chegaram ao seu número de treinos', 'Smoke aluno']], [`${A}/graduacao/alunos/${student.id}`, ['Perfil', 'Treinos confirmados desde a última graduação: 30']],
 ]);
 if (b) {
-  // Reação e comentário (formulários de verdade): "Osu!" liga, o comentário aparece
+  // Reação e comentário (formulários de verdade): "Oss!" liga, o comentário aparece
   await b.goto(`${BASE}/feed/${academyId}`);
   try {
-    await b.clickButton('Osu!');
-    await b.waitFor("document.body.innerText.includes('Osu! (você reagiu) · 1')", 8000, 'reação registrada');
+    await b.clickButton('Oss!');
+    await b.waitFor("document.body.innerText.includes('Oss! (você reagiu) · 1')", 8000, 'reação registrada');
     await b.fill('input[name=body]', 'comentário do navegador (teste)');
     await b.clickButton('Enviar comentário');
     await b.waitFor("document.body.innerText.includes('comentário do navegador (teste)')", 8000, 'comentário publicado');

@@ -125,7 +125,7 @@ export default async function FeedPage({
               {p.status === "visible" && (
                 <form action={toggleReaction.bind(null, academyId)}>
                   <input type="hidden" name="postId" value={p.id} />
-                  <Button type="submit" variant={p.reacted_by_me ? "accent" : "secondary"} aria-pressed={p.reacted_by_me}>{p.reacted_by_me ? "Osu! (você reagiu)" : "Osu!"} · {p.reactions}</Button>
+                  <Button type="submit" variant={p.reacted_by_me ? "accent" : "secondary"} aria-pressed={p.reacted_by_me}>{p.reacted_by_me ? "Oss! (você reagiu)" : "Oss!"} · {p.reactions}</Button>
                 </form>
               )}
               {(commentsOf.get(p.id) ?? []).length > 0 && (

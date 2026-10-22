@@ -127,7 +127,7 @@ Branch `main`, 36 commits, sincronizada com `origin/main`. Alterações não com
 - **App mobile:** só login e perfil (ver 2.1). Nenhuma das telas de aluno do brief existe no app.
 
 ### 2.16 Funcionalidades sociais e financeiras — IMPLEMENTADO (financeiro manual e feed), NÃO INICIADO (pagamento online)
-- **Social:** feed de fotos (US-018), reações "Osu!", comentários moderados e medalhas calculadas (US-019), desafios entre alunos (US-014), responsável acompanha o filho.
+- **Social:** feed de fotos (US-018), reações "Oss!", comentários moderados e medalhas calculadas (US-019), desafios entre alunos (US-014), responsável acompanha o filho.
 - **Financeiro:** só **controle manual** em centavos (planos, mensalidades automáticas por `pg_cron`, desconto, cobrança avulsa, baixa manual, histórico imutável, `view_health` separado). **Sem gateway de pagamento** (decisão: fica para depois da validação).
 - **Testes:** pgTAP `feed*`, `challenges` (82), `medals` (27), `finance` (69), `finance_extras` (22), `guardians` (68), `contacts` (45), `health_access` (21); `smoke-challenges`, `smoke-guardians`, `smoke-finance`.
 
