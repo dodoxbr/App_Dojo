@@ -189,3 +189,18 @@ export function isValidSignature(name: string | null | undefined): boolean {
   const v = (name ?? '').trim();
   return v.length >= 5 && v.length <= 120 && /\s/.test(v);
 }
+
+// ---- Declaração de saúde (a pessoa lê e marca no cadastro). RASCUNHO até a revisão jurídica (docs/11).
+export const DECLARATIONS_VERSION = 'rascunho-2026-12';
+
+export const healthDeclaration: TermsSection[] = [
+  {
+    id: 'saude',
+    title: 'Declaração de saúde',
+    paragraphs: [
+      'Declaro que estou em condições de saúde para praticar Jiu-Jitsu e que não tenho nenhuma restrição médica que me impeça de treinar.',
+      'Estou ciente de que o Jiu-Jitsu é um esporte de contato, com risco de lesões, e me comprometo a avisar o professor sobre qualquer condição de saúde, lesão, gravidez ou medicamento que possa afetar o treino, e a parar se me sentir mal.',
+      'As informações de saúde que eu registrar na ficha são dado sensível: só eu, o professor com permissão e o gestor da academia podemos vê-las, e cada consulta é registrada.',
+    ],
+  },
+];

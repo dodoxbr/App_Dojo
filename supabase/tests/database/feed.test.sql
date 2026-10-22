@@ -34,9 +34,8 @@ insert into public.guardianships (minor_user_id, guardian_user_id, kind, relatio
 insert into public.guardian_consents (academy_id, minor_user_id, guardian_user_id, status, verified_by, verified_at, document_checked, consent_photos, consent_text_version) values
  ('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000d1', '00000000-0000-0000-0000-0000000000e1', 'verified', '00000000-0000-0000-0000-0000000000a1', now(), true, true, 'rascunho-2026-10'),
  ('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000d2', '00000000-0000-0000-0000-0000000000e1', 'verified', '00000000-0000-0000-0000-0000000000a1', now(), true, false, 'rascunho-2026-10');
--- Desde a migration 040 o adulto so pode ser marcado se autorizou o uso da imagem.
-insert into public.adult_image_consents (academy_id, user_id, signed_name, term_version) values
- ('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-0000000000b2', 'Aluno Dois Teste', 'rascunho-2026-12');
+-- Desde a migration 040/041 o adulto so pode ser marcado se autorizou o uso da imagem (feito no cadastro).
+insert into public.terms_acceptances (user_id, document, version) values ('00000000-0000-0000-0000-0000000000b2', 'image_authorization', 'rascunho-2026-12');
 create temp table pics as select decode('ffd8ffe000104a46494600010100000100010000', 'hex') as ok, decode('89504e470d0a1a0a', 'hex') as png,
   decode(repeat('ff', 800001), 'hex') as big;
 grant select on pics to authenticated;

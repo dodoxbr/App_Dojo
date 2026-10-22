@@ -19,14 +19,15 @@ export async function signIn(_prev: FormState, formData: FormData): Promise<Form
 
 export async function signUp(_prev: FormState, formData: FormData): Promise<FormState> {
   const parsed = signUpSchema.safeParse(Object.fromEntries(formData));
-  if (!parsed.success) return { error: "Informe nome (2 a 120 caracteres), data de nascimento válida, e-mail válido, senha com 8 ou mais caracteres e aceite os termos." };
+  if (!parsed.success) return { error: "Informe nome (2 a 120 caracteres), data de nascimento válida, e-mail válido, senha com 8 ou mais caracteres, aceite os termos e marque a declaração de saúde." };
 
   const supabase = await createClient();
-  const { email, password, displayName, birthDate, forMinor, dependentName, dependentBirthDate } = parsed.data;
+  const { email, password, displayName, birthDate, forMinor, dependentName, dependentBirthDate, imageAuthorization } = parsed.data;
   // The account of a minor is always created by an adult guardian, never by the minor.
   if (forMinor && !isAdultOn(birthDate)) return { error: "Quem cuida de um menor precisa ter 18 anos ou mais. Peça a um responsável adulto para criar a conta." };
   // The minor's data is only a prefill kept in the sign-up metadata; the dependent is created (and validated) after the e-mail is confirmed.
-  const data: Record<string, string> = { display_name: displayName, birth_date: birthDate, terms_version: CURRENT_TERMS_VERSION };
+  const data: Record<string, string> = { display_name: displayName, birth_date: birthDate, terms_version: CURRENT_TERMS_VERSION, health_declaration: "true" };
+  if (imageAuthorization) data.image_authorization = "true";
   if (forMinor && dependentName) data.dependent_name = dependentName;
   if (forMinor && dependentBirthDate) data.dependent_birth_date = dependentBirthDate;
   const { error } = await supabase.auth.signUp({ email, password, options: { data } });

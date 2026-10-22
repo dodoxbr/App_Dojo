@@ -39,6 +39,7 @@ export function RequestForDependentForm({ minorId, academyId }: { minorId: strin
         </small>
       </p>
       <label><input type="checkbox" name="consent" required /> Li e concordo com o termo de consentimento</label>
+      <label><input type="checkbox" name="health" required /> Declaro que o menor está apto a praticar Jiu-Jitsu e que avisarei o professor sobre qualquer condição de saúde ou lesão (<Link href="/declaracao-de-saude" target="_blank">declaração de saúde</Link>)</label>
       <label><input type="checkbox" name="photos" /> Autorizo fotos do menor no feed da academia, visíveis só para os membros, por 30 dias, depois que o professor aprovar cada foto (opcional; desligado por padrão). Exige assinar o <Link href="/termo-de-imagem" target="_blank">termo de uso de imagem</Link> abaixo.</label>
       <label><input type="checkbox" name="social" /> Autorizo também a publicação de fotos do menor nas redes sociais da academia, como o Instagram (opcional; exige a autorização de fotos acima)</label>
       <label>Assinatura do termo de uso de imagem: digite o seu nome completo (só é necessário se autorizar fotos) <input name="signature" autoComplete="name" maxLength={120} /></label>

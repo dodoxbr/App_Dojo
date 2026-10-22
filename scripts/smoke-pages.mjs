@@ -143,6 +143,7 @@ try {
 
   // Not signed in
   await check(null, '/a/nao-existe-smoke', { status: 404 });
+  await check(null, '/declaracao-de-saude', { has: ['Declaração de saúde', 'esporte de contato', 'Rascunho em revisão jurídica'] });
   await check(null, '/termo-de-imagem', { has: ['Termo de uso de imagem de menor', 'Aprovação pelo professor', 'Rascunho em revisão jurídica'] });
   await check(null, '/?code=abc', { redirect: '/login?confirmado=ok' });
   await check(null, '/?error=access_denied&error_code=otp_expired', { redirect: '/login?confirmado=erro' });

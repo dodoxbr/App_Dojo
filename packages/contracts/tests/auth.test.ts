@@ -17,7 +17,7 @@ test('sign in normalizes e-mail and requires a password of 8+ chars', () => {
 });
 
 test('sign up requires a valid display name and a birth date', () => {
-  const base = { email: 'a@example.test', password: '12345678', birthDate: '1990-01-01', acceptTerms: 'on' };
+  const base = { email: 'a@example.test', password: '12345678', birthDate: '1990-01-01', acceptTerms: 'on', healthDeclaration: 'on' };
   assert.equal(signUpSchema.safeParse({ ...base, displayName: 'Aluno Teste' }).success, true);
   assert.equal(signUpSchema.safeParse({ ...base, displayName: '' }).success, false);
   assert.equal(signUpSchema.safeParse({ email: base.email, password: base.password, displayName: 'Aluno Teste' }).success, false);
@@ -61,4 +61,12 @@ test('a nova senha curta demais devolve mensagem em português', () => {
   const r = newPasswordSchema.safeParse({ password: '123', confirmPassword: '123' });
   assert.equal(r.success, false);
   assert.equal(r.success ? '' : r.error.issues[0]?.message, 'A senha precisa ter de 8 a 72 caracteres.');
+});
+
+test('sign-up: the health declaration is required and the image authorization is optional', () => {
+  const base = { email: 'a@example.test', password: '12345678', birthDate: '1990-01-01', acceptTerms: 'on', displayName: 'Aluno Teste' };
+  assert.equal(signUpSchema.safeParse({ ...base }).success, false, 'sem a declaração de saúde não cadastra');
+  const ok = signUpSchema.parse({ ...base, healthDeclaration: 'on' });
+  assert.equal(ok.imageAuthorization, false);
+  assert.equal(signUpSchema.parse({ ...base, healthDeclaration: 'on', imageAuthorization: 'on' }).imageAuthorization, true);
 });

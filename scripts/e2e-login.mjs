@@ -77,6 +77,7 @@ try {
     await b.fill(f('password'), PASSWORD);
     await b.fill(f('confirmPassword'), 'outra-senha-123');
     await b.eval(`document.querySelector('${f('acceptTerms')}').click()`);
+    await b.eval(`document.querySelector('${f('healthDeclaration')}').click()`);
     await b.eval(`[...document.querySelectorAll('form[aria-label="Criar conta"] button[type=submit]')][0].click()`);
     await b.waitFor("[...document.querySelectorAll('[role=alert]')].some((a) => a.offsetParent !== null && a.textContent.includes('As senhas não conferem'))", 5000, 'senhas diferentes');
     // o que não é senha continua preenchido depois do erro (nada de digitar tudo de novo)

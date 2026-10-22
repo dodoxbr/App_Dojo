@@ -45,7 +45,7 @@ function SignUpForm({ onDone }: { onDone: (message: string, email: string) => vo
   // A confirmação da senha é conferida aqui; o servidor continua recebendo exatamente os mesmos campos de antes.
   const [saved, setSaved] = useState<Saved>({});
   const [state, action, pending] = useActionState<FormState, FormData>((prev, formData) => {
-    setSaved(keep(formData, ["displayName", "birthDate", "dependentName", "dependentBirthDate", "email", "acceptTerms"]));
+    setSaved(keep(formData, ["displayName", "birthDate", "dependentName", "dependentBirthDate", "email", "acceptTerms", "healthDeclaration", "imageAuthorization"]));
     if (formData.get("password") !== formData.get("confirmPassword")) return Promise.resolve({ error: "As senhas não conferem. Digite a mesma senha nos dois campos." });
     return signUp(prev, formData).then((result) => {
       // Cadastro recebido: volta para a aba "Entrar" (com o e-mail preenchido) e mostra o aviso lá.
@@ -72,6 +72,12 @@ function SignUpForm({ onDone }: { onDone: (message: string, email: string) => vo
       <PasswordField label="Confirmar a senha" name="confirmPassword" autoComplete="new-password" minLength={8} required />
       <CheckField name="acceptTerms" defaultChecked={saved.acceptTerms === "on"} required>
         Li e aceito os <Link href="/termos" target="_blank">termos de uso e a política de privacidade</Link> (rascunho em revisão)
+      </CheckField>
+      <CheckField name="healthDeclaration" defaultChecked={saved.healthDeclaration === "on"} required>
+        Li e declaro a <Link href="/declaracao-de-saude" target="_blank">declaração de saúde</Link>: estou apto(a) a praticar Jiu-Jitsu e vou avisar o professor sobre qualquer condição ou lesão (obrigatória)
+      </CheckField>
+      <CheckField name="imageAuthorization" defaultChecked={saved.imageAuthorization === "on"}>
+        Autorizo que a minha imagem apareça em fotos do feed fechado das academias de que eu participar, visível só para os membros (<Link href="/termo-de-imagem" target="_blank">termo de uso de imagem</Link>; opcional, e eu posso mudar depois no perfil)
       </CheckField>
       <Feedback state={state} />
       <Button type="submit" fullWidth loading={pending}>{pending ? "Enviando…" : "Criar conta"}</Button>

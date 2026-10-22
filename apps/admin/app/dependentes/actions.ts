@@ -37,6 +37,7 @@ export async function requestForDependent(minorId: string, academyId: string, _p
   const parsed = requestDependentSchema.safeParse({ minorId, academyId, photos: formData.get("photos") === "on", social: formData.get("social") === "on", signature: String(formData.get("signature") ?? "") });
   if (!parsed.success) return { error: "Pedido inválido." };
   if (formData.get("consent") !== "on") return { error: "Marque que você leu e concorda com o termo de consentimento." };
+  if (formData.get("health") !== "on") return { error: "Marque a declaração de saúde do menor." };
   if (parsed.data.photos && !isValidSignature(parsed.data.signature)) return { error: "Para autorizar fotos, assine o termo de uso de imagem digitando o seu nome completo (nome e sobrenome)." };
   const { supabase } = await getCaller();
   const { error } = await supabase.rpc("request_dependent_membership", {
@@ -45,6 +46,7 @@ export async function requestForDependent(minorId: string, academyId: string, _p
     p_photos: parsed.data.photos,
     p_social: parsed.data.social,
     p_signature: parsed.data.signature || null,
+    p_health: true,
   });
   if (error) return { error: rpcErrorMessage(error) };
   revalidatePath(`/dependentes/${minorId}`);

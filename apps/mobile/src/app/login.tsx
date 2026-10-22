@@ -16,6 +16,8 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [acceptTerms, setAcceptTerms] = useState(false);
+  const [health, setHealth] = useState(false);
+  const [imageOk, setImageOk] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
@@ -34,13 +36,13 @@ export default function Login() {
     }
     const same = newPasswordSchema.safeParse({ password, confirmPassword: confirm });
     if (!same.success) return setError(same.error.issues[0]?.message ?? 'Revise a senha.');
-    const parsed = signUpSchema.safeParse({ email, password, displayName, birthDate, acceptTerms });
-    if (!parsed.success) return setError('Informe nome (2 a 120 caracteres), data de nascimento (AAAA-MM-DD), e-mail válido, senha com 8 ou mais caracteres e aceite os termos.');
+    const parsed = signUpSchema.safeParse({ email, password, displayName, birthDate, acceptTerms, healthDeclaration: health, imageAuthorization: imageOk });
+    if (!parsed.success) return setError('Informe nome (2 a 120 caracteres), data de nascimento (AAAA-MM-DD), e-mail válido, senha com 8 ou mais caracteres, aceite os termos e marque a declaração de saúde.');
     setBusy(true);
     const { error: err } = await supabase.auth.signUp({
       email: parsed.data.email,
       password: parsed.data.password,
-      options: { data: { display_name: parsed.data.displayName, birth_date: parsed.data.birthDate, terms_version: CURRENT_TERMS_VERSION } },
+      options: { data: { display_name: parsed.data.displayName, birth_date: parsed.data.birthDate, terms_version: CURRENT_TERMS_VERSION, health_declaration: 'true', ...(parsed.data.imageAuthorization ? { image_authorization: 'true' } : {}) } },
     });
     setBusy(false);
     if (err) setError('Não foi possível concluir o cadastro. Tente novamente.');
@@ -89,6 +91,18 @@ export default function Login() {
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: space[3] }}>
             <Switch accessibilityLabel="Aceito os termos de uso e a política de privacidade" value={acceptTerms} onValueChange={setAcceptTerms} />
             <Text style={{ flex: 1, color: colors.text, fontSize: font.sm }}>Li e aceito os termos de uso e a política de privacidade (rascunho em revisão)</Text>
+          </View>
+        ) : null}
+        {mode === 'signup' ? (
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: space[3] }}>
+            <Switch accessibilityLabel="Declaração de saúde" value={health} onValueChange={setHealth} />
+            <Text style={{ flex: 1, color: colors.text, fontSize: font.sm }}>Declaro que estou apto(a) a praticar Jiu-Jitsu e vou avisar o professor sobre qualquer condição de saúde ou lesão (obrigatória; rascunho em revisão)</Text>
+          </View>
+        ) : null}
+        {mode === 'signup' ? (
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: space[3] }}>
+            <Switch accessibilityLabel="Autorização de imagem" value={imageOk} onValueChange={setImageOk} />
+            <Text style={{ flex: 1, color: colors.text, fontSize: font.sm }}>Autorizo que a minha imagem apareça em fotos do feed fechado das academias de que eu participar (opcional; posso mudar depois)</Text>
           </View>
         ) : null}
 

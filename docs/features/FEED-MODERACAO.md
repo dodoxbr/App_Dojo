@@ -20,5 +20,8 @@ Migrations 038 (moderação) e 039 (assinatura). pgTAP: `feed_moderation.test.sq
 ## Pendências
 Aprovar **todas** as fotos por opção da academia; notificação ao professor; moderação de comentários pelo professor no app; revisão jurídica do termo.
 
-## Autorização de imagem dos adultos (2026-10-22)
-"Como é um feed interno é mais tranquilo, mas vamos pedir a permissão das pessoas": cada **adulto** autoriza (por academia, em Perfil > Autorização de imagem, com o nome completo digitado, data e versão do texto) que a imagem dele apareça no feed fechado. **Só quem autorizou pode ser marcado** numa foto (quem posta pode marcar a si mesmo). Revogar tira do feed as fotos em que a pessoa está marcada. Foto só de adultos continua publicando direto (o professor modera). Banco: migration 040, pgTAP `adult_image_consent.test.sql` (12). Texto: rascunho em `/termo-de-imagem` ("Para adultos").
+## Declarações no cadastro (2026-10-22)
+"A autorização fica nos termos onde ele declara que leu e autorizou, declaração de saúde também; ao cadastrar, nem que ele leia e marque." No **cadastro** (painel e app) a pessoa lê e marca: os termos de uso e a privacidade (já era), a **declaração de saúde** (obrigatória) e a **autorização de imagem no feed** (opcional). Textos públicos em `/declaracao-de-saude` e `/termo-de-imagem` (rascunho, em revisão jurídica). Cada marca guarda a data e a versão (`terms_acceptances`).
+- Só quem autorizou a imagem pode ser marcado numa foto (quem posta pode marcar a si mesmo). Em **Perfil > Declarações e autorizações** dá para autorizar ou revogar depois (contas antigas também declaram a saúde ali); revogar tira do feed as fotos em que a pessoa está marcada.
+- Menor: o responsável marca a declaração de saúde do menor ao pedir a vaga (obrigatória no formulário) e assina o termo de imagem do menor (nome completo).
+- Banco: migrations 040 (versão inicial, por academia) e 041 (no cadastro; substitui a 040); pgTAP `adult_image_consent.test.sql` (14).

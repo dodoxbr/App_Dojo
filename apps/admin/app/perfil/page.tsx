@@ -9,7 +9,7 @@ import { BirthDateForm } from "./birth-date-form";
 import { acceptTerms } from "./ficha/actions";
 import { ProfileForm } from "./profile-form";
 import { signOut } from "./actions";
-import { ImageConsentItem, type ImageConsentRow } from "./image-consent";
+import { DeclarationsCard, type Declarations } from "./image-consent";
 
 export default async function PerfilPage() {
   const { supabase, userId, isPlatformAdmin, canCreateAcademy, managedAcademies } = await getCaller();
@@ -20,8 +20,8 @@ export default async function PerfilPage() {
     supabase.rpc("get_contact", { p_user_id: userId }),
   ]);
   const hasContact = ((contactRows ?? []) as unknown[]).length > 0;
-  const { data: imageRows } = await supabase.rpc("my_image_consents");
-  const imageConsents = (imageRows ?? []) as ImageConsentRow[];
+  const { data: declRows } = await supabase.rpc("my_declarations");
+  const declarations = ((declRows ?? []) as Declarations[])[0];
   const features = await myFeatureMap(supabase);
   const has = (f: "feed" | "medals" | "finance" | "challenges" | "curriculum" | "milestone") => features.size === 0 || anyAcademyHas(features, f);
   // US-020: aviso de 30 treinos desde a última graduação (do aluno e, para o professor, de quem chegou lá)
@@ -104,13 +104,10 @@ export default async function PerfilPage() {
         )}
       </Card>
 
-      {imageConsents.length > 0 && (
+      {declarations && (
         <Card>
-          <h2 style={{ margin: "0 0 4px", fontSize: "1.25rem" }}>Autorização de imagem</h2>
-          <p style={{ margin: "0 0 12px", color: "var(--text-muted)" }}>Para os colegas poderem te marcar em fotos do feed da academia, você precisa autorizar. É por academia e você muda de ideia quando quiser.</p>
-          <div style={{ display: "grid", gap: 16 }}>
-            {imageConsents.map((r) => <ImageConsentItem key={r.academy_id} row={r} />)}
-          </div>
+          <h2 style={{ margin: "0 0 12px", fontSize: "1.25rem" }}>Declarações e autorizações</h2>
+          <DeclarationsCard d={declarations} />
         </Card>
       )}
 

@@ -37,6 +37,9 @@ export const signUpSchema = signInSchema.extend({
   displayName: displayNameSchema,
   birthDate: birthDateSchema,
   acceptTerms: z.preprocess((v) => v === 'on' || v === true, z.literal(true, { error: 'Aceite os termos de uso e a política de privacidade.' })),
+  // Declaração de saúde: obrigatória no cadastro. Autorização de imagem: opcional (vale para o feed fechado das academias; dá para mudar no perfil).
+  healthDeclaration: z.preprocess((v) => v === 'on' || v === true, z.literal(true, { error: 'Leia e marque a declaração de saúde.' })),
+  imageAuthorization: z.preprocess((v) => v === 'on' || v === true, z.boolean()),
   forMinor: z.preprocess((v) => v === 'on' || v === true, z.boolean()),
   dependentName: z.string().trim().max(120).optional().transform((v) => (v ? v : undefined)),
   dependentBirthDate: z.union([birthDateSchema, z.literal('')]).optional().transform((v) => (v ? v : undefined)),
