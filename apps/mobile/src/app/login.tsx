@@ -1,7 +1,7 @@
 import { newPasswordSchema, signInSchema, signUpSchema } from '@dojo/contracts/auth';
 import { CURRENT_TERMS_VERSION } from '@dojo/contracts/terms';
 import { useState } from 'react';
-import { Linking, Pressable, Switch, Text, View } from 'react-native';
+import { Image, Linking, Pressable, Switch, Text, View } from 'react-native';
 import { supabase } from '@/lib/supabase';
 import { Alert, BeltBar, Button, Card, Hero, Screen, TextField, colors, font, space } from '@/ui';
 
@@ -50,9 +50,7 @@ export default function Login() {
   return (
     <Screen>
       <Hero>
-        <Text accessibilityRole="header" style={{ fontSize: 52, fontWeight: '800', color: '#FFFFFF', letterSpacing: -2 }}>
-          Oss<Text style={{ color: '#14B8A6' }}>!</Text>
-        </Text>
+        <Image accessibilityRole="header" accessibilityLabel="Oss, seu companheiro de treino" source={require('../../assets/images/oss-lockup.png')} resizeMode="contain" style={{ width: '100%', height: 200, borderRadius: 18 }} />
         <Text style={{ color: 'rgba(255,255,255,0.85)', fontSize: font.md }}>Seu treino, sua evolução, sua academia.</Text>
         <View style={{ gap: 6, transform: [{ rotate: '-3deg' }], width: '78%' }}>
           <BeltBar belt="Branca" height={16} />

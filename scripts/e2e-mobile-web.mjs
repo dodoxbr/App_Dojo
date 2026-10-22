@@ -60,7 +60,7 @@ const waitText = (t, ms = 15000) => br.waitFor(`document.body.innerText.includes
 try {
   // 1. login com senha errada, depois certo
   await br.goto(BASE);
-  await waitText('Oss');
+  await waitText('Seu treino, sua evolução'); // a marca é uma imagem (sem texto)
   await br.fill(field('E-mail'), student.email);
   await br.fill(field('Senha'), 'senha-errada-123');
   assert(await clickLabel('Entrar'), 'botão Entrar');
