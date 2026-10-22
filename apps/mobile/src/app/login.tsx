@@ -1,8 +1,12 @@
-import { signInSchema, signUpSchema } from '@dojo/contracts/auth';
+import { newPasswordSchema, signInSchema, signUpSchema } from '@dojo/contracts/auth';
 import { CURRENT_TERMS_VERSION } from '@dojo/contracts/terms';
 import { useState } from 'react';
-import { ActivityIndicator, Button, StyleSheet, Switch, Text, TextInput, View } from 'react-native';
+import { Linking, Pressable, Switch, Text, View } from 'react-native';
 import { supabase } from '@/lib/supabase';
+import { Alert, Button, Card, Muted, Screen, TextField, colors, font, space } from '@/ui';
+
+// Endereço do painel web (opcional): a recuperação de senha acontece lá (o link do e-mail abre no navegador).
+const WEB_URL = process.env.EXPO_PUBLIC_WEB_URL?.replace(/\/+$/, '');
 
 export default function Login() {
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
@@ -10,6 +14,7 @@ export default function Login() {
   const [birthDate, setBirthDate] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirm, setConfirm] = useState('');
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -27,6 +32,8 @@ export default function Login() {
       if (err) setError('E-mail ou senha inválidos, ou e-mail ainda não confirmado.');
       return;
     }
+    const same = newPasswordSchema.safeParse({ password, confirmPassword: confirm });
+    if (!same.success) return setError(same.error.issues[0]?.message ?? 'Revise a senha.');
     const parsed = signUpSchema.safeParse({ email, password, displayName, birthDate, acceptTerms });
     if (!parsed.success) return setError('Informe nome (2 a 120 caracteres), data de nascimento (AAAA-MM-DD), e-mail válido, senha com 8 ou mais caracteres e aceite os termos.');
     setBusy(true);
@@ -41,57 +48,52 @@ export default function Login() {
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{mode === 'signin' ? 'Entrar' : 'Criar conta'}</Text>
-      {mode === 'signup' && (
-        <TextInput style={styles.input} placeholder="Nome" value={displayName} onChangeText={setDisplayName} autoComplete="name" />
-      )}
-      {mode === 'signup' && (
-        <TextInput style={styles.input} placeholder="Data de nascimento (AAAA-MM-DD)" value={birthDate} onChangeText={setBirthDate} keyboardType="numbers-and-punctuation" />
-      )}
-      <TextInput
-        style={styles.input}
-        placeholder="E-mail"
-        value={email}
-        onChangeText={setEmail}
-        autoCapitalize="none"
-        keyboardType="email-address"
-        autoComplete="email"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Senha (mínimo 8 caracteres)"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-        autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
-      />
-      {mode === 'signup' && (
-        <View style={styles.terms}>
-          <Switch value={acceptTerms} onValueChange={setAcceptTerms} accessibilityLabel="Aceitar os termos" />
-          <Text style={styles.termsText}>Li e aceito os termos de uso e a política de privacidade (rascunho em revisão; texto completo no painel web, página /termos).</Text>
+    <Screen>
+      <View style={{ gap: space[2], paddingTop: space[5] }}>
+        <Text accessibilityRole="header" style={{ fontSize: font.xxl, fontWeight: '700', color: colors.primary, letterSpacing: -0.5 }}>Dojo Platform</Text>
+        <Muted>Seu treino, sua evolução, sua academia.</Muted>
+      </View>
+
+      <Card>
+        <View accessibilityRole="tablist" style={{ flexDirection: 'row', gap: space[1], padding: space[1], backgroundColor: colors.bg, borderRadius: 10, borderWidth: 1, borderColor: colors.border }}>
+          {(['signin', 'signup'] as const).map((m) => (
+            <Pressable
+              key={m}
+              accessibilityRole="tab"
+              accessibilityState={{ selected: mode === m }}
+              onPress={() => { setMode(m); setError(null); setMessage(null); }}
+              style={{ flex: 1, minHeight: 44, alignItems: 'center', justifyContent: 'center', borderRadius: 8, backgroundColor: mode === m ? colors.surface : 'transparent' }}
+            >
+              <Text style={{ fontWeight: '600', color: mode === m ? colors.primary : colors.textMuted }}>{m === 'signin' ? 'Entrar' : 'Criar conta'}</Text>
+            </Pressable>
+          ))}
         </View>
-      )}
-      {busy ? <ActivityIndicator accessibilityLabel="Enviando" /> : <Button title={mode === 'signin' ? 'Entrar' : 'Cadastrar'} onPress={submit} />}
-      {error && <Text accessibilityRole="alert" style={styles.error}>{error}</Text>}
-      {message && <Text accessibilityRole="alert">{message}</Text>}
-      <Button
-        title={mode === 'signin' ? 'Criar uma conta' : 'Já tenho conta'}
-        onPress={() => {
-          setMode(mode === 'signin' ? 'signup' : 'signin');
-          setError(null);
-          setMessage(null);
-        }}
-      />
-    </View>
+
+        {mode === 'signup' ? (
+          <>
+            <TextField label="Nome" value={displayName} onChangeText={setDisplayName} autoComplete="name" autoCapitalize="words" maxLength={120} />
+            <TextField label="Data de nascimento" value={birthDate} onChangeText={setBirthDate} placeholder="AAAA-MM-DD" hint="Usada só para saber se você é maior de idade. Menores de 18 anos não criam conta: o responsável cria a conta e cadastra o menor no painel." keyboardType="numbers-and-punctuation" />
+          </>
+        ) : null}
+        <TextField label="E-mail" value={email} onChangeText={setEmail} autoCapitalize="none" autoComplete="email" keyboardType="email-address" placeholder="voce@exemplo.com" />
+        <TextField label="Senha" value={password} onChangeText={setPassword} secure autoComplete={mode === 'signin' ? 'current-password' : 'new-password'} hint={mode === 'signup' ? 'Mínimo de 8 caracteres.' : undefined} />
+        {mode === 'signup' ? <TextField label="Confirmar a senha" value={confirm} onChangeText={setConfirm} secure autoComplete="new-password" /> : null}
+        {mode === 'signup' ? (
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: space[3] }}>
+            <Switch accessibilityLabel="Aceito os termos de uso e a política de privacidade" value={acceptTerms} onValueChange={setAcceptTerms} />
+            <Text style={{ flex: 1, color: colors.text, fontSize: font.sm }}>Li e aceito os termos de uso e a política de privacidade (rascunho em revisão)</Text>
+          </View>
+        ) : null}
+
+        {error ? <Alert tone="danger">{error}</Alert> : null}
+        {message ? <Alert tone="success">{message}</Alert> : null}
+        <Button title={mode === 'signin' ? 'Entrar' : 'Criar conta'} onPress={submit} loading={busy} />
+        {mode === 'signin' && WEB_URL ? (
+          <Pressable accessibilityRole="link" onPress={() => Linking.openURL(`${WEB_URL}/recuperar-senha`)} style={{ alignSelf: 'flex-end', minHeight: 44, justifyContent: 'center' }}>
+            <Text style={{ color: colors.primary, fontWeight: '600', fontSize: font.sm }}>Esqueci minha senha</Text>
+          </Pressable>
+        ) : null}
+      </Card>
+    </Screen>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', padding: 16, gap: 12 },
-  title: { fontSize: 24, fontWeight: '600' },
-  input: { borderWidth: 1, borderColor: '#999', borderRadius: 6, padding: 10, minHeight: 44 },
-  error: { color: '#B00020' },
-  terms: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  termsText: { flex: 1 },
-});

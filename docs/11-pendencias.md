@@ -207,7 +207,7 @@
 - [ ] Menor sem login não posta; um responsável posta como ele mesmo.
 - [ ] A retenção de 30 dias é igual para todas as academias; não há "guardar uma foto" nem álbum. Reações e comentários entraram na US-019; seguem sem vídeo e sem notificações.
 - [ ] O corte de 20 posts por dia e de 800 KB por foto são premissas de custo/antiabuso.
-- [ ] O app mobile não tem o feed.
+- [ ] O app mobile não tem o feed (ver MOBILE-1).
 - [ ] A plataforma **não publica no Instagram**: quem decide e publica é a academia, fora do sistema. O aviso "pode/não pode ir para as redes sociais" só considera os menores **marcados**; menor não marcado na foto não é detectado.
 - [ ] Remover uma foto da plataforma não remove cópias já publicadas no Instagram ou baixadas por terceiros; o texto dos termos avisa, mas o processo de retirada nas redes é da academia.
 
@@ -272,3 +272,12 @@
 ## Documentação e largura das telas (2026-10-21)
 - [x] `docs/02-arquitetura.md` (seção de fotos e diagrama), `docs/01-prd.md` (o que entrou depois do MVP) e `docs/features/F2-desafios.md` (numeração das histórias) atualizados para refletir o que foi implementado.
 - [x] Telas de gestão e de dados (financeiro, saúde, graduação, painel, currículos, avaliações, feed, desafios, turmas…) que fixavam 720 a 900 px agora usam 960 px dentro do shell. Formulários e listas curtas (420 a 640 px) ficam estreitos de propósito. Termos e a página de diários da plataforma, fora do shell, não mudaram.
+
+## App mobile (MOBILE-1, 2026-10-21)
+- [x] Entregue: login/cadastro, início, diário (lista, registrar, detalhe, excluir), técnicas, evolução, agenda com pedido de check-in e perfil, com tokens e componentes do Design System (`apps/mobile/src/ui`). Lint e typecheck passam (e rodam no CI); passeio em Chrome real na versão web do app (`scripts/e2e-mobile-web.mjs`) com 0 achados.
+- [ ] **Testar em emulador Android e em aparelho** (não foi possível aqui: sem SDK/emulador). No emulador a URL do Supabase é `http://10.0.2.2:54321`; ver `apps/mobile/README.md`. Conferir: teclado cobrindo campos, barra de abas com a barra de gestos do Android, armazenamento seguro da sessão (`expo-secure-store`, só existe no aparelho) e toque nos botões.
+- [ ] Ícones da barra de abas são símbolos de texto; trocar por uma biblioteca de ícones exige ADR (regra 11).
+- [ ] A data do treino é digitada como AAAA-MM-DD (sem seletor nativo de data).
+- [ ] Ainda só no painel web: ficha de cadastro, termos, financeiro, feed, desafios, medalhas, aviso de treinos, recuperar senha (o app abre o painel se `EXPO_PUBLIC_WEB_URL` estiver definido), QR de check-in e tudo de gestor, professor e responsável de menores.
+- [ ] Cadastro no app não oferece "conta para cuidar de menor" (o painel oferece); sem modo offline; `expo` pede atualização de patch (58.0.16 → ~58.0.17) e de outros 5 pacotes (`npx expo install --check`).
+- [ ] Um aluno só aparece com a primeira academia em que é aluno aprovado (sem seletor), como no painel.

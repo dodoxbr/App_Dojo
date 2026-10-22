@@ -21,7 +21,8 @@
     "./contacts": "./src/contacts.ts",
     "./finance": "./src/finance.ts",
     "./feed": "./src/feed.ts",
-    "./milestone": "./src/milestone.ts"
+    "./milestone": "./src/milestone.ts",
+    "./week": "./src/week.ts"
   },
   "dependencies": {
     "zod": "^4.6.7"

@@ -1,56 +1,23 @@
-# Welcome to your Expo app 👋
+# Dojo Platform — app mobile (Expo)
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+App do **aluno** (Expo Router, React Native). Usa o mesmo banco e as mesmas regras do painel web: toda leitura e escrita passa pelo Supabase com a sessão da pessoa e a RLS decide o que ela vê. O app só mostra; nunca confia no que o cliente diz sobre papel ou academia.
 
-## Get started
+## Telas (v1)
+Entrar / Criar conta · **Início** (progresso, semana, próximo treino, diário recente) · **Diário** (lista, registrar treino com técnicas, detalhe, excluir) · **Técnicas** (busca e detalhe) · **Evolução** (critérios e histórico de graduação) · **Perfil** · **Agenda de aulas** com pedido de check-in (só vira presença quando o professor confirma).
 
-1. Install dependencies
+Ainda só no painel web: ficha de cadastro, termos, financeiro, feed de fotos, desafios, medalhas, aviso de treinos, recuperar senha (o link do e-mail abre no painel) e tudo de gestor e professor.
 
-   ```bash
-   npm install
-   ```
+## Como rodar
+1. `cp .env.example .env` e preencha `EXPO_PUBLIC_SUPABASE_ANON_KEY` (rode `npx supabase status` na raiz). **Nunca** use a `service_role` aqui.
+   - Emulador Android: `EXPO_PUBLIC_SUPABASE_URL=http://10.0.2.2:54321` (o emulador enxerga o seu computador como `10.0.2.2`).
+   - Navegador ou iOS no mesmo computador: `http://127.0.0.1:54321`.
+   - Celular de verdade: o IP do computador na rede (ex.: `http://192.168.0.10:54321`).
+2. Na raiz: `npx supabase start -x studio,imgproxy,edge-runtime,logflare,vector`.
+3. Aqui: `npm run android` (emulador do Android Studio aberto), `npm run web` (navegador) ou `npm start` e escolha.
+4. No Windows/PowerShell, use `npm.cmd` e `npx.cmd` se a execução de scripts estiver bloqueada.
 
-2. Start the app
+## Testes
+`npm run lint` e `npm run typecheck` (rodam no CI). Passeio automático em Chrome (versão web do app, contra o Supabase local): com `npm run web -- --port 8081` ligado, na raiz `node scripts/e2e-mobile-web.mjs`.
 
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **src/app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **example** directory and create a blank **src/app** directory where you can start developing.
-
-### Other setup steps
-
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Estrutura
+`src/app` (rotas) · `src/ui` (tema e componentes do Design System: tokens iguais aos do painel) · `src/lib` (Supabase, sessão, consultas).

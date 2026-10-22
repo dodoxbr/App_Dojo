@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { countInWeek, localDay, weekStartLocal } from "./week.ts";
+import { countInWeek, localDay, weekStartLocal } from "../src/week.ts";
 
 const TZ = "America/Sao_Paulo";
 

@@ -25,6 +25,7 @@ Cada história deve ter migration, política RLS, testes negativos e interface m
 | US-018 | Feed de fotos da academia, no lugar do WhatsApp dos treinos (armazenamento privado, sem metadados, foto de menor só com consentimento) | 013b, 016 | Feito, ver `docs/features/US-018.md` |
 | US-019 | Reações/comentários moderados e medalhas | 018 | Feito, ver `docs/features/US-019.md` (limiares das medalhas são valores de teste) |
 | US-020 | Aviso de 30 treinos desde a última graduação (aluno, responsável e professor) | 011 | Feito, ver `docs/features/US-020.md`; pedido do professor |
+| MOBILE-1 | App do aluno (Expo): início, diário, técnicas, evolução, agenda com check-in, perfil | 008, 010, 011 | Feito (testado na versão web do app), ver `docs/features/MOBILE-1.md`; falta teste em emulador/aparelho |
 
 ## Definition of Done
 - Critérios de aceite atendidos; UI com estados de carregamento, erro e vazio.
