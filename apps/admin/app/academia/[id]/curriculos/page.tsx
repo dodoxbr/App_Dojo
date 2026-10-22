@@ -1,11 +1,14 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import { FeatureOff } from "@/components/feature-off";
+import { academyHas } from "@/lib/features";
 import { getCaller } from "@/lib/context";
 import { CreateCurriculumForm } from "./forms";
 
 export default async function CurriculosPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const { supabase, isPlatformAdmin, managedAcademies } = await getCaller();
+  if (!(await academyHas(supabase, id, "curriculum"))) return <FeatureOff feature="curriculum" />;
   if (!isPlatformAdmin && !managedAcademies.some((a) => a.id === id)) redirect("/perfil");
 
   const { data: academy } = await supabase.from("academies").select("id, name").eq("id", id).maybeSingle();

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { academiesWith, myFeatureMap } from "@/lib/features";
 import { getCaller } from "@/lib/context";
 import { CreateChallengeForm } from "../forms";
 
@@ -9,7 +10,8 @@ export default async function NovoDesafioPage() {
   if (ageStatus !== "adult") redirect("/desafios");
 
   const { data: mem } = await supabase.from("memberships").select("academy_id").eq("user_id", userId).eq("status", "approved");
-  const ids = (mem ?? []).map((m) => m.academy_id as string);
+  const features = await myFeatureMap(supabase);
+  const ids = academiesWith(features, (mem ?? []).map((m) => m.academy_id as string), "challenges");
   if (ids.length === 0) redirect("/desafios");
   const [{ data: academies }, { data: techniques }] = await Promise.all([
     supabase.from("academies").select("id, name").in("id", ids).order("name"),

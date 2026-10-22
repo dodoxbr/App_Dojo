@@ -4,6 +4,7 @@ import { formatSessionRange } from "@dojo/contracts/classes";
 import { idSchema } from "@dojo/contracts/membership";
 import { staffMilestoneSchema } from "@dojo/contracts/milestone";
 import { Badge, ButtonLink, Card, EmptyState, Hero } from "@/components/ui";
+import { academyHas } from "@/lib/features";
 import { getCaller } from "@/lib/context";
 import styles from "./staff.module.css";
 
@@ -25,6 +26,7 @@ export default async function AcademiaInicioPage({ params }: { params: Promise<{
   }
   if (!isManager && !isInstructor) redirect(isPlatformAdmin ? "/plataforma" : "/perfil");
 
+  const hasMilestone = await academyHas(supabase, id, "milestone");
   const { data: academy } = await supabase.from("academies").select("id, name, timezone").eq("id", id).maybeSingle();
   if (!academy) notFound();
 
@@ -72,11 +74,11 @@ export default async function AcademiaInicioPage({ params }: { params: Promise<{
           <p className={styles.statValue}>{pendingAttendances}</p>
           {pendingAttendances > 0 && <Link href="/aulas">Validar nas aulas</Link>}
         </Card>
-        <Card className={`${styles.stat} ${styles.purpleStat}`}>
+        {hasMilestone && <Card className={`${styles.stat} ${styles.purpleStat}`}>
           <p className={styles.statLabel}>No número de treinos</p>
           <p className={styles.statValue}>{atMilestone}</p>
           {atMilestone > 0 && <Link href={`${a}/graduacao/alunos`}>Ver quem são</Link>}
-        </Card>
+        </Card>}
       </section>
 
       <section className={styles.section} aria-labelledby="acoes">

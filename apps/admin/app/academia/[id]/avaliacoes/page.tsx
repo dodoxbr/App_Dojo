@@ -1,11 +1,14 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import { FeatureOff } from "@/components/feature-off";
+import { academyHas } from "@/lib/features";
 import { getCaller } from "@/lib/context";
 
 // Members of the academy with the number of skills validated. Needs assess_skills or view_progress (+ the roster).
 export default async function AvaliacoesPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const { supabase } = await getCaller();
+  if (!(await academyHas(supabase, id, "curriculum"))) return <FeatureOff feature="curriculum" />;
 
   const [{ data: canAssess }, { data: canView }] = await Promise.all([
     supabase.rpc("has_academy_permission", { p_academy_id: id, p_permission: "assess_skills" }),

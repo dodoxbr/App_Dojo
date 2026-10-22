@@ -6,6 +6,7 @@ import { membershipStatusLabels } from "@dojo/contracts/membership";
 import { trainedDays, weekDays } from "@dojo/contracts/week";
 import { AppShell } from "@/components/shell/AppShell";
 import { Alert, BeltBar, ButtonLink, Card, EmptyState, Hero, ProgressBar, ProgressRing, WeekStrip } from "@/components/ui";
+import { anyAcademyHas, myFeatureMap } from "@/lib/features";
 import { getCaller } from "@/lib/context";
 import { techniquesByLog } from "@/lib/diary";
 import styles from "./inicio.module.css";
@@ -71,6 +72,8 @@ export default async function InicioPage() {
     }
   }
 
+  const features = await myFeatureMap(supabase);
+  const has = (f: "challenges" | "medals" | "curriculum") => features.size === 0 || anyAcademyHas(features, f);
   const days = weekDays(now, tz);
   const trained = trainedDays(recentStarts, tz);
   const weekCount = days.filter((d) => trained.has(d.date)).length;
@@ -193,9 +196,9 @@ export default async function InicioPage() {
 
         <section className={styles.shortcuts} aria-label="Atalhos">
           <Link href="/tecnicas" className={styles.shortcut}><strong>Técnicas</strong><span>Catálogo e busca</span></Link>
-          <Link href="/trilha" className={styles.shortcut}><strong>Minha trilha</strong><span>O que estudar a seguir</span></Link>
-          <Link href="/desafios" className={styles.shortcut}><strong>Desafios</strong><span>Treine com a turma</span></Link>
-          <Link href="/medalhas" className={styles.shortcut}><strong>Medalhas</strong><span>Suas conquistas</span></Link>
+          {has("curriculum") && <Link href="/trilha" className={styles.shortcut}><strong>Minha trilha</strong><span>O que estudar a seguir</span></Link>}
+          {has("challenges") && <Link href="/desafios" className={styles.shortcut}><strong>Desafios</strong><span>Treine com a turma</span></Link>}
+          {has("medals") && <Link href="/medalhas" className={styles.shortcut}><strong>Medalhas</strong><span>Suas conquistas</span></Link>}
         </section>
       </main>
     </AppShell>

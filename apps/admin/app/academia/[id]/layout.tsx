@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { AppShell } from "@/components/shell/AppShell";
 import { staffNav, type StaffPermissions, type StaffRole } from "@/components/shell/nav-items";
 import { getCaller } from "@/lib/context";
+import { knownFeatures } from "@dojo/contracts/features";
 
 const PERMISSIONS = ["validate_attendance", "recommend_graduation", "view_progress", "assess_skills", "view_health"] as const;
 
@@ -28,5 +29,7 @@ export default async function AcademiaLayout({ children, params }: { children: R
   }
 
   if (!role) return <>{children}</>;
-  return <AppShell items={staffNav(id, role, permissions)}>{children}</AppShell>;
+  const { data: enabled } = await supabase.rpc("academy_features", { p_academy_id: id });
+  const features = new Set(knownFeatures((enabled ?? []) as string[]));
+  return <AppShell items={staffNav(id, role, permissions, features)}>{children}</AppShell>;
 }

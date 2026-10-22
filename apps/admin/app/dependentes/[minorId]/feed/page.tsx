@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { daysLeft, dependentPostSchema } from "@dojo/contracts/feed";
 import { idSchema } from "@dojo/contracts/membership";
+import { anyAcademyHas, myFeatureMap } from "@/lib/features";
+import { FeatureOff } from "@/components/feature-off";
 import { getCaller } from "@/lib/context";
 
 const PAGE = 20;
@@ -18,6 +20,8 @@ export default async function FeedDoDependentePage({
   const { antes } = await searchParams;
   if (!idSchema.safeParse(minorId).success) notFound();
   const { supabase } = await getCaller();
+  const featureMap = await myFeatureMap(supabase);
+  if (featureMap.size > 0 && !anyAcademyHas(featureMap, "feed")) return <FeatureOff feature="feed" />;
   const before = antes && !Number.isNaN(Date.parse(antes)) ? new Date(antes).toISOString() : null;
   const [{ data, error }, { data: deps }] = await Promise.all([
     supabase.rpc("list_dependent_feed", { p_minor_id: minorId, p_before: before, p_limit: PAGE }),

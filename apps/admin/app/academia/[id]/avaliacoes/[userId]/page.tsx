@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { skillStatusLabels, summarizeTrail, type SkillStatus } from "@dojo/contracts/curriculum";
 import { idSchema } from "@dojo/contracts/membership";
+import { FeatureOff } from "@/components/feature-off";
+import { academyHas } from "@/lib/features";
 import { getCaller } from "@/lib/context";
 import { AssessForm } from "../assess-form";
 
@@ -9,6 +11,7 @@ export default async function AvaliarAlunoPage({ params }: { params: Promise<{ i
   const { id, userId } = await params;
   if (!idSchema.safeParse(userId).success) notFound();
   const { supabase } = await getCaller();
+  if (!(await academyHas(supabase, id, "curriculum"))) return <FeatureOff feature="curriculum" />;
 
   const [{ data: canAssess }, { data: canView }] = await Promise.all([
     supabase.rpc("has_academy_permission", { p_academy_id: id, p_permission: "assess_skills" }),

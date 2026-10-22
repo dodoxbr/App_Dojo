@@ -1,5 +1,6 @@
 import { academyMedalSchema, medalSchema, type Medal } from "@dojo/contracts/feed";
 import { Alert, Avatar, Card, EmptyState, Page, PageHero } from "@/components/ui";
+import { academiesWith, myFeatureMap } from "@/lib/features";
 import { getCaller } from "@/lib/context";
 import styles from "./medalhas.module.css";
 
@@ -9,7 +10,8 @@ const fmtDate = (iso: string) => new Date(`${iso}T12:00:00Z`).toLocaleDateString
 export default async function MedalhasPage() {
   const { supabase, userId } = await getCaller();
   const { data: mine } = await supabase.from("memberships").select("academy_id").eq("user_id", userId).eq("status", "approved");
-  const ids = (mine ?? []).map((m) => m.academy_id as string);
+  const features = await myFeatureMap(supabase);
+  const ids = academiesWith(features, (mine ?? []).map((m) => m.academy_id as string), "medals");
   const { data: academies } = ids.length ? await supabase.from("academies").select("id, name").in("id", ids).order("name") : { data: [] as { id: string; name: string }[] };
 
   const blocks = await Promise.all((academies ?? []).map(async (a) => {

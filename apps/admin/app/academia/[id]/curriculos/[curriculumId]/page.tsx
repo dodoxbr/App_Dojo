@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { catalogLevels } from "@dojo/contracts/curriculum";
+import { FeatureOff } from "@/components/feature-off";
+import { academyHas } from "@/lib/features";
 import { getCaller } from "@/lib/context";
 import { errorFromCode } from "@/lib/rpc-errors";
 import { addFromLevel, addItem, removeItem, toggleRequired } from "../actions";
@@ -16,6 +18,7 @@ export default async function CurriculoPage({
   const { id, curriculumId } = await params;
   const { erro, q } = await searchParams;
   const { supabase, isPlatformAdmin, managedAcademies } = await getCaller();
+  if (!(await academyHas(supabase, id, "curriculum"))) return <FeatureOff feature="curriculum" />;
   if (!isPlatformAdmin && !managedAcademies.some((a) => a.id === id)) redirect("/perfil");
 
   const { data: curriculum } = await supabase

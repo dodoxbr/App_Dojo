@@ -1,3 +1,5 @@
+import { featureKeys, type FeatureKey } from "@dojo/contracts/features";
+
 export type NavIcon =
   | "home" | "diary" | "techniques" | "progress" | "profile"
   | "dashboard" | "people" | "classes" | "finance" | "health" | "settings" | "feed" | "award" | "family" | "book";
@@ -19,8 +21,9 @@ export type StaffPermissions = { validate: boolean; recommend: boolean; progress
 
 // Navegação de quem trabalha numa academia. O gestor vê tudo da academia; o instrutor só o que as permissões liberam.
 // O super admin da plataforma não vê financeiro, saúde nem feed (nem aqui): só o painel de frequência.
-export function staffNav(academyId: string, role: StaffRole, permissions: StaffPermissions): NavItem[] {
+export function staffNav(academyId: string, role: StaffRole, permissions: StaffPermissions, features: ReadonlySet<FeatureKey> = new Set(featureKeys)): NavItem[] {
   const a = `/academia/${academyId}`;
+  const has = (f: FeatureKey) => features.has(f);
   if (role === "platform") {
     return [
       { href: "/plataforma", label: "Plataforma", icon: "settings" },
@@ -33,13 +36,12 @@ export function staffNav(academyId: string, role: StaffRole, permissions: StaffP
       { href: `${a}/membros`, label: "Membros", icon: "people" },
       { href: `${a}/turmas`, label: "Turmas", icon: "classes" },
       { href: `${a}/graduacao/alunos`, label: "Graduação", icon: "award" },
-      { href: `${a}/painel`, label: "Painel", icon: "dashboard", primary: false },
+      ...(has("dashboard") ? [{ href: `${a}/painel`, label: "Painel", icon: "dashboard" as const, primary: false }] : []),
       { href: `${a}/responsaveis`, label: "Menores", icon: "family", primary: false },
-      { href: `${a}/curriculos`, label: "Trilhas", icon: "book", primary: false },
-      { href: `${a}/avaliacoes`, label: "Avaliações", icon: "progress", primary: false },
-      { href: `${a}/financeiro`, label: "Financeiro", icon: "finance", primary: false },
+      ...(has("curriculum") ? [{ href: `${a}/curriculos`, label: "Trilhas", icon: "book" as const, primary: false }, { href: `${a}/avaliacoes`, label: "Avaliações", icon: "progress" as const, primary: false }] : []),
+      ...(has("finance") ? [{ href: `${a}/financeiro`, label: "Financeiro", icon: "finance" as const, primary: false }] : []),
       { href: `${a}/saude`, label: "Saúde", icon: "health", primary: false },
-      { href: `/feed/${academyId}`, label: "Feed", icon: "feed", primary: false },
+      ...(has("feed") ? [{ href: `/feed/${academyId}`, label: "Feed", icon: "feed" as const, primary: false }] : []),
       { href: a, label: "Academia", icon: "settings", primary: false },
       { href: "/inicio", label: "Meu treino", icon: "profile", primary: false },
     ];
@@ -49,9 +51,9 @@ export function staffNav(academyId: string, role: StaffRole, permissions: StaffP
     { href: "/aulas", label: "Aulas", icon: "classes" },
   ];
   if (permissions.recommend || permissions.progress) items.push({ href: `${a}/graduacao/alunos`, label: "Alunos", icon: "award" });
-  if (permissions.assess) items.push({ href: `${a}/avaliacoes`, label: "Avaliações", icon: "progress" });
-  if (permissions.progress) items.push({ href: `${a}/painel`, label: "Painel", icon: "dashboard", primary: false });
-  items.push({ href: `/feed/${academyId}`, label: "Feed", icon: "feed", primary: false });
+  if (permissions.assess && has("curriculum")) items.push({ href: `${a}/avaliacoes`, label: "Avaliações", icon: "progress" });
+  if (permissions.progress && has("dashboard")) items.push({ href: `${a}/painel`, label: "Painel", icon: "dashboard", primary: false });
+  if (has("feed")) items.push({ href: `/feed/${academyId}`, label: "Feed", icon: "feed", primary: false });
   items.push({ href: "/inicio", label: "Meu treino", icon: "profile", primary: false });
   return items;
 }

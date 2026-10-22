@@ -8,6 +8,7 @@ import {
 } from "@dojo/contracts/challenges";
 import { Alert, Badge, Button, ButtonLink, Card, EmptyState, Page, PageHero, ProgressBar } from "@/components/ui";
 import styles from "./desafios.module.css";
+import { academiesWith, myFeatureMap } from "@/lib/features";
 import { getCaller } from "@/lib/context";
 import { joinChallenge, leaveChallenge } from "./actions";
 
@@ -20,7 +21,8 @@ export default async function DesafiosPage() {
     supabase.from("memberships").select("academy_id").eq("user_id", userId).eq("status", "approved"),
     supabase.rpc("my_age_status"),
   ]);
-  const academyIds = (mem ?? []).map((m) => m.academy_id as string);
+  const features = await myFeatureMap(supabase);
+  const academyIds = academiesWith(features, (mem ?? []).map((m) => m.academy_id as string), "challenges");
   const { data: academies } = academyIds.length ? await supabase.from("academies").select("id, name").in("id", academyIds).order("name") : { data: [] };
 
   const groups = await Promise.all(

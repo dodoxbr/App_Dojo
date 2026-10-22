@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { academiesWith, myFeatureMap } from "@/lib/features";
 import { getCaller } from "@/lib/context";
 import { feedMessage } from "@/lib/feed-ui";
 
@@ -7,7 +8,8 @@ export default async function FeedIndexPage({ searchParams }: { searchParams: Pr
   const { erro } = await searchParams;
   const { supabase, userId } = await getCaller();
   const { data: mine } = await supabase.from("memberships").select("academy_id").eq("user_id", userId).eq("status", "approved");
-  const ids = (mine ?? []).map((m) => m.academy_id as string);
+  const features = await myFeatureMap(supabase);
+  const ids = academiesWith(features, (mine ?? []).map((m) => m.academy_id as string), "feed");
   const { data: academies } = ids.length ? await supabase.from("academies").select("id, name").in("id", ids).order("name") : { data: [] as { id: string; name: string }[] };
   if (!erro && (academies ?? []).length === 1) redirect(`/feed/${(academies ?? [])[0]?.id}`);
   const message = feedMessage(erro);

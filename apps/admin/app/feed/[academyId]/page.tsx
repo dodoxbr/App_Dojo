@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import { CAPTION_MAX, COMMENT_MAX, commentSchema, daysLeft, FEED_RETENTION_DAYS, feedPersonSchema, feedPostSchema, hiddenReasonLabels, type FeedComment } from "@dojo/contracts/feed";
 import { idSchema } from "@dojo/contracts/membership";
 import { Alert, Avatar, Button, ButtonLink, Card, EmptyState, Page, PageHero } from "@/components/ui";
+import { FeatureOff } from "@/components/feature-off";
+import { academyHas } from "@/lib/features";
 import { getCaller } from "@/lib/context";
 import { feedMessage } from "@/lib/feed-ui";
 import styles from "./feed.module.css";
@@ -21,6 +23,7 @@ export default async function FeedPage({
   const { erro, ok, antes } = await searchParams;
   if (!idSchema.safeParse(academyId).success) notFound();
   const { supabase } = await getCaller();
+  if (!(await academyHas(supabase, academyId, "feed"))) return <FeatureOff feature="feed" />;
 
   const { data: academy } = await supabase.from("academies").select("id, name, timezone").eq("id", academyId).maybeSingle();
   if (!academy) notFound();

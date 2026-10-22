@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { skillStatusLabels, summarizeTrail, type SkillStatus } from "@dojo/contracts/curriculum";
 import { Badge, Card, EmptyState, Page, PageHeader, ProgressBar } from "@/components/ui";
+import { academiesWith, myFeatureMap } from "@/lib/features";
 import { getCaller } from "@/lib/context";
 import { SkillSelect } from "./skill-select";
 import styles from "./trilha.module.css";
@@ -10,7 +11,8 @@ export default async function TrilhaPage() {
   const { supabase, userId } = await getCaller();
 
   const { data: mem } = await supabase.from("memberships").select("academy_id").eq("user_id", userId).eq("status", "approved");
-  const academyIds = (mem ?? []).map((m) => m.academy_id as string);
+  const features = await myFeatureMap(supabase);
+  const academyIds = academiesWith(features, (mem ?? []).map((m) => m.academy_id as string), "curriculum");
 
   const [{ data: academies }, { data: curricula }, { data: items }, { data: mine }] = academyIds.length
     ? await Promise.all([

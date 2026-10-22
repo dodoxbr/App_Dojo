@@ -10,6 +10,8 @@ import {
 } from "@dojo/contracts/challenges";
 import { idSchema } from "@dojo/contracts/membership";
 import { Alert, Avatar, Badge, Button, Card, Page, PageHero } from "@/components/ui";
+import { FeatureOff } from "@/components/feature-off";
+import { academyHas } from "@/lib/features";
 import { getCaller } from "@/lib/context";
 import { errorFromCode } from "@/lib/rpc-errors";
 import { cancelChallenge, joinChallenge, leaveChallenge, voidEntry } from "../actions";
@@ -35,6 +37,7 @@ export default async function DesafioPage({
   const { data: row } = await supabase.from("challenges").select("id, academy_id, cancelled_reason").eq("id", id).maybeSingle();
   if (!row) notFound();
   const academyId = row.academy_id as string;
+  if (!(await academyHas(supabase, academyId, "challenges"))) return <FeatureOff feature="challenges" />;
 
   const [{ data: list }, { data: academy }, { data: ageStatus }] = await Promise.all([
     supabase.rpc("list_challenges", { p_academy_id: academyId }),

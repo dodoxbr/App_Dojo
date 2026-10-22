@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { formatCents, planRowSchema } from "@dojo/contracts/finance";
+import { FeatureOff } from "@/components/feature-off";
+import { academyHas } from "@/lib/features";
 import { getCaller } from "@/lib/context";
 import { financeMessage, todayIn } from "@/lib/finance-ui";
 import { setPlan } from "../actions";
@@ -16,6 +18,7 @@ export default async function PlanosPage({
   const { id } = await params;
   const { erro, ok } = await searchParams;
   const { supabase, managedAcademies } = await getCaller();
+  if (!(await academyHas(supabase, id, "finance"))) return <FeatureOff feature="finance" />;
   if (!managedAcademies.some((a) => a.id === id)) redirect("/perfil");
 
   const { data: academy } = await supabase.from("academies").select("id, name, timezone").eq("id", id).maybeSingle();

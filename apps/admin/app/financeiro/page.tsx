@@ -2,6 +2,8 @@ import { chargeStatusText, chargeTitle, formatCents, myChargeSchema, paymentMeth
 import { dependentRowSchema } from "@dojo/contracts/guardians";
 import { Badge, Card, EmptyState, Page, PageHero } from "@/components/ui";
 import styles from "./financeiro.module.css";
+import { anyAcademyHas, myFeatureMap } from "@/lib/features";
+import { FeatureOff } from "@/components/feature-off";
 import { getCaller } from "@/lib/context";
 import { fmtDate } from "@/lib/finance-ui";
 
@@ -31,6 +33,8 @@ function ChargeList({ charges }: { charges: MyCharge[] }) {
 // Read-only: the person, and the legal guardian / financial responsible of a minor, see the charges the manager registered.
 export default async function MeuFinanceiroPage() {
   const { supabase } = await getCaller();
+  const featureMap = await myFeatureMap(supabase);
+  if (featureMap.size > 0 && !anyAcademyHas(featureMap, "finance")) return <FeatureOff feature="finance" />;
   const [{ data: mineRaw }, { data: depsRaw }] = await Promise.all([supabase.rpc("my_charges"), supabase.rpc("list_my_dependents")]);
   const mine = ((mineRaw ?? []) as unknown[]).map((x) => myChargeSchema.safeParse(x)).flatMap((r) => (r.success ? [r.data] : []));
   const dependents = ((depsRaw ?? []) as unknown[]).map((x) => dependentRowSchema.safeParse(x)).flatMap((r) => (r.success && !r.data.minor_is_adult ? [r.data] : []));

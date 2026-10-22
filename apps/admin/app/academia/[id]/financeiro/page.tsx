@@ -13,6 +13,8 @@ import {
   summarySchema,
   type PaymentMethod,
 } from "@dojo/contracts/finance";
+import { FeatureOff } from "@/components/feature-off";
+import { academyHas } from "@/lib/features";
 import { getCaller } from "@/lib/context";
 import { financeMessage, fmtDate, todayIn } from "@/lib/finance-ui";
 import { ChargeActions } from "./charge-actions";
@@ -29,6 +31,7 @@ export default async function FinanceiroPage({
   const { id } = await params;
   const { mes, erro, gerou } = await searchParams;
   const { supabase, managedAcademies } = await getCaller();
+  if (!(await academyHas(supabase, id, "finance"))) return <FeatureOff feature="finance" />;
   if (!managedAcademies.some((a) => a.id === id)) redirect("/perfil");
 
   const { data: academy } = await supabase.from("academies").select("id, name, timezone, auto_charges").eq("id", id).maybeSingle();

@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { activationLabels, dashboardSchema, parsePeriod, retentionRate } from "@dojo/contracts/dashboard";
+import { FeatureOff } from "@/components/feature-off";
+import { academyHas } from "@/lib/features";
 import { getCaller } from "@/lib/context";
 
 const PERIODS = [7, 30, 90];
@@ -19,6 +21,7 @@ export default async function PainelPage({
   const { dias } = await searchParams;
   const days = parsePeriod(dias);
   const { supabase } = await getCaller();
+  if (!(await academyHas(supabase, id, "dashboard"))) return <FeatureOff feature="dashboard" />;
 
   const { data: allowed } = await supabase.rpc("has_academy_permission", { p_academy_id: id, p_permission: "view_progress" });
   if (allowed !== true) redirect("/perfil");

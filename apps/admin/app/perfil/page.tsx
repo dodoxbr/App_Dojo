@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { membershipRoleLabels, membershipStatusLabels } from "@dojo/contracts/membership";
 import { Alert, Avatar, Badge, BeltBar, Button, Card, ItemLink, ItemList, Page, PageHero } from "@/components/ui";
+import { anyAcademyHas, myFeatureMap } from "@/lib/features";
 import { getCaller } from "@/lib/context";
 import { CURRENT_TERMS_VERSION } from "@dojo/contracts/terms";
 import { myMilestoneSchema, rankLabel, staffMilestoneSchema } from "@dojo/contracts/milestone";
@@ -18,6 +19,8 @@ export default async function PerfilPage() {
     supabase.rpc("get_contact", { p_user_id: userId }),
   ]);
   const hasContact = ((contactRows ?? []) as unknown[]).length > 0;
+  const features = await myFeatureMap(supabase);
+  const has = (f: "feed" | "medals" | "finance" | "challenges" | "curriculum" | "milestone") => features.size === 0 || anyAcademyHas(features, f);
   // US-020: aviso de 30 treinos desde a última graduação (do aluno e, para o professor, de quem chegou lá)
   const [{ data: myMilestonesRaw }, { data: staffMilestonesRaw }] = await Promise.all([supabase.rpc("my_milestones"), supabase.rpc("my_staff_milestones")]);
   const myMilestones = ((myMilestonesRaw ?? []) as unknown[]).map((x) => myMilestoneSchema.safeParse(x)).flatMap((r) => (r.success ? [r.data] : []));
@@ -67,12 +70,12 @@ export default async function PerfilPage() {
         <Alert tone="info">Você é menor de 18 anos. Menores não usam o app sozinhos: o responsável cadastra o menor e usa o app em nome dele.</Alert>
       )}
 
-      {myMilestones.map((m) => (
+      {myMilestones.filter((m) => features.get(m.academy_id)?.has("milestone") ?? true).map((m) => (
         <Alert key={m.academy_id} tone="success">
           <strong>{m.attendances} treinos!</strong> Você chegou a {m.attendances} treinos confirmados na {m.academy_name} desde a última graduação ({rankLabel(m.belt_code, m.degree, m.rank_since)}). Converse com o seu professor. Quem decide a graduação é o professor e o gestor.
         </Alert>
       ))}
-      {staffMilestones.map((m) => (
+      {staffMilestones.filter((m) => features.get(m.academy_id)?.has("milestone") ?? true).map((m) => (
         <Alert key={m.academy_id} tone="success">
           <strong>Alunos no seu número de treinos.</strong> {m.students} aluno(s) da {m.academy_name} chegaram ao seu número de treinos desde a última graduação.{" "}
           <Link href={`/academia/${m.academy_id}/graduacao/alunos`}>Ver quem são</Link>
@@ -102,13 +105,13 @@ export default async function PerfilPage() {
         <h2 id="atalhos" style={{ margin: 0, fontSize: "1.25rem" }}>Atalhos</h2>
         <ItemList>
           <li><ItemLink href="/perfil/ficha" title={hasContact ? "Minha ficha de cadastro" : "Preencher minha ficha de cadastro"} meta="Contato, endereço e saúde" /></li>
-          <li><ItemLink href="/feed" title="Feed da academia (fotos)" /></li>
-          <li><ItemLink href="/medalhas" title="Medalhas" /></li>
-          <li><ItemLink href="/financeiro" title="Meu financeiro" /></li>
+          {has("feed") && <li><ItemLink href="/feed" title="Feed da academia (fotos)" /></li>}
+          {has("medals") && <li><ItemLink href="/medalhas" title="Medalhas" /></li>}
+          {has("finance") && <li><ItemLink href="/financeiro" title="Meu financeiro" /></li>}
           <li><ItemLink href="/dependentes" title="Meus dependentes (menores de idade)" /></li>
-          <li><ItemLink href="/desafios" title="Desafios" /></li>
+          {has("challenges") && <li><ItemLink href="/desafios" title="Desafios" /></li>}
           <li><ItemLink href="/graduacao" title="Minha graduação" /></li>
-          <li><ItemLink href="/trilha" title="Minha trilha" /></li>
+          {has("curriculum") && <li><ItemLink href="/trilha" title="Minha trilha" /></li>}
           <li><ItemLink href="/aulas" title="Agenda de aulas" /></li>
           <li><ItemLink href="/diario" title="Meu diário" /></li>
           <li><ItemLink href="/tecnicas" title="Catálogo de técnicas" /></li>

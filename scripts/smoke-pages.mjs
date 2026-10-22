@@ -308,6 +308,8 @@ try {
   // Platform owner (test phase)
   await check('owner', '/plataforma', { has: ['Plataforma', 'Liberar criação de academias', 'Academia Páginas'] });
   await check('owner', '/plataforma/diarios', { has: ['Diários', 'nota de páginas'] });
+  await check('owner', '/plataforma/pacotes', { has: ['Pacotes', 'Funcionalidades incluídas', 'TESTE'] });
+  await check('student', '/plataforma/pacotes', { redirect: '/perfil' });
   await check('owner', `${A}/painel`, { has: 'Painel de frequência' });
 
   console.log(`smoke-pages: OK (${results.length} páginas verificadas)`);

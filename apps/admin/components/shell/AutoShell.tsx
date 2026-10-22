@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { knownFeatures } from "@dojo/contracts/features";
 import { getCaller } from "@/lib/context";
 import { AppShell } from "./AppShell";
 import { staffNav, studentNav, type NavItem, type StaffPermissions } from "./nav-items";
@@ -21,15 +22,17 @@ export async function AutoShell({ children }: { children: ReactNode }) {
   let items: NavItem[] = studentNav;
   if (staff) {
     const academyId = staff.academy_id as string;
+    const { data: enabled } = await supabase.rpc("academy_features", { p_academy_id: academyId });
+    const features = new Set(knownFeatures((enabled ?? []) as string[]));
     if (isStudent) {
       items = [...studentNav, { href: `/academia/${academyId}/inicio`, label: "Equipe", icon: "people", primary: false }];
     } else if (staff.role === "manager") {
-      items = staffNav(academyId, "manager", { validate: true, recommend: true, progress: true, assess: true, health: true });
+      items = staffNav(academyId, "manager", { validate: true, recommend: true, progress: true, assess: true, health: true }, features);
     } else {
       const checks = await Promise.all(PERMISSIONS.map((p) => supabase.rpc("has_academy_permission", { p_academy_id: academyId, p_permission: p })));
       const [validate, recommend, progress, assess, health] = checks.map((c) => c.data === true);
       const permissions: StaffPermissions = { validate: Boolean(validate), recommend: Boolean(recommend), progress: Boolean(progress), assess: Boolean(assess), health: Boolean(health) };
-      items = staffNav(academyId, "instructor", permissions);
+      items = staffNav(academyId, "instructor", permissions, features);
     }
   }
   return <AppShell items={items} userName={(profile?.display_name as string | undefined) ?? undefined}>{children}</AppShell>;

@@ -22,7 +22,8 @@
     "./finance": "./src/finance.ts",
     "./feed": "./src/feed.ts",
     "./milestone": "./src/milestone.ts",
-    "./week": "./src/week.ts"
+    "./week": "./src/week.ts",
+    "./features": "./src/features.ts"
   },
   "dependencies": {
     "zod": "^4.6.7"

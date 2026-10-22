@@ -303,3 +303,8 @@
 - [ ] **Pedir a versão final com fundo transparente** (três arquivos: para fundo escuro, para fundo claro e o ícone quadrado). A versão atual traz o fundo escuro com degradê dentro da imagem, então só serve em cartão escuro e não pode ser usada direto sobre outras cores (barra lateral, topo, e-mails).
 - [ ] **Direitos e registro da marca:** confirmar a autoria e os direitos de uso da arte (se foi gerada por ferramenta de imagem, isso pode limitar o registro) e fazer a busca de marca "Oss" no INPI antes de divulgar. Ainda não foi feito nada disso.
 - [ ] Os arquivos de imagem são pesados (o recorte principal tem cerca de 700 KB); otimizar na versão final.
+
+## Pacotes por academia (2026-10-21)
+- [ ] **Definir os pacotes finais e preços** (hoje valores de TESTE; editáveis em `/plataforma/pacotes`).
+- [ ] Decidir se dados de funcionalidade desligada devem ficar ocultos também na leitura no banco (hoje só a interface esconde).
+- [ ] Aplicar a migration 033 no ambiente local com `npx supabase migration up` (sem reset).
