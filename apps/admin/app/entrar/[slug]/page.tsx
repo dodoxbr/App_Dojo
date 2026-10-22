@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { dependentRowSchema } from "@dojo/contracts/guardians";
 import { membershipStatusLabels } from "@dojo/contracts/membership";
+import { AcademyBanner } from "@/components/ui";
+import { academyLogoUrl } from "@/lib/academy-logo";
 import { getCaller } from "@/lib/context";
 import { RequestForDependentForm } from "../../dependentes/forms";
 import { RequestButton } from "./request-button";
@@ -18,6 +20,7 @@ export default async function EntrarPage({ params }: { params: Promise<{ slug: s
     .maybeSingle();
   if (!academy) notFound();
 
+  const logoUrl = await academyLogoUrl(supabase, academy.id as string);
   const { data: ageStatus } = await supabase.rpc("my_age_status");
   const { data: depsRaw } = await supabase.rpc("list_my_dependents");
   const minors = ((depsRaw ?? []) as unknown[])
@@ -33,10 +36,8 @@ export default async function EntrarPage({ params }: { params: Promise<{ slug: s
     .maybeSingle();
 
   return (
-    <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 420 }}>
-      <header style={{ background: academy.theme_primary, color: academy.theme_secondary, padding: 16 }}>
-        <h1 style={{ margin: 0 }}>{academy.name}</h1>
-      </header>
+    <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 560 }}>
+      <AcademyBanner name={academy.name as string} logoUrl={logoUrl} eyebrow="Convite" subtitle="Peça para entrar e o gestor aprova o seu pedido." />
 
       {!mine && ageStatus !== "adult" && (
         <p role="alert">

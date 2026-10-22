@@ -73,3 +73,5 @@
 .section :global(li button:not([class]):hover:not(:disabled)),
 .section :global(td button:not([class]):hover:not(:disabled)) { background: var(--bg); border-color: var(--primary); }
 
+
+.section :global(input[type="color"]) { width: 72px; min-height: 44px; padding: 2px; cursor: pointer; }

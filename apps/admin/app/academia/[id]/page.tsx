@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { formatCnpj, instructorPermissionLabels, instructorPermissions } from "@dojo/contracts/academy";
-import { Badge, Button, ButtonLink, ItemLink, ItemList, Page, PageHero, Section } from "@/components/ui";
+import { AcademyBanner, Badge, Button, ButtonLink, ItemLink, ItemList, Page, Section } from "@/components/ui";
+import { academyLogoUrl } from "@/lib/academy-logo";
 import { getCaller } from "@/lib/context";
 import { LegalForm } from "./legal-form";
+import { LogoUpload } from "./logo-upload";
 import { SettingsForm } from "./settings-form";
 import { setPermission } from "./actions";
 import styles from "./academia.module.css";
@@ -32,6 +34,7 @@ export default async function AcademiaPage({ params }: { params: Promise<{ id: s
   const has = (f: string) => features.size === 0 || features.has(f);
 
   const a = `/academia/${academy.id}`;
+  const logoUrl = await academyLogoUrl(supabase, id);
   const links = [
     { href: `${a}/membros`, title: "Membros e pedidos de entrada", show: true },
     { href: `${a}/turmas`, title: "Turmas e aulas", show: true },
@@ -47,16 +50,22 @@ export default async function AcademiaPage({ params }: { params: Promise<{ id: s
 
   return (
     <Page width="narrow">
-      <PageHero
+      <AcademyBanner
+        name={academy.name}
+        logoUrl={logoUrl}
         eyebrow="Academia"
-        title={academy.name}
         subtitle={<>Link para os alunos: <code>/entrar/{academy.slug}</code> (use o endereço do painel antes dele)</>}
-        actions={<ButtonLink href="/perfil" variant="secondary">← Meu perfil</ButtonLink>}
-      />
+      >
+        <ButtonLink href="/perfil" variant="secondary">← Meu perfil</ButtonLink>
+      </AcademyBanner>
 
       <ItemList>
         {links.map((l) => <li key={l.href}><ItemLink href={l.href} title={l.title} /></li>)}
       </ItemList>
+
+      <Section title="Logo da academia" hint="A logo vira o fundo e o selo do perfil da academia (esta tela, o início da equipe e o link de entrada dos alunos).">
+        <LogoUpload academyId={academy.id} hasLogo={logoUrl !== null} />
+      </Section>
 
       <Section title="Identidade visual">
         <SettingsForm

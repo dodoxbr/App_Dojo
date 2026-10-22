@@ -22,3 +22,4 @@ export { Tabs, type TabItem } from "./Tabs";
 export { TextField, type TextFieldProps } from "./TextField";
 export { WeekStrip } from "./WeekStrip";
 export { Section } from "./Section";
+export { AcademyBanner } from "./AcademyBanner";

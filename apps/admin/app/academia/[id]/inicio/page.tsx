@@ -3,7 +3,8 @@ import { notFound, redirect } from "next/navigation";
 import { formatSessionRange } from "@dojo/contracts/classes";
 import { idSchema } from "@dojo/contracts/membership";
 import { staffMilestoneSchema } from "@dojo/contracts/milestone";
-import { Badge, ButtonLink, Card, EmptyState, Hero } from "@/components/ui";
+import { AcademyBanner, Badge, ButtonLink, Card, EmptyState } from "@/components/ui";
+import { academyLogoUrl } from "@/lib/academy-logo";
 import { academyHas } from "@/lib/features";
 import { getCaller } from "@/lib/context";
 import styles from "./staff.module.css";
@@ -47,18 +48,19 @@ export default async function AcademiaInicioPage({ params }: { params: Promise<{
   const titleOf = new Map((classes ?? []).map((c) => [c.id as string, c.title as string]));
   const tz = (academy.timezone as string) ?? "America/Sao_Paulo";
   const a = `/academia/${id}`;
+  const logoUrl = await academyLogoUrl(supabase, id);
 
   return (
     <main className={styles.page}>
-      <Hero>
-        <p className={styles.eyebrow}>{isManager ? "Gestor" : "Instrutor"} · {new Intl.DateTimeFormat("pt-BR", { timeZone: tz, weekday: "long", day: "2-digit", month: "long" }).format(new Date(nowIso()))}</p>
-        <h1 className={styles.title}>{academy.name as string}</h1>
-        <p className={styles.heroLine}>Oss! Aqui estão os números do dia.</p>
-        <div className={styles.heroActions}>
-          {isManager && <ButtonLink href={`${a}/turmas`} variant="accent">Criar aula</ButtonLink>}
-          <ButtonLink href="/aulas" variant="secondary">Validar presença</ButtonLink>
-        </div>
-      </Hero>
+      <AcademyBanner
+        name={academy.name as string}
+        logoUrl={logoUrl}
+        eyebrow={`${isManager ? "Gestor" : "Instrutor"} · ${new Intl.DateTimeFormat("pt-BR", { timeZone: tz, weekday: "long", day: "2-digit", month: "long" }).format(new Date(nowIso()))}`}
+        subtitle="Oss! Aqui estão os números do dia."
+      >
+        {isManager && <ButtonLink href={`${a}/turmas`} variant="accent">Criar aula</ButtonLink>}
+        <ButtonLink href="/aulas" variant="secondary">Validar presença</ButtonLink>
+      </AcademyBanner>
 
       <section className={styles.stats} aria-label="Números da academia">
         <Card className={`${styles.stat} ${styles.tealStat}`}><p className={styles.statLabel}>Alunos ativos</p><p className={styles.statValue}>{students}</p></Card>
