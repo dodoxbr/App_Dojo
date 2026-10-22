@@ -25,3 +25,11 @@ test('cor da faixa só para desenhar: reconhece o nome da cor e ignora o resto',
   assert.equal(beltPaint('Faixa Teste A'), null, 'nome sem cor conhecida não ganha cor');
   assert.equal(beltPaint(null), null);
 });
+
+test('belt age reference: every belt is unique and ages never decrease along the hierarchy', async () => {
+  const { beltAgeReference } = await import('../src/belts.ts');
+  assert.equal(new Set(beltAgeReference.map((r) => r.belt)).size, beltAgeReference.length);
+  for (const r of beltAgeReference) if (r.until !== undefined) assert.ok(r.until >= r.from);
+  const ages = beltAgeReference.map((r) => r.from);
+  assert.deepEqual(ages, [...ages].sort((a, b) => a - b));
+});

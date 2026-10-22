@@ -31,3 +31,6 @@
 ## Como o sistema usa isto
 - `packages/contracts/src/belts.ts`: **sugestões de nome** (adulto e infantil) exibidas como lista de apoio nos campos de faixa. A pessoa pode digitar qualquer outro nome.
 - Nenhuma idade, tempo ou grau é imposto. Se a academia quiser critério de idade, será um novo tipo de critério na US-013 (depende de data de nascimento, responsável e proteção reforçada de menores).
+
+## Quadro de idades mínimas (2026-10-21)
+O dono do produto enviou o quadro "Idades mínimas e hierarquia" (faixas infantis 4 a 15 anos: cinza 4, amarela 7, laranja 10, verde 13; azul e roxa 16; marrom 18; preta 19; vermelha e preta 50; vermelha e branca 57; vermelha 67). Ele aparece em `/graduacao/idades` (dados em `beltAgeReference`, `packages/contracts/src/belts.ts`) **apenas como consulta**: nenhuma regra usa esses números. A fonte do quadro não foi informada; confirmar com a federação antes de transformá-lo em regra.

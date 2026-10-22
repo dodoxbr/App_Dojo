@@ -1,7 +1,7 @@
 import { evaluationSchema, type PromotionEvent } from "@dojo/contracts/graduation";
 import { RankHistory } from "@/components/rank-history";
 import { EvaluationView } from "@/components/evaluation-view";
-import { Alert, BeltBar, Card, EmptyState, Page, PageHeader, PageHero, ProgressRing } from "@/components/ui";
+import { Alert, BeltBar, ButtonLink, Card, EmptyState, Page, PageHeader, PageHero, ProgressRing } from "@/components/ui";
 import { getCaller } from "@/lib/context";
 
 // The student's own progress against the academy's rule for their current rank. A recommendation, never a promotion.
@@ -33,6 +33,7 @@ export default async function GraduacaoAlunoPage() {
     <Page width="narrow">
       <PageHeader
         title="Minha graduação"
+        actions={<ButtonLink href="/graduacao/idades" variant="secondary">Idades mínimas por faixa</ButtonLink>}
         subtitle="Sua graduação oficial é registrada pelo gestor da academia; você não a altera. Abaixo, o seu progresso nos critérios que a academia definiu. Só contam presenças confirmadas pelo professor."
       />
       {results.length === 0 && <EmptyState title="Você ainda não faz parte de nenhuma academia">Peça ao gestor da sua academia o link de entrada.</EmptyState>}

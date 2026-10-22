@@ -171,6 +171,7 @@ try {
   await check('student', '/aulas', { has: ['Agenda de aulas', 'Turma de páginas'] });
   await check('student', `/checkin/${sessionId}`, { has: ['Check-in', 'Turma de páginas'] });
   await check('student', '/trilha', { has: ['Minha trilha', 'Tesoura'] });
+  await check('student', '/graduacao/idades', { has: ['Idades mínimas por faixa', 'Vermelha e Branca', 'nada aqui bloqueia'] });
   await check('student', '/graduacao', { has: ['Minha graduação', 'Faixa Teste A', 'Histórico de graduações'] });
   await check('student', `/entrar/${slug}`, { has: 'Academia Páginas' });
   await check('student', '/desafios', { has: ['Desafios', 'Desafio de páginas', 'Em andamento'] });
