@@ -1,6 +1,7 @@
 // Componentes reutilizáveis do Design System (brief de UI/UX). Tokens em apps/admin/styles/tokens.css.
 export { Alert } from "./Alert";
 export { AuthShell } from "./AuthShell";
+export { Avatar } from "./Avatar";
 export { Badge } from "./Badge";
 export { BeltBar } from "./BeltBar";
 export { BrandLogo } from "./BrandLogo";
@@ -12,6 +13,7 @@ export { Hero } from "./Hero";
 export { ItemLink, ItemList } from "./ItemLink";
 export { Page } from "./Page";
 export { PageHeader } from "./PageHeader";
+export { PageHero } from "./PageHero";
 export { PasswordField } from "./PasswordField";
 export { ProgressBar } from "./ProgressBar";
 export { ProgressRing } from "./ProgressRing";

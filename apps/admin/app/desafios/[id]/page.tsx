@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   challengeListItemSchema,
@@ -10,10 +9,12 @@ import {
   unitLabel,
 } from "@dojo/contracts/challenges";
 import { idSchema } from "@dojo/contracts/membership";
+import { Alert, Avatar, Badge, Button, Card, Page, PageHero } from "@/components/ui";
 import { getCaller } from "@/lib/context";
 import { errorFromCode } from "@/lib/rpc-errors";
 import { cancelChallenge, joinChallenge, leaveChallenge, voidEntry } from "../actions";
 import { EntryForm } from "../forms";
+import styles from "./desafio.module.css";
 
 const fmt = (d: string) => new Date(`${d}T12:00:00Z`).toLocaleDateString("pt-BR", { timeZone: "UTC" });
 const fmtWhen = (iso: string, tz: string) =>
@@ -59,96 +60,111 @@ export default async function DesafioPage({
   const message = errorFromCode(erro);
   const today = new Date().toISOString().slice(0, 10);
 
+  const podium = ranking.slice(0, 3);
   return (
-    <main style={{ padding: 16, display: "grid", gap: 20, maxWidth: 960 }}>
-      <p><Link href="/desafios">← Desafios</Link></p>
-      <h1>{c.title}</h1>
-      <p>
-        {academy?.name} · <strong>{challengeStateLabels[c.state] ?? c.state}</strong>
-        {c.state === "open" && <> — {c.participants} de {c.min_participants} participantes; faltam {missingParticipants(c)} para o desafio começar</>}
-      </p>
-      {message && <p role="alert">{message}</p>}
-      {c.description && <p>{c.description}</p>}
-      <ul>
-        <li>O que vale ponto: {challengeMetricLabels[c.metric]}{c.technique_name ? ` — ${c.technique_name}` : ""}</li>
-        <li>{c.points_per_unit} ponto(s) por {unitLabel(c.metric)}{c.max_units_per_day ? ` · limite de ${c.max_units_per_day} por dia` : ""}</li>
-        <li>Período: {fmt(c.starts_on)} a {fmt(c.ends_on)} · mínimo de {c.min_participants} participantes · {c.participants} participando</li>
-      </ul>
-      {row.cancelled_reason && <p role="note">Motivo do cancelamento: {row.cancelled_reason as string}</p>}
+    <Page width="narrow">
+      <PageHero
+        eyebrow={`${academy?.name ?? "Desafio"} · ${challengeStateLabels[c.state] ?? c.state}`}
+        title={c.title}
+        subtitle={c.description ?? (c.state === "open" ? `${c.participants} de ${c.min_participants} participantes; faltam ${missingParticipants(c)} para o desafio começar` : undefined)}
+        actions={
+          open && isAdult ? (
+            c.joined ? (
+              <form action={leaveChallenge.bind(null, id)}><Button type="submit" variant="secondary">Sair do desafio</Button></form>
+            ) : (
+              <form action={joinChallenge.bind(null, id)}><Button type="submit" variant="accent">Participar</Button></form>
+            )
+          ) : undefined
+        }
+      />
+      {message && <Alert tone="danger">{message}</Alert>}
+      {row.cancelled_reason && <Alert tone="info">Motivo do cancelamento: {row.cancelled_reason as string}</Alert>}
 
-      {open && isAdult && (
-        <p>
-          {c.joined ? (
-            <form action={leaveChallenge.bind(null, id)}><button type="submit">Sair do desafio</button></form>
-          ) : (
-            <form action={joinChallenge.bind(null, id)}><button type="submit">Participar</button></form>
-          )}
-        </p>
-      )}
+      <Card>
+        <h2 style={{ margin: "0 0 12px", fontSize: "1.25rem" }}>As regras</h2>
+        <ul className={styles.rules}>
+          <li><span>O que vale ponto</span><strong>{challengeMetricLabels[c.metric]}{c.technique_name ? ` — ${c.technique_name}` : ""}</strong></li>
+          <li><span>Pontuação</span><strong>{c.points_per_unit} ponto(s) por {unitLabel(c.metric)}{c.max_units_per_day ? ` · limite de ${c.max_units_per_day} por dia` : ""}</strong></li>
+          <li><span>Período</span><strong>{fmt(c.starts_on)} a {fmt(c.ends_on)}</strong></li>
+          <li><span>Participantes</span><strong>mínimo de {c.min_participants} · {c.participants} participando</strong></li>
+        </ul>
+      </Card>
 
       {c.joined && c.state === "active" && c.metric !== "attendance" && (
-        <section>
-          <h2>Registrar {c.metric === "training" ? "treino" : "repetições"}</h2>
-          <p>Diga o dia e a hora em que você treinou. Vale ponto na hora; se o horário cair dentro de uma aula em que você teve presença confirmada, o registro aparece como <strong>confirmado</strong>.</p>
+        <Card>
+          <h2 style={{ margin: "0 0 8px", fontSize: "1.25rem" }}>Registrar {c.metric === "training" ? "treino" : "repetições"}</h2>
+          <p style={{ margin: "0 0 16px", color: "var(--text-muted)" }}>Diga o dia e a hora em que você treinou. Vale ponto na hora; se o horário cair dentro de uma aula em que você teve presença confirmada, o registro aparece como <strong>confirmado</strong>.</p>
           <EntryForm challengeId={id} metric={c.metric} today={today} />
-        </section>
+        </Card>
       )}
       {c.joined && c.state === "active" && c.metric === "attendance" && (
-        <p role="note">Neste desafio os pontos vêm sozinhos das suas presenças confirmadas pelo professor.</p>
+        <Alert tone="info">Neste desafio os pontos vêm sozinhos das suas presenças confirmadas pelo professor.</Alert>
       )}
 
       {(c.joined || canModerate) && (
-        <section>
-          <h2>Ranking</h2>
+        <Card>
+          <h2 style={{ margin: "0 0 12px", fontSize: "1.25rem" }}>Ranking</h2>
           {c.state === "open" || c.state === "scheduled" ? (
-            <p>O ranking aparece quando o desafio começar.</p>
+            <p style={{ margin: 0, color: "var(--text-muted)" }}>O ranking aparece quando o desafio começar.</p>
           ) : rankingError || ranking.length === 0 ? (
-            <p>Sem participantes no ranking.</p>
+            <p style={{ margin: 0, color: "var(--text-muted)" }}>Sem participantes no ranking.</p>
           ) : (
-            <table>
-              <thead><tr><th>#</th><th>Nome</th><th>Pontos</th><th>Registros</th><th>Confirmados</th></tr></thead>
-              <tbody>
-                {ranking.map((r) => (
-                  <tr key={r.user_id} style={r.is_me ? { fontWeight: 700 } : undefined}>
-                    <td>{r.rank}</td><td>{r.display_name}{r.is_me ? " (você)" : ""}</td><td>{r.points}</td><td>{r.entries}</td><td>{r.verified_entries}</td>
-                  </tr>
+            <>
+              <ol className={styles.podium} aria-label="Os três primeiros">
+                {podium.map((r) => (
+                  <li key={r.user_id} className={`${styles.step} ${styles[`p${Math.min(Number(r.rank), 3)}`] ?? ""}`}>
+                    <span className={styles.medal} aria-hidden="true">{r.rank}</span>
+                    <Avatar name={r.display_name} size="md" />
+                    <strong>{r.display_name}{r.is_me ? " (você)" : ""}</strong>
+                    <span className={styles.points}>{r.points} pts</span>
+                  </li>
                 ))}
-              </tbody>
-            </table>
+              </ol>
+              <ul className={styles.rows}>
+                {ranking.map((r) => (
+                  <li key={r.user_id} className={`${styles.row} ${r.is_me ? styles.me : ""}`}>
+                    <span className={styles.pos}>{r.rank}</span>
+                    <span className={styles.name}>{r.display_name}{r.is_me ? " (você)" : ""}</span>
+                    <span className={styles.nums}>{r.points} pts · {r.entries} registros · {r.verified_entries} confirmados</span>
+                  </li>
+                ))}
+              </ul>
+            </>
           )}
-        </section>
+        </Card>
       )}
-      {!c.joined && !canModerate && <p>Participe para ver o ranking.</p>}
+      {!c.joined && !canModerate && <Alert tone="info">Participe para ver o ranking.</Alert>}
 
       {c.joined && mine.length > 0 && (
-        <section>
-          <h2>Meus registros</h2>
-          <ul>
+        <Card>
+          <h2 style={{ margin: "0 0 12px", fontSize: "1.25rem" }}>Meus registros</h2>
+          <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "grid", gap: 10 }}>
             {mine.map((e) => (
-              <li key={e.id} style={e.voided ? { textDecoration: "line-through" } : undefined}>
-                {fmtWhen(e.occurred_at, tz)} · {e.units} {unitLabel(c.metric)}{e.units > 1 ? "s" : ""}{e.note ? ` · ${e.note}` : ""}
-                {e.verified ? " · confirmado" : " · não confirmado"}
+              <li key={e.id} style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, ...(e.voided ? { textDecoration: "line-through" } : {}) }}>
+                <span>{fmtWhen(e.occurred_at, tz)} · {e.units} {unitLabel(c.metric)}{e.units > 1 ? "s" : ""}{e.note ? ` · ${e.note}` : ""}</span>
+                <Badge tone={e.verified ? "success" : "neutral"}>{e.verified ? "confirmado" : "não confirmado"}</Badge>
                 {!e.voided && c.state === "active" && (
-                  <form action={voidEntry.bind(null, id)} style={{ display: "inline", marginLeft: 8 }}>
+                  <form action={voidEntry.bind(null, id)}>
                     <input type="hidden" name="entryId" value={e.id} /><button type="submit">Anular</button>
                   </form>
                 )}
               </li>
             ))}
           </ul>
-        </section>
+        </Card>
       )}
 
       {canModerate && (
-        <section>
-          <h2>Moderação</h2>
-          {all.length === 0 ? <p>Nenhum registro ainda.</p> : (
-            <ul>
+        <Card>
+          <h2 style={{ margin: "0 0 12px", fontSize: "1.25rem" }}>Moderação</h2>
+          {all.length === 0 ? <p style={{ margin: 0, color: "var(--text-muted)" }}>Nenhum registro ainda.</p> : (
+            <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "grid", gap: 10 }}>
               {all.map((e) => (
-                <li key={e.id} style={e.voided ? { textDecoration: "line-through" } : undefined}>
-                  {e.display_name} · {fmtWhen(e.occurred_at, tz)} · {e.units}{e.verified ? " · confirmado" : ""}
+                <li key={e.id} style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, ...(e.voided ? { textDecoration: "line-through" } : {}) }}>
+                  <span>{e.display_name} · {fmtWhen(e.occurred_at, tz)} · {e.units}</span>
+                  {e.verified && <Badge tone="success">confirmado</Badge>}
                   {!e.voided && (
-                    <form action={voidEntry.bind(null, id)} style={{ display: "inline", marginLeft: 8 }}>
+                    <form action={voidEntry.bind(null, id)}>
                       <input type="hidden" name="entryId" value={e.id} /><button type="submit">Anular</button>
                     </form>
                   )}
@@ -157,13 +173,13 @@ export default async function DesafioPage({
             </ul>
           )}
           {open && (
-            <form action={cancelChallenge.bind(null, id)}>
+            <form action={cancelChallenge.bind(null, id)} style={{ marginTop: 16 }}>
               <label>Motivo do cancelamento <input name="reason" minLength={3} maxLength={500} required /></label>
               <button type="submit">Cancelar desafio</button>
             </form>
           )}
-        </section>
+        </Card>
       )}
-    </main>
+    </Page>
   );
 }

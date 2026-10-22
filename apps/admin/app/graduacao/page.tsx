@@ -1,7 +1,7 @@
 import { evaluationSchema, type PromotionEvent } from "@dojo/contracts/graduation";
 import { RankHistory } from "@/components/rank-history";
 import { EvaluationView } from "@/components/evaluation-view";
-import { Alert, Card, EmptyState, Page, PageHeader } from "@/components/ui";
+import { Alert, BeltBar, Card, EmptyState, Page, PageHeader, PageHero, ProgressRing } from "@/components/ui";
 import { getCaller } from "@/lib/context";
 
 // The student's own progress against the academy's rule for their current rank. A recommendation, never a promotion.
@@ -36,14 +36,29 @@ export default async function GraduacaoAlunoPage() {
         subtitle="Sua graduação oficial é registrada pelo gestor da academia; você não a altera. Abaixo, o seu progresso nos critérios que a academia definiu. Só contam presenças confirmadas pelo professor."
       />
       {results.length === 0 && <EmptyState title="Você ainda não faz parte de nenhuma academia">Peça ao gestor da sua academia o link de entrada.</EmptyState>}
-      {results.map(({ academy, evaluation, events }) => (
-        <Card key={academy.id}>
-          <h2 style={{ margin: "0 0 12px", fontSize: "1.25rem" }}>{academy.name}</h2>
-          {evaluation.success ? <EvaluationView evaluation={evaluation.data} /> : <Alert tone="danger">Não foi possível calcular o seu progresso.</Alert>}
-          <h3 style={{ margin: "24px 0 12px", fontSize: "1rem" }}>Histórico de graduações</h3>
-          <RankHistory events={events} />
-        </Card>
-      ))}
+      {results.map(({ academy, evaluation, events }) => {
+        const data = evaluation.success ? evaluation.data : null;
+        const rank = data?.has_rank ? data.rank : undefined;
+        const measurable = (data?.criteria ?? []).filter((c) => c.kind !== "manual" && (c.target ?? 0) > 0);
+        const overall = measurable.length ? (measurable.reduce((sum, c) => sum + Math.min((c.current ?? 0) / (c.target as number), 1), 0) / measurable.length) * 100 : null;
+        return (
+          <section key={academy.id} style={{ display: "grid", gap: 16 }}>
+            <PageHero
+              eyebrow={academy.name}
+              title={rank ? `${rank.belt_code} · grau ${rank.degree}` : "Sem graduação registrada"}
+              subtitle={rank ? `Desde ${new Date(`${rank.effective_date}T12:00:00Z`).toLocaleDateString("pt-BR", { timeZone: "UTC" })}. Só o gestor registra a sua graduação.` : "O gestor precisa registrar de onde você parte."}
+              aside={overall !== null ? <ProgressRing percent={overall} label="Progresso geral nos critérios" size={104} /> : undefined}
+            >
+              {rank && <BeltBar belt={rank.belt_code} degree={rank.degree} size="lg" />}
+            </PageHero>
+            <Card>
+              {evaluation.success ? <EvaluationView evaluation={evaluation.data} /> : <Alert tone="danger">Não foi possível calcular o seu progresso.</Alert>}
+              <h3 style={{ margin: "24px 0 12px", fontSize: "1rem" }}>Histórico de graduações</h3>
+              <RankHistory events={events} />
+            </Card>
+          </section>
+        );
+      })}
     </Page>
   );
 }

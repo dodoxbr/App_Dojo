@@ -1,0 +1,10 @@
+.top { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); }
+.text { display: grid; gap: var(--space-1); min-width: 0; }
+.eyebrow { margin: 0; font-size: var(--text-sm); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.75; }
+.title { margin: 0; font-size: var(--text-xl); font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; color: #ffffff; }
+.subtitle { margin: var(--space-1) 0 0; font-size: var(--text-sm); line-height: var(--leading-body); opacity: 0.85; }
+.actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+
+@media (min-width: 768px) {
+  .title { font-size: var(--text-2xl); }
+}

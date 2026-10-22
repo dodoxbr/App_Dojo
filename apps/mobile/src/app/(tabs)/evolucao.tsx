@@ -1,9 +1,9 @@
 import { buildRankHistory, criterionKindLabels, progressText, promotionEventLabels, type PromotionEvent } from '@dojo/contracts/graduation';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 import { useLoad } from '@/lib/hooks';
 import { loadEvolution } from '@/lib/queries';
 import { useSession } from '@/lib/session';
-import { Alert, Badge, Card, EmptyState, Heading, Loading, Muted, ProgressBar, Row, Screen, SectionTitle, colors, space } from '@/ui';
+import { Alert, Badge, BeltBar, Card, EmptyState, Heading, Hero, Loading, Muted, ProgressBar, Row, Screen, SectionTitle, colors, font, space } from '@/ui';
 
 const fmt = (d: string) => new Date(`${d}T12:00:00Z`).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
 
@@ -23,8 +23,26 @@ export default function Evolucao() {
       {data && data.length === 0 ? <EmptyState title="Você ainda não faz parte de nenhuma academia">Peça ao gestor da sua academia o link de entrada.</EmptyState> : null}
       {data?.map(({ academy, evaluation, events }) => {
         const { history, current } = buildRankHistory(events as PromotionEvent[]);
+        const rank = evaluation?.has_rank ? evaluation.rank : undefined;
+        const measurable = (evaluation?.criteria ?? []).filter((c) => c.kind !== 'manual' && (c.target ?? 0) > 0);
+        const overall = measurable.length ? Math.round((measurable.reduce((sum, c) => sum + Math.min((c.current ?? 0) / (c.target as number), 1), 0) / measurable.length) * 100) : null;
         return (
-          <Card key={academy.id}>
+          <View key={academy.id} style={{ gap: space[4] }}>
+          <Hero>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: space[3] }}>
+              <View style={{ flex: 1, gap: 2 }}>
+                <Text style={{ color: 'rgba(255,255,255,0.75)', fontSize: font.xs, fontWeight: '700', letterSpacing: 0.6, textTransform: 'uppercase' }}>{academy.name}</Text>
+                <Text accessibilityRole="header" style={{ color: '#FFFFFF', fontSize: font.xl, fontWeight: '800', letterSpacing: -0.5 }}>{rank ? `${rank.belt_code} · grau ${rank.degree}` : 'Sem graduação registrada'}</Text>
+              </View>
+              {overall !== null ? (
+                <View accessible accessibilityLabel={`Progresso geral nos critérios: ${overall} por cento`} style={{ alignItems: 'center', justifyContent: 'center', width: 72, height: 72, borderRadius: 36, borderWidth: 6, borderColor: '#14B8A6', backgroundColor: 'rgba(255,255,255,0.08)' }}>
+                  <Text style={{ color: '#FFFFFF', fontSize: font.md, fontWeight: '800' }}>{overall}%</Text>
+                </View>
+              ) : null}
+            </View>
+            {rank ? <BeltBar belt={rank.belt_code} degree={rank.degree} height={30} /> : null}
+          </Hero>
+          <Card>
             <SectionTitle>{academy.name}</SectionTitle>
             {!evaluation ? (
               <Alert tone="danger">Não foi possível calcular o seu progresso.</Alert>
@@ -73,6 +91,7 @@ export default function Evolucao() {
               ))
             )}
           </Card>
+          </View>
         );
       })}
     </Screen>

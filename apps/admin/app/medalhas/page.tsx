@@ -1,6 +1,7 @@
 import { academyMedalSchema, medalSchema, type Medal } from "@dojo/contracts/feed";
-import { Badge, Card, EmptyState, Page, PageHeader } from "@/components/ui";
+import { Alert, Avatar, Card, EmptyState, Page, PageHero } from "@/components/ui";
 import { getCaller } from "@/lib/context";
+import styles from "./medalhas.module.css";
 
 const fmtDate = (iso: string) => new Date(`${iso}T12:00:00Z`).toLocaleDateString("pt-BR", { timeZone: "UTC" });
 
@@ -27,24 +28,29 @@ export default async function MedalhasPage() {
     return { academy: a, ownMedals, people: [...people.values()] };
   }));
 
+  const totalMedals = blocks.reduce((sum, b) => sum + b.ownMedals.length, 0);
   return (
     <Page width="narrow">
-      <PageHeader
+      <PageHero
+        eyebrow="Conquistas"
         title="Medalhas"
-        subtitle="As medalhas vêm só do que já foi confirmado pelo professor (presenças validadas) e dos desafios de presença encerrados. São um símbolo dentro do app, sem valor em dinheiro. Se uma presença for revogada, a medalha que dependia dela deixa de valer. Os critérios atuais são valores de teste."
+        subtitle="Conquistas calculadas só do que o professor confirmou."
+        aside={<span className={styles.count} aria-label={`${totalMedals} medalhas`}><strong>{totalMedals}</strong><small>{totalMedals === 1 ? "medalha" : "medalhas"}</small></span>}
       />
+      <Alert tone="info">Vêm das presenças validadas e dos desafios de presença encerrados. São um símbolo dentro do app, sem valor em dinheiro; se uma presença for revogada, a medalha que dependia dela deixa de valer. Os critérios atuais são valores de teste.</Alert>
       {blocks.length === 0 && <EmptyState title="As medalhas aparecem para quem faz parte de uma academia">Peça ao gestor da sua academia o link de entrada.</EmptyState>}
       {blocks.map(({ academy, ownMedals, people }) => (
         <Card key={academy.id as string}>
           <h2 style={{ margin: "0 0 12px", fontSize: "1.25rem" }}>{academy.name as string}</h2>
-          <h3 style={{ margin: "0 0 8px", fontSize: "1rem" }}>Minhas medalhas</h3>
+          <h3 style={{ margin: "0 0 12px", fontSize: "1rem" }}>Minhas medalhas</h3>
           {ownMedals.length === 0 ? (
             <EmptyState title="Ainda não há medalhas">Elas aparecem conforme suas presenças são confirmadas.</EmptyState>
           ) : (
-            <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "grid", gap: 8 }}>
+            <ul className={styles.medals}>
               {ownMedals.map((m) => (
-                <li key={`${m.code}-${m.challenge_id ?? ""}`}>
-                  <Badge tone="accent">{m.title}</Badge> <small>{fmtDate(m.earned_on)}</small>
+                <li key={`${m.code}-${m.challenge_id ?? ""}`} className={styles.medal}>
+                  <span className={`${styles.disc} ${m.code.startsWith("challenge") ? styles.gold : m.code.startsWith("streak") ? styles.teal : styles.silver}`} aria-hidden="true">★</span>
+                  <span className={styles.medalText}><strong>{m.title}</strong><small>{fmtDate(m.earned_on)}</small></span>
                 </li>
               ))}
             </ul>
@@ -53,9 +59,12 @@ export default async function MedalhasPage() {
           {people.length === 0 ? (
             <p style={{ margin: 0, color: "var(--text-muted)" }}>Ninguém mais tem medalhas ainda.</p>
           ) : (
-            <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "grid", gap: 8 }}>
+            <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "grid", gap: 10 }}>
               {people.map((p) => (
-                <li key={p.name}><strong>{p.name}</strong>: {p.medals.map((m) => m.title).join("; ")}</li>
+                <li key={p.name} style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <Avatar name={p.name} size="sm" />
+                  <span><strong>{p.name}</strong> <span style={{ color: "var(--text-muted)" }}>· {p.medals.map((m) => m.title).join("; ")}</span></span>
+                </li>
               ))}
             </ul>
           )}

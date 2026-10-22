@@ -1,9 +1,10 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CAPTION_MAX, COMMENT_MAX, commentSchema, daysLeft, FEED_RETENTION_DAYS, feedPersonSchema, feedPostSchema, hiddenReasonLabels, type FeedComment } from "@dojo/contracts/feed";
 import { idSchema } from "@dojo/contracts/membership";
+import { Alert, Avatar, Button, ButtonLink, Card, EmptyState, Page, PageHero } from "@/components/ui";
 import { getCaller } from "@/lib/context";
 import { feedMessage } from "@/lib/feed-ui";
+import styles from "./feed.module.css";
 import { addComment, deleteComment, deletePost, reportComment, reportPost, restoreComment, restorePost, toggleReaction } from "./actions";
 
 const PAGE = 20;
@@ -61,15 +62,18 @@ export default async function FeedPage({
   );
 
   return (
-    <main style={{ padding: 16, display: "grid", gap: 20, maxWidth: 960 }}>
-      <p><Link href="/perfil">← Meu perfil</Link> · <Link href="/medalhas">Medalhas</Link></p>
-      <h1>Feed — {academy.name}</h1>
-      <p role="note"><small>Só os membros desta academia veem estas fotos. Elas somem sozinhas depois de {FEED_RETENTION_DAYS} dias. Os dados escondidos da foto (como a localização) são removidos antes de salvar.</small></p>
-      {message && <p role="alert">{message}</p>}
-      {ok && <p role="status">Foto publicada.</p>}
+    <Page width="narrow">
+      <PageHero
+        eyebrow="Fotos da academia"
+        title={`Feed — ${academy.name}`}
+        subtitle={`Só os membros desta academia veem estas fotos. Elas somem sozinhas depois de ${FEED_RETENTION_DAYS} dias. Os dados escondidos da foto (como a localização) são removidos antes de salvar.`}
+        actions={<ButtonLink href="/medalhas" variant="secondary">Medalhas</ButtonLink>}
+      />
+      {message && <Alert tone="danger">{message}</Alert>}
+      {ok && <Alert tone="success">Foto publicada.</Alert>}
 
-      <section>
-        <h2>Postar uma foto</h2>
+      <Card>
+        <h2 style={{ margin: "0 0 12px", fontSize: "1.25rem" }}>Postar uma foto</h2>
         <form action="/api/feed/upload" method="post" encType="multipart/form-data">
           <input type="hidden" name="academyId" value={academyId} />
           <input type="hidden" name="clientKey" value={crypto.randomUUID()} />
@@ -86,24 +90,27 @@ export default async function FeedPage({
             ))}
           </fieldset>
           <p><small>Ao postar você confirma que pode compartilhar esta imagem com os membros da academia. Foto de menor só com a autorização do responsável.</small></p>
-          <button type="submit">Publicar</button>
+          <Button type="submit" variant="accent">Publicar</Button>
         </form>
-      </section>
+      </Card>
 
-      <section>
-        <h2>Fotos</h2>
+      <section style={{ display: "grid", gap: 16 }}>
+        <h2 style={{ margin: 0, fontSize: "1.25rem" }}>Fotos</h2>
         {posts.length === 0 ? (
-          <p>Nenhuma foto ainda.</p>
+          <EmptyState title="Nenhuma foto ainda">Poste a primeira foto do treino.</EmptyState>
         ) : (
           posts.map((p) => (
-            <article key={p.id} style={{ borderTop: "1px solid #ccc", paddingTop: 12, marginTop: 12 }}>
-              <p><strong>{p.author_name}</strong>{p.mine ? " (você)" : ""} · {fmt(p.created_at)}</p>
+            <Card key={p.id} className={styles.post}>
+              <div className={styles.author}>
+                <Avatar name={p.author_name} size="sm" />
+                <p><strong>{p.author_name}</strong>{p.mine ? " (você)" : ""} · {fmt(p.created_at)}</p>
+              </div>
               {p.status === "hidden" && (
                 <p role="note">Oculta para os outros membros: {hiddenReasonLabels[p.hidden_reason ?? ""] ?? "aguarda o gestor"}.</p>
               )}
               {/* Authenticated picture served by our own route; the image optimizer cannot be used for it. */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={`/api/feed/image/${p.id}`} width={p.width} height={p.height} loading="lazy" alt={`Foto postada por ${p.author_name}`} style={{ maxWidth: "100%", height: "auto" }} />
+              <img src={`/api/feed/image/${p.id}`} width={p.width} height={p.height} loading="lazy" alt={`Foto postada por ${p.author_name}`} className={styles.photo} />
               {p.caption && <p>{p.caption}</p>}
               {p.can_manage && (
                 <p><small>{p.social_ok
@@ -115,7 +122,7 @@ export default async function FeedPage({
               {p.status === "visible" && (
                 <form action={toggleReaction.bind(null, academyId)}>
                   <input type="hidden" name="postId" value={p.id} />
-                  <button type="submit" aria-pressed={p.reacted_by_me}>{p.reacted_by_me ? "Osu! (você reagiu)" : "Osu!"} · {p.reactions}</button>
+                  <Button type="submit" variant={p.reacted_by_me ? "accent" : "secondary"} aria-pressed={p.reacted_by_me}>{p.reacted_by_me ? "Osu! (você reagiu)" : "Osu!"} · {p.reactions}</Button>
                 </form>
               )}
               {(commentsOf.get(p.id) ?? []).length > 0 && (
@@ -177,11 +184,11 @@ export default async function FeedPage({
                   <button type="submit">Denunciar</button>
                 </form>
               )}
-            </article>
+            </Card>
           ))
         )}
-        {posts.length === PAGE && last && <p><Link href={`/feed/${academyId}?antes=${encodeURIComponent(last.created_at)}`}>Fotos mais antigas →</Link></p>}
+        {posts.length === PAGE && last && <ButtonLink href={`/feed/${academyId}?antes=${encodeURIComponent(last.created_at)}`} variant="secondary">Fotos mais antigas →</ButtonLink>}
       </section>
-    </main>
+    </Page>
   );
 }

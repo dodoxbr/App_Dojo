@@ -1,19 +1,29 @@
-import Link from "next/link";
 import { chargeStatusText, chargeTitle, formatCents, myChargeSchema, paymentMethodLabels, type MyCharge, type PaymentMethod } from "@dojo/contracts/finance";
 import { dependentRowSchema } from "@dojo/contracts/guardians";
+import { Badge, Card, EmptyState, Page, PageHero } from "@/components/ui";
+import styles from "./financeiro.module.css";
 import { getCaller } from "@/lib/context";
 import { fmtDate } from "@/lib/finance-ui";
 
 function ChargeList({ charges }: { charges: MyCharge[] }) {
-  if (charges.length === 0) return <p>Nenhuma cobrança registrada.</p>;
+  if (charges.length === 0) return <EmptyState title="Nenhuma cobrança registrada" />;
   return (
-    <ul>
-      {charges.map((c) => (
-        <li key={c.id}>
-          {c.academy_name} — {chargeTitle(c)} · {formatCents(c.amount_cents)} · vence {fmtDate(c.due_date)} · <strong>{chargeStatusText(c)}</strong>
-          {c.status === "paid" && c.paid_on && ` em ${fmtDate(c.paid_on)} (${paymentMethodLabels[c.paid_method as PaymentMethod] ?? c.paid_method})`}
-        </li>
-      ))}
+    <ul className={styles.charges}>
+      {charges.map((c) => {
+        const paid = c.status === "paid";
+        return (
+          <li key={c.id} className={styles.charge}>
+            <div className={styles.chargeText}>
+              <strong>{chargeTitle(c)}</strong>
+              <small>{c.academy_name} · vence {fmtDate(c.due_date)}{paid && c.paid_on ? ` · pago em ${fmtDate(c.paid_on)} (${paymentMethodLabels[c.paid_method as PaymentMethod] ?? c.paid_method})` : ""}</small>
+            </div>
+            <div className={styles.chargeSide}>
+              <strong className={styles.amount}>{formatCents(c.amount_cents)}</strong>
+              <Badge tone={paid ? "success" : c.status === "cancelled" || c.status === "waived" ? "neutral" : "info"}>{chargeStatusText(c)}</Badge>
+            </div>
+          </li>
+        );
+      })}
     </ul>
   );
 }
@@ -31,21 +41,25 @@ export default async function MeuFinanceiroPage() {
     }),
   );
 
+  const open = mine.filter((c) => c.status !== "paid" && c.status !== "cancelled" && c.status !== "waived").length;
   return (
-    <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 960 }}>
-      <p><Link href="/perfil">← Meu perfil</Link></p>
-      <h1>Meu financeiro</h1>
-      <p role="note"><small>Consulta apenas: quem registra os pagamentos é o gestor da academia. A plataforma não recebe pagamentos.</small></p>
-      <section>
-        <h2>Minhas cobranças</h2>
+    <Page width="narrow">
+      <PageHero
+        eyebrow="Financeiro"
+        title="Meu financeiro"
+        subtitle="Consulta apenas: quem registra os pagamentos é o gestor da academia. A plataforma não recebe pagamentos."
+        aside={<span className={styles.count} aria-label={`${open} cobranças em aberto`}><strong>{open}</strong><small>em aberto</small></span>}
+      />
+      <Card>
+        <h2 style={{ margin: "0 0 12px", fontSize: "1.25rem" }}>Minhas cobranças</h2>
         <ChargeList charges={mine} />
-      </section>
+      </Card>
       {dependentCharges.map(({ d, charges }) => (
-        <section key={`${d.minor_user_id}-${d.kind}`}>
-          <h2>{d.minor_name}{d.kind === "financial" ? " (você é o responsável financeiro)" : ""}</h2>
+        <Card key={`${d.minor_user_id}-${d.kind}`}>
+          <h2 style={{ margin: "0 0 12px", fontSize: "1.25rem" }}>{d.minor_name}{d.kind === "financial" ? " (você é o responsável financeiro)" : ""}</h2>
           <ChargeList charges={charges} />
-        </section>
+        </Card>
       ))}
-    </main>
+    </Page>
   );
 }

@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { dependentRowSchema, guardianKindLabels } from "@dojo/contracts/guardians";
+import { Alert, Badge, ButtonLink, Card, EmptyState, ItemLink, ItemList, Page, PageHero } from "@/components/ui";
 import { getCaller } from "@/lib/context";
 import { AcceptInviteForm } from "./forms";
 
@@ -10,38 +10,43 @@ export default async function DependentesPage() {
   const isAdult = ageStatus === "adult";
 
   return (
-    <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 560 }}>
-      <p><Link href="/perfil">← Meu perfil</Link></p>
-      <h1>Meus dependentes</h1>
-      <p>Menores de 18 anos não têm login: o responsável cadastra o menor e usa o app em nome dele.</p>
+    <Page width="narrow">
+      <PageHero
+        eyebrow="Responsável"
+        title="Meus dependentes"
+        subtitle="Menores de 18 anos não têm login: o responsável cadastra o menor e usa o app em nome dele."
+        actions={isAdult ? <ButtonLink href="/dependentes/novo" variant="accent">Cadastrar um menor</ButtonLink> : undefined}
+      />
 
       {dependents.length === 0 ? (
-        <p>Você ainda não cadastrou nenhum menor.</p>
+        <EmptyState title="Você ainda não cadastrou nenhum menor" />
       ) : (
-        <ul>
+        <ItemList>
           {dependents.map((d) => (
             <li key={`${d.minor_user_id}-${d.kind}`}>
-              {d.kind === "legal" && !d.minor_is_adult ? <Link href={`/dependentes/${d.minor_user_id}`}>{d.minor_name}</Link> : d.minor_name}
-              {" "}— {guardianKindLabels[d.kind]} ({d.relationship})
-              {d.minor_is_adult && " · já completou 18 anos: o acesso do responsável terminou"}
-              {d.kind === "financial" && " · você cuida apenas da parte financeira"}
+              {d.kind === "legal" && !d.minor_is_adult ? (
+                <ItemLink href={`/dependentes/${d.minor_user_id}`} title={d.minor_name} meta={`${guardianKindLabels[d.kind]} (${d.relationship})`} badges={<Badge tone="accent">Ver o acompanhamento</Badge>} />
+              ) : (
+                <Card>
+                  <strong>{d.minor_name}</strong> — {guardianKindLabels[d.kind]} ({d.relationship})
+                  {d.minor_is_adult && " · já completou 18 anos: o acesso do responsável terminou"}
+                  {d.kind === "financial" && " · você cuida apenas da parte financeira"}
+                </Card>
+              )}
             </li>
           ))}
-        </ul>
+        </ItemList>
       )}
 
       {isAdult ? (
-        <>
-          <p><Link href="/dependentes/novo">Cadastrar um menor</Link></p>
-          <section>
-            <h2>Sou o responsável financeiro</h2>
-            <p>Se o responsável legal gerou um código para você, informe aqui. Você não verá a frequência nem a graduação do menor.</p>
-            <AcceptInviteForm />
-          </section>
-        </>
+        <Card>
+          <h2 style={{ margin: "0 0 8px", fontSize: "1.25rem" }}>Sou o responsável financeiro</h2>
+          <p style={{ margin: "0 0 16px", color: "var(--text-muted)" }}>Se o responsável legal gerou um código para você, informe aqui. Você não verá a frequência nem a graduação do menor.</p>
+          <AcceptInviteForm />
+        </Card>
       ) : (
-        <p role="note">Informe sua data de nascimento (maior de 18 anos) no perfil para cadastrar um menor.</p>
+        <Alert tone="info">Informe sua data de nascimento (maior de 18 anos) no perfil para cadastrar um menor.</Alert>
       )}
-    </main>
+    </Page>
   );
 }

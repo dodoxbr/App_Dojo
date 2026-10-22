@@ -4,6 +4,7 @@ import { dependentMedalSchema } from "@dojo/contracts/feed";
 import { myMilestoneSchema, rankLabel } from "@dojo/contracts/milestone";
 import { consentStepLabel, overviewSchema } from "@dojo/contracts/guardians";
 import { idSchema } from "@dojo/contracts/membership";
+import { Avatar, BeltBar, PageHero } from "@/components/ui";
 import { getCaller } from "@/lib/context";
 import { InviteForm } from "../forms";
 import { revokeConsent } from "../actions";
@@ -28,11 +29,14 @@ export default async function DependentePage({ params }: { params: Promise<{ min
   const parsed = overviewSchema.safeParse(data);
   if (error || !parsed.success || !parsed.data.minor) notFound();
   const o = parsed.data;
+  const shownRank = o.academies.find((a) => a.consent_status === "verified" && a.consent_active && a.rank)?.rank ?? null;
 
   return (
     <main style={{ padding: 16, display: "grid", gap: 20, maxWidth: 640 }}>
       <p><Link href="/dependentes">← Meus dependentes</Link></p>
-      <h1>{o.minor?.display_name}</h1>
+      <PageHero eyebrow="Acompanhamento do menor" title={o.minor?.display_name ?? "Menor"} subtitle={shownRank ? `${shownRank.belt_code} · grau ${shownRank.degree}` : "Sem graduação registrada ainda."} aside={<Avatar name={o.minor?.display_name ?? "?"} size="lg" />}>
+        {shownRank && <BeltBar belt={shownRank.belt_code} degree={shownRank.degree} size="md" />}
+      </PageHero>
       <p role={hasContact ? "status" : "alert"}>
         {hasContact ? "Ficha de cadastro preenchida." : "Falta a ficha de cadastro do menor: sem ela não é possível pedir vaga."}{" "}
         <Link href={`/dependentes/${minorId}/ficha`}>{hasContact ? "Ver ou editar a ficha" : "Preencher a ficha"}</Link>

@@ -1,0 +1,13 @@
+.avatar {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  font-weight: 800;
+  color: #052e2a;
+  background: linear-gradient(135deg, var(--accent-bright), #5eead4);
+  border-radius: 50%;
+}
+
+.sm { width: 32px; height: 32px; font-size: 0.9rem; }
+.md { width: 44px; height: 44px; font-size: 1.15rem; }
+.lg { width: 72px; height: 72px; font-size: 1.9rem; }

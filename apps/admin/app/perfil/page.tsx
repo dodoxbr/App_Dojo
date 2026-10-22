@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { membershipRoleLabels, membershipStatusLabels } from "@dojo/contracts/membership";
-import { Alert, Badge, Button, Card, ItemLink, ItemList, Page, PageHeader } from "@/components/ui";
+import { Alert, Avatar, Badge, BeltBar, Button, Card, ItemLink, ItemList, Page, PageHero } from "@/components/ui";
 import { getCaller } from "@/lib/context";
 import { CURRENT_TERMS_VERSION } from "@dojo/contracts/terms";
 import { myMilestoneSchema, rankLabel, staffMilestoneSchema } from "@dojo/contracts/milestone";
@@ -30,9 +30,20 @@ export default async function PerfilPage() {
     : { data: [] as { id: string; name: string; slug: string }[] };
   const nameOf = new Map((academies ?? []).map((a) => [a.id, a.name]));
 
+  const { data: ranks } = await supabase.from("current_ranks").select("academy_id, belt_code, degree").eq("user_id", userId);
+  const firstRank = (ranks ?? []).find((r) => (mine ?? []).some((m) => m.academy_id === r.academy_id && m.status === "approved")) ?? null;
+  const shownName = (profile?.display_name as string | undefined) ?? "Meu perfil";
+
   return (
     <Page width="narrow">
-      <PageHeader title="Meu perfil" subtitle="Seus dados, suas academias e atalhos." />
+      <PageHero
+        eyebrow="Meu perfil"
+        title={shownName}
+        subtitle={firstRank ? `${firstRank.belt_code as string} · grau ${firstRank.degree as number}` : "Seus dados, suas academias e atalhos."}
+        aside={<Avatar name={shownName} size="lg" />}
+      >
+        {firstRank && <BeltBar belt={firstRank.belt_code as string} degree={firstRank.degree as number} size="md" />}
+      </PageHero>
 
       <Card>
         {error || !profile ? <Alert tone="danger">Não foi possível carregar o perfil.</Alert> : <ProfileForm displayName={profile.display_name} />}
