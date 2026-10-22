@@ -9,6 +9,7 @@ import { BirthDateForm } from "./birth-date-form";
 import { acceptTerms } from "./ficha/actions";
 import { ProfileForm } from "./profile-form";
 import { signOut } from "./actions";
+import { setTheme } from "./theme-actions";
 import { DeclarationsCard, type Declarations } from "./image-consent";
 
 export default async function PerfilPage() {
@@ -110,6 +111,14 @@ export default async function PerfilPage() {
           <DeclarationsCard d={declarations} />
         </Card>
       )}
+
+      <Card>
+        <h2 style={{ margin: "0 0 12px", fontSize: "1.25rem" }}>Aparência</h2>
+        <form action={setTheme} style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+          <Button type="submit" name="theme" value="dark" variant="secondary">Escuro</Button>
+          <Button type="submit" name="theme" value="light" variant="secondary">Claro</Button>
+        </form>
+      </Card>
 
       <section aria-labelledby="atalhos" style={{ display: "grid", gap: 12 }}>
         <h2 id="atalhos" style={{ margin: 0, fontSize: "1.25rem" }}>Atalhos</h2>

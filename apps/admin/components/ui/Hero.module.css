@@ -5,7 +5,7 @@
   padding: var(--space-5);
   overflow: hidden;
   color: #ffffff;
-  background: linear-gradient(135deg, var(--primary-strong) 0%, var(--primary) 62%, #1d5b78 100%);
+  background: linear-gradient(135deg, var(--hero-from) 0%, var(--hero-to) 62%, var(--hero-end) 100%);
   border-radius: var(--radius-hero);
   box-shadow: var(--shadow-hero);
 }
@@ -26,7 +26,7 @@
   top: -80px;
   width: 260px;
   height: 260px;
-  background: radial-gradient(circle, rgba(20, 184, 166, 0.4), transparent 68%);
+  background: radial-gradient(circle, var(--glow), transparent 68%);
   pointer-events: none;
 }
 

@@ -134,21 +134,24 @@ export default async function FeedPage({
                         </form>
                       )}
                       {!c.mine && c.status === "visible" && !c.reported_by_me && (
-                        <form action={reportComment.bind(null, academyId)}>
-                          <input type="hidden" name="commentId" value={c.id} />
-                          <label>Denunciar: motivo <input name="reason" minLength={3} maxLength={300} required /></label>
-                          <button type="submit">Denunciar comentário</button>
-                        </form>
+                        <details className={styles.report}>
+                          <summary>Denunciar comentário</summary>
+                          <form action={reportComment.bind(null, academyId)}>
+                            <input type="hidden" name="commentId" value={c.id} />
+                            <label>Denunciar: motivo <input name="reason" minLength={3} maxLength={300} required /></label>
+                            <button type="submit">Denunciar comentário</button>
+                          </form>
+                        </details>
                       )}
                     </li>
                   ))}
                 </ul>
               )}
               {p.status === "visible" && (
-                <form action={addComment.bind(null, academyId)}>
+                <form action={addComment.bind(null, academyId)} className={styles.commentRow}>
                   <input type="hidden" name="postId" value={p.id} />
                   <input type="hidden" name="clientKey" value={crypto.randomUUID()} />
-                  <label>Comentar <input name="body" minLength={1} maxLength={COMMENT_MAX} required /></label>
+                  <input name="body" minLength={1} maxLength={COMMENT_MAX} required placeholder="Escreva um comentário com respeito…" aria-label="Comentar" />
                   <button type="submit">Enviar comentário</button>
                 </form>
               )}
@@ -168,11 +171,14 @@ export default async function FeedPage({
                 </form>
               )}
               {!p.mine && p.status === "visible" && !p.reported_by_me && (
-                <form action={reportPost.bind(null, academyId)}>
-                  <input type="hidden" name="postId" value={p.id} />
-                  <label>Denunciar: motivo <input name="reason" minLength={3} maxLength={300} required /></label>
-                  <button type="submit">Denunciar</button>
-                </form>
+                <details className={styles.report}>
+                  <summary>Denunciar esta foto</summary>
+                  <form action={reportPost.bind(null, academyId)}>
+                    <input type="hidden" name="postId" value={p.id} />
+                    <label>Denunciar: motivo <input name="reason" minLength={3} maxLength={300} required /></label>
+                    <button type="submit">Denunciar</button>
+                  </form>
+                </details>
               )}
             </Card>
           ))

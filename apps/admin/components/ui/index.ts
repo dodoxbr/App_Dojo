@@ -24,3 +24,4 @@ export { WeekStrip } from "./WeekStrip";
 export { Section } from "./Section";
 export { AcademyBanner } from "./AcademyBanner";
 export { DataTable, type DataColumn, type DataRow, type DataFilter } from "./DataTable";
+export { Icon } from "./Icon";

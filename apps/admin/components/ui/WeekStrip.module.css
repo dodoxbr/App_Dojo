@@ -17,6 +17,6 @@
 
 .future .dot { opacity: 0.55; }
 .today .dot { border: 2px solid var(--primary); color: var(--primary); }
-.done .dot { color: #ffffff; background: var(--accent); border-color: var(--accent); }
+.done .dot { color: var(--on-accent-bright); background: var(--accent); border-color: var(--accent); }
 .today .label { color: var(--primary); }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

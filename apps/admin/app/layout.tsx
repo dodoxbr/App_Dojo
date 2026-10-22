@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { Archivo, Figtree } from "next/font/google";
 import "../styles/tokens.css";
 import "./globals.css";
@@ -12,9 +13,11 @@ export const metadata: Metadata = {
   description: "Oss: a plataforma das academias de Jiu-Jitsu. Turmas, presenças, graduações, financeiro e feed.",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  // Aparência: escuro por padrão (cookie `oss-theme`); Perfil > Aparência troca para claro.
+  const theme = (await cookies()).get("oss-theme")?.value === "light" ? "light" : "dark";
   return (
-    <html lang="pt-BR" className={`${archivo.variable} ${figtree.variable}`}>
+    <html lang="pt-BR" data-theme={theme} className={`${archivo.variable} ${figtree.variable}`}>
       <body>{children}</body>
     </html>
   );

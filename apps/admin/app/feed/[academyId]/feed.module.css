@@ -7,3 +7,9 @@
 .decide { display: grid; gap: var(--space-3); }
 .decide label { display: grid; gap: var(--space-1); }
 .decideButtons { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.commentRow { display: grid; gap: var(--space-2); grid-template-columns: 1fr; }
+@media (min-width: 560px) { .commentRow { grid-template-columns: 1fr auto; align-items: center; } }
+.commentRow input { margin: 0; }
+.report { font-size: var(--text-sm); color: var(--text-muted); }
+.report summary { cursor: pointer; padding: var(--space-1) 0; }
+.report form { display: grid; gap: var(--space-2); margin-top: var(--space-2); }

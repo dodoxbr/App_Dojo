@@ -7,6 +7,6 @@
   border-radius: var(--radius-control);
 }
 
-.danger { background: var(--danger-surface); border-color: var(--danger); color: #5f1a21; }
-.success { background: var(--success-surface); border-color: var(--success); color: #123f27; }
-.info { background: var(--info-surface); border-color: var(--info); color: #12305a; }
+.danger { background: var(--danger-surface); border-color: var(--danger); color: var(--alert-danger-text); }
+.success { background: var(--success-surface); border-color: var(--success); color: var(--alert-success-text); }
+.info { background: var(--info-surface); border-color: var(--info); color: var(--alert-info-text); }

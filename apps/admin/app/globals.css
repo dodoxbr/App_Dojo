@@ -19,6 +19,10 @@
   --ok-bg: #e8f5ec;
   --note: #1d4f91;
   --note-bg: #eaf2fc;
+  --line-strong: #8793a1;
+  --danger-ink: #5f1410;
+  --ok-ink: #123f22;
+  --note-ink: #12305a;
   color-scheme: light;
 }
 
@@ -83,7 +87,7 @@ a {
 a:hover { text-decoration-thickness: 2px; }
 
 code {
-  background: #eef1f5;
+  background: var(--page);
   border-radius: 4px;
   padding: 1px 5px;
   font-size: 0.92em;
@@ -134,8 +138,8 @@ textarea {
   font: inherit;
   font-weight: 400;
   color: var(--ink);
-  background: #fff;
-  border: 1px solid #8793a1;
+  background: var(--paper);
+  border: 1px solid var(--line-strong);
   border-radius: 8px;
 }
 
@@ -185,9 +189,9 @@ legend { padding: 0 6px; font-weight: 600; }
   border-left: 4px solid;
 }
 
-[role="alert"] { background: var(--danger-bg); border-color: var(--danger); color: #5f1410; }
-[role="status"] { background: var(--ok-bg); border-color: var(--ok); color: #123f22; }
-[role="note"] { background: var(--note-bg); border-color: var(--note); color: #12305a; }
+[role="alert"] { background: var(--danger-bg); border-color: var(--danger); color: var(--danger-ink); }
+[role="status"] { background: var(--ok-bg); border-color: var(--ok); color: var(--ok-ink); }
+[role="note"] { background: var(--note-bg); border-color: var(--note); color: var(--note-ink); }
 [role="note"] small { color: inherit; }
 
 /* ---- listas, tabelas e blocos ---- */
@@ -214,7 +218,7 @@ th, td {
   white-space: nowrap;
 }
 
-th { font-weight: 700; background: #f3f5f8; }
+th { font-weight: 700; background: var(--page); }
 
 article { overflow-wrap: anywhere; }
 section { min-width: 0; }

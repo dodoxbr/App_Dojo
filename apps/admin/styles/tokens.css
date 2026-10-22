@@ -50,6 +50,24 @@
   --info: var(--color-info);
   --info-surface: var(--color-info-bg);
   --focus-ring: #1a73e8;
+  --on-accent-bright: #04201c;
+
+  /* textos sobre superfícies de estado e de destaque (mudam no tema escuro) */
+  --danger-text: #8e2430;
+  --success-text: #145c35;
+  --info-text: #174a82;
+  --accent-surface: #dcf3f0;
+  --accent-text: #0a5c54;
+  --alert-danger-text: #5f1a21;
+  --alert-success-text: #123f27;
+  --alert-info-text: #12305a;
+  --ring-track: rgba(255, 255, 255, 0.18);
+
+  /* apresentação (Hero) */
+  --hero-from: var(--color-brand-strong);
+  --hero-to: var(--color-brand);
+  --hero-end: #1d5b78;
+  --glow: rgba(20, 184, 166, 0.4);
 
   /* espaçamento */
   --space-1: 4px;
@@ -84,3 +102,68 @@
 
 /* Títulos no padrão da marca (Archivo). Sem camada: vence o CSS antigo (@layer legacy). */
 h1, h2, h3 { font-family: var(--font-heading); }
+
+/* ---- Tema escuro (aprovado em 2026-10-22: "app inovador, com tecnologia"). Só redefine os semânticos; os componentes não mudam.
+   Escolhido pelo cookie `oss-theme` (padrão: escuro) e aplicado no <html data-theme>. Perfil > Aparência troca. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-bg: #08121c;
+  --color-surface: #101c2a;
+  --color-text: #e8eef3;
+  --color-muted: #9fb0c0;
+  --color-border: #223245;
+  --color-border-strong: #3d5066;
+
+  --primary: #4cc9b8;
+  --primary-strong: #6ad6c7;
+  --primary-contrast: #04201c;
+  --accent: #4cc9b8;
+  --accent-strong: #4cc9b8;
+  --accent-bright: #4cc9b8;
+  --accent-bright-hover: #6ad6c7;
+  --focus-ring: #6ad6c7;
+
+  --danger: #ff6b7a;
+  --danger-surface: #34171d;
+  --success: #46d18a;
+  --success-surface: #10301f;
+  --info: #6aaef5;
+  --info-surface: #13294a;
+  --danger-text: #ffb3bb;
+  --success-text: #a6efc9;
+  --info-text: #b5d6fa;
+  --accent-surface: #0f3a36;
+  --accent-text: #8fe8dc;
+  --alert-danger-text: #ffc9cf;
+  --alert-success-text: #bdf3d6;
+  --alert-info-text: #c8e0fb;
+  --ring-track: rgba(255, 255, 255, 0.14);
+
+  --hero-from: #0b2230;
+  --hero-to: #0f3a4d;
+  --hero-end: #136a6b;
+  --glow: rgba(76, 201, 184, 0.34);
+
+  --shadow-card: 0 8px 28px rgba(0, 0, 0, 0.38);
+  --shadow-hero: 0 18px 44px rgba(0, 0, 0, 0.55);
+
+  /* variáveis do CSS antigo (camada legacy), para as telas ainda não migradas */
+  --ink: #e8eef3;
+  --ink-soft: #9fb0c0;
+  --paper: #101c2a;
+  --page: #08121c;
+  --line: #243445;
+  --brand: #4cc9b8;
+  --brand-ink: #04201c;
+  --link: #6ad6c7;
+  --focus: #6ad6c7;
+  --danger-bg: #34171d;
+  --ok: #46d18a;
+  --ok-bg: #10301f;
+  --note: #8fc2f5;
+  --note-bg: #13294a;
+  --line-strong: #3d5066;
+  --danger-ink: #ffc9cf;
+  --ok-ink: #bdf3d6;
+  --note-ink: #c8e0fb;
+}

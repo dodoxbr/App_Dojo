@@ -32,7 +32,7 @@ function Routes() {
 export default function RootLayout() {
   return (
     <SessionProvider>
-      <StatusBar style="dark" />
+      <StatusBar style="light" />
       <Routes />
     </SessionProvider>
   );

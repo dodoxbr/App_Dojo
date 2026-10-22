@@ -10,7 +10,7 @@
 }
 
 .neutral { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
-.accent { background: #dcf3f0; color: #0a5c54; }
-.success { background: var(--success-surface); color: #145c35; }
-.danger { background: var(--danger-surface); color: #8e2430; }
-.info { background: var(--info-surface); color: #174a82; }
+.accent { background: var(--accent-surface); color: var(--accent-text); }
+.success { background: var(--success-surface); color: var(--success-text); }
+.danger { background: var(--danger-surface); color: var(--danger-text); }
+.info { background: var(--info-surface); color: var(--info-text); }

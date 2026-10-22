@@ -6,7 +6,10 @@
 - **Marca:** logo Oss (provisória) em `apps/admin/public/brand/oss-site-logo.webp`; sobre fundo escuro usa `mix-blend-mode: lighten` (componente `BrandLogo`). Nunca sobre fundo claro. A "faixa" da marca é branca e preta.
 - **Tom:** escuro e sóbrio nas estruturas (menu, topo, apresentação), claro e limpo no conteúdo; destaque em verde-água.
 
-## Cores (tokens semânticos)
+## Temas (ADR-028)
+O padrão é o **tema escuro**; o claro continua disponível em Perfil > Aparência (cookie `oss-theme`). Os dois usam os **mesmos nomes de token**; o escuro só os redefine (`:root[data-theme="dark"]` em `tokens.css`): fundo `#08121C`, superfície `#101C2A`, texto `#E8EEF3`, destaque e botão principal `#4CC9B8` (texto `#04201C`), estados com tons próprios (`--danger-text`, `--success-text`…). **Nunca use cor fixa numa tela**: sempre token, para funcionar nos dois temas. O app (Expo) usa `apps/mobile/src/ui/theme.ts` com os mesmos valores.
+
+## Cores (tokens semânticos, valores do tema claro)
 | Uso | Token | Valor |
 |---|---|---|
 | Fundo escuro (menu, topo, hero, login) | `--dark` / `--primary-strong` | `#070E17` |

@@ -130,9 +130,9 @@ export function TextField({
 
 export function Alert({ tone = 'info', children }: { tone?: 'danger' | 'success' | 'info'; children: ReactNode }) {
   const palette = {
-    danger: { bg: colors.dangerSurface, border: colors.danger, fg: '#5F1A21' },
-    success: { bg: colors.successSurface, border: colors.success, fg: '#123F27' },
-    info: { bg: colors.infoSurface, border: colors.info, fg: '#12305A' },
+    danger: { bg: colors.dangerSurface, border: colors.danger, fg: colors.dangerText },
+    success: { bg: colors.successSurface, border: colors.success, fg: colors.successText },
+    info: { bg: colors.infoSurface, border: colors.info, fg: colors.infoText },
   }[tone];
   return (
     <View
@@ -148,10 +148,10 @@ export function Alert({ tone = 'info', children }: { tone?: 'danger' | 'success'
 export function Badge({ children, tone = 'neutral' }: { children: ReactNode; tone?: 'neutral' | 'accent' | 'success' | 'danger' | 'info' }) {
   const palette = {
     neutral: { bg: colors.bg, fg: colors.text, border: colors.border },
-    accent: { bg: colors.accentSurface, fg: '#0A5C54', border: colors.accentSurface },
-    success: { bg: colors.successSurface, fg: '#145C35', border: colors.successSurface },
-    danger: { bg: colors.dangerSurface, fg: '#8E2430', border: colors.dangerSurface },
-    info: { bg: colors.infoSurface, fg: '#174A82', border: colors.infoSurface },
+    accent: { bg: colors.accentSurface, fg: colors.accentText, border: colors.accentSurface },
+    success: { bg: colors.successSurface, fg: colors.successText, border: colors.successSurface },
+    danger: { bg: colors.dangerSurface, fg: colors.dangerText, border: colors.dangerSurface },
+    info: { bg: colors.infoSurface, fg: colors.infoText, border: colors.infoSurface },
   }[tone];
   return (
     <View style={[styles.badge, { backgroundColor: palette.bg, borderColor: palette.border }]}>
@@ -231,8 +231,8 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     padding: space[5],
     gap: space[3],
-    shadowColor: '#102840',
-    shadowOpacity: 0.07,
+    shadowColor: '#000000',
+    shadowOpacity: 0.35,
     shadowRadius: 14,
     shadowOffset: { width: 0, height: 6 },
     elevation: 2,

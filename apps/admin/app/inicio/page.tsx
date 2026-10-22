@@ -5,7 +5,7 @@ import { evaluationSchema } from "@dojo/contracts/graduation";
 import { membershipStatusLabels } from "@dojo/contracts/membership";
 import { trainedDays, weekDays } from "@dojo/contracts/week";
 import { AppShell } from "@/components/shell/AppShell";
-import { Alert, BeltBar, ButtonLink, Card, EmptyState, Hero, ProgressBar, ProgressRing, WeekStrip } from "@/components/ui";
+import { Alert, Avatar, BeltBar, ButtonLink, Card, EmptyState, Icon, ProgressBar, ProgressRing, WeekStrip } from "@/components/ui";
 import { anyAcademyHas, myFeatureMap } from "@/lib/features";
 import { shellAcademy } from "@/lib/shell-academy";
 import { getCaller } from "@/lib/context";
@@ -95,24 +95,14 @@ export default async function InicioPage() {
   return (
     <AppShell userName={(profile?.display_name as string | undefined) ?? undefined} academy={headerAcademy}>
       <main className={styles.home}>
-        <Hero>
-          <div className={styles.heroTop}>
-            <div className={styles.heroText}>
-              <p className={styles.eyebrow}>{primary ? primary.name : "Oss"}</p>
-              <h1 className={styles.title}>Oss, {firstName}!</h1>
-              {primary && (
-                <p className={styles.rankLine}>{rank ? `${rank.belt_code} · grau ${rank.degree}` : "Sem graduação registrada"}</p>
-              )}
-            </div>
-            {overall !== null && <ProgressRing percent={overall} label="Progresso geral nos critérios de graduação" size={112} />}
+        <header className={styles.greet}>
+          <Avatar name={firstName} size="md" />
+          <div className={styles.greetText}>
+            <p className={styles.hello}>Bem-vindo de volta</p>
+            <h1 className={styles.name}>Oss, {firstName}!</h1>
           </div>
-          {primary && rank && <BeltBar belt={rank.belt_code} degree={rank.degree} size="lg" />}
-          <div className={styles.heroActions}>
-            <ButtonLink href="/diario/novo" variant="accent">Registrar treino</ButtonLink>
-            {primary && <ButtonLink href="/aulas" variant="secondary">Agenda e check-in</ButtonLink>}
-          </div>
-          {primary && <p className={styles.heroNote}>Só contam treinos confirmados pelo professor. A graduação só muda com a aprovação do mestre.</p>}
-        </Hero>
+          <ButtonLink href="/diario/novo" variant="accent">Registrar treino</ButtonLink>
+        </header>
 
         {parqBlocked && (
           <Alert tone="danger">
@@ -144,81 +134,107 @@ export default async function InicioPage() {
             Peça ao gestor da sua academia o link de entrada. Assim que ele aprovar o seu pedido, o seu progresso aparece aqui.
           </EmptyState>
         ) : (
-          <div className={styles.grid}>
-            <Card className={styles.week}>
-              <div className={styles.cardHead}>
-                <h2 className={styles.cardTitle}>Esta semana</h2>
-                <p className={styles.count}><strong>{weekCount}</strong> {weekCount === 1 ? "treino confirmado" : "treinos confirmados"}</p>
-              </div>
-              <WeekStrip days={days} trained={trained} />
-              <p className={styles.muted}>Segunda a domingo. Um dia marcado quer dizer que o professor confirmou a sua presença.</p>
-            </Card>
-
-            <Card className={styles.next}>
-              <h2 className={styles.cardTitle}>Próximo treino</h2>
-              {nextSession ? (
-                <>
-                  <p className={styles.strong}>{nextSession.title}</p>
-                  <p className={styles.muted}>{nextSession.range}</p>
-                </>
-              ) : (
-                <p className={styles.muted}>Nenhuma aula agendada por enquanto.</p>
-              )}
-              <ButtonLink href="/aulas" variant="secondary">Ver agenda e check-in</ButtonLink>
-            </Card>
-
+          <>
             <Card className={styles.progress}>
-              <h2 className={styles.cardTitle}>Meu progresso</h2>
+              <div className={styles.progressTop}>
+                <div className={styles.progressText}>
+                  <p className={styles.kicker}>{primary.name}</p>
+                  <h2 className={styles.cardTitle}>Progresso de treino</h2>
+                  <p className={styles.rank}>{rank ? `${rank.belt_code} · grau ${rank.degree}` : "Sem graduação registrada"}</p>
+                  <p className={styles.sub}>{overall !== null ? "Média dos critérios de graduação da sua academia." : "Quando a academia definir critérios medidos em números, o avanço aparece aqui."}</p>
+                </div>
+                {overall !== null && <ProgressRing percent={overall} label="Progresso geral nos critérios de graduação" size={96} />}
+              </div>
+              {rank && <BeltBar belt={rank.belt_code} degree={rank.degree} size="lg" />}
+              <p className={styles.fine}>Só contam treinos confirmados pelo professor. A graduação só muda com a aprovação do mestre.</p>
+            </Card>
+
+            <section className={styles.section} aria-labelledby="metas">
+              <h2 id="metas" className={styles.sectionTitle}>Metas atuais</h2>
+              <p className={styles.sectionHint}>As suas metas aparecem conforme a sua academia define os critérios.</p>
               {!hasRule || criteria.length === 0 ? (
-                <p className={styles.muted}>A sua academia ainda não definiu critérios de graduação medidos em números para o seu nível. Quando definir, o seu avanço aparece aqui.</p>
+                <Card><p className={styles.sub}>A sua academia ainda não definiu critérios de graduação medidos em números para o seu nível.</p></Card>
               ) : (
-                <ul className={styles.criteria}>
-                  {criteria.map((c) => (
-                    <li key={c.id}>
-                      <div className={styles.criterionHead}>
-                        <span>{c.label}</span>
-                        <strong>{c.current ?? 0}{c.kind === "curriculum" ? "%" : ""} de {c.target ?? 0}{c.kind === "curriculum" ? "%" : ""}</strong>
-                      </div>
-                      <ProgressBar value={c.current ?? 0} max={c.target ?? 1} label={c.label} />
-                    </li>
-                  ))}
+                <ul className={styles.goals}>
+                  {criteria.map((c, i) => {
+                    const target = c.target ?? 0;
+                    const pct = target > 0 ? Math.min(Math.round(((c.current ?? 0) / target) * 100), 100) : 0;
+                    const unit = c.kind === "curriculum" ? "%" : "";
+                    return (
+                      <li key={c.id} className={`${styles.goal} ${styles[`tone${i % 4}`]}`}>
+                        <div className={styles.goalHead}>
+                          <strong>{c.label}</strong>
+                          <span>{c.current ?? 0}{unit} de {target}{unit} · {pct}%</span>
+                        </div>
+                        <ProgressBar value={c.current ?? 0} max={target || 1} label={c.label} />
+                      </li>
+                    );
+                  })}
                 </ul>
               )}
               <Link href="/graduacao" className={styles.more}>Ver a minha evolução →</Link>
-            </Card>
-          </div>
+            </section>
+
+            <div className={styles.duo}>
+              <Card className={styles.week}>
+                <div className={styles.cardHead}>
+                  <h2 className={styles.cardTitleSm}>Esta semana</h2>
+                  <p className={styles.count}><strong>{weekCount}</strong> {weekCount === 1 ? "treino confirmado" : "treinos confirmados"}</p>
+                </div>
+                <WeekStrip days={days} trained={trained} />
+                <p className={styles.muted}>Segunda a domingo. Um dia marcado quer dizer que o professor confirmou a sua presença.</p>
+              </Card>
+
+              <Card className={styles.next}>
+                <p className={styles.kicker}>Próximo treino</p>
+                {nextSession ? (
+                  <>
+                    <p className={styles.nextTitle}>{nextSession.title}</p>
+                    <p className={styles.muted}>{nextSession.range}</p>
+                  </>
+                ) : (
+                  <p className={styles.muted}>Nenhuma aula agendada por enquanto.</p>
+                )}
+                <ButtonLink href="/aulas" variant="accent">Agenda e check-in</ButtonLink>
+              </Card>
+            </div>
+
+            <section className={styles.section} aria-labelledby="reco">
+              <h2 id="reco" className={styles.sectionTitle}>Para você</h2>
+              <div className={styles.rail}>
+                <Link href="/tecnicas" className={styles.tile}><span className={styles.tileIcon}><Icon name="grid" /></span><strong>Técnicas</strong><span>Catálogo e busca</span></Link>
+                {has("curriculum") && <Link href="/trilha" className={styles.tile}><span className={styles.tileIcon}><Icon name="route" /></span><strong>Minha trilha</strong><span>O que estudar a seguir</span></Link>}
+                {has("challenges") && <Link href="/desafios" className={styles.tile}><span className={styles.tileIcon}><Icon name="flag" /></span><strong>Desafios</strong><span>Treine com a turma</span></Link>}
+                {has("medals") && <Link href="/medalhas" className={styles.tile}><span className={styles.tileIcon}><Icon name="medal" /></span><strong>Medalhas</strong><span>Suas conquistas</span></Link>}
+                {primary && <Link href={`/feed/${primary.id}`} className={styles.tile}><span className={styles.tileIcon}><Icon name="image" /></span><strong>Feed</strong><span>Fotos da academia</span></Link>}
+              </div>
+            </section>
+
+            <section className={styles.section} aria-labelledby="diario-recente">
+              <div className={styles.sectionHead}>
+                <h2 id="diario-recente" className={styles.sectionTitle}>Diário recente</h2>
+                <ButtonLink href="/diario" variant="secondary">Ver tudo</ButtonLink>
+              </div>
+              {(logs ?? []).length === 0 ? (
+                <EmptyState title="Seu diário ainda está vazio">Registre o que treinou hoje. O diário é privado: só você vê.</EmptyState>
+              ) : (
+                <ul className={styles.logs}>
+                  {(logs ?? []).map((l) => {
+                    const names = (techniques.get(l.id as string) ?? []).map((t) => t.name);
+                    return (
+                      <li key={l.id as string}>
+                        <Link href={`/diario/${l.id as string}`}>
+                          <strong>{fmtDay(l.trained_at as string)}</strong>
+                          <span>{names.length ? names.slice(0, 3).join(", ") : ((l.notes as string | null) ?? "Treino registrado")}</span>
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </section>
+          </>
         )}
-
-        <section className={styles.section} aria-labelledby="diario-recente">
-          <div className={styles.sectionHead}>
-            <h2 id="diario-recente" className={styles.sectionTitle}>Diário recente</h2>
-            <ButtonLink href="/diario" variant="secondary">Ver tudo</ButtonLink>
-          </div>
-          {(logs ?? []).length === 0 ? (
-            <EmptyState title="Seu diário ainda está vazio">Registre o que treinou hoje. O diário é privado: só você vê.</EmptyState>
-          ) : (
-            <ul className={styles.logs}>
-              {(logs ?? []).map((l) => {
-                const names = (techniques.get(l.id as string) ?? []).map((t) => t.name);
-                return (
-                  <li key={l.id as string}>
-                    <Link href={`/diario/${l.id as string}`}>
-                      <strong>{fmtDay(l.trained_at as string)}</strong>
-                      <span>{names.length ? names.slice(0, 3).join(", ") : ((l.notes as string | null) ?? "Treino registrado")}</span>
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-        </section>
-
-        <section className={styles.shortcuts} aria-label="Atalhos">
-          <Link href="/tecnicas" className={styles.shortcut}><strong>Técnicas</strong><span>Catálogo e busca</span></Link>
-          {has("curriculum") && <Link href="/trilha" className={styles.shortcut}><strong>Minha trilha</strong><span>O que estudar a seguir</span></Link>}
-          {has("challenges") && <Link href="/desafios" className={styles.shortcut}><strong>Desafios</strong><span>Treine com a turma</span></Link>}
-          {has("medals") && <Link href="/medalhas" className={styles.shortcut}><strong>Medalhas</strong><span>Suas conquistas</span></Link>}
-        </section>
       </main>
     </AppShell>
   );
