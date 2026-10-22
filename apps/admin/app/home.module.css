@@ -27,7 +27,6 @@
 .primary:hover { background: #6ad6c7; }
 .ghostWide { display: flex; align-items: center; justify-content: center; height: 52px; border-radius: 10px; border: 1.5px solid rgba(232, 238, 243, 0.4); color: #e8eef3; font-weight: 600; font-size: 15px; text-align: center; padding: 0 12px; }
 .note { margin: 0; color: #8fa0b0; font-size: 14px; }
-.heroText a:not([class]) { color: #14243a; font-weight: 700; text-decoration: underline; }
 
 /* Celulares: ilustração (dados fictícios) */
 .phones { flex: 1 1 560px; min-width: 0; display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; align-items: flex-start; }

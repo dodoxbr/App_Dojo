@@ -142,6 +142,10 @@ try {
   };
 
   // Not signed in
+  await check(null, '/?code=abc', { redirect: '/login?confirmado=ok' });
+  await check(null, '/?error=access_denied&error_code=otp_expired', { redirect: '/login?confirmado=erro' });
+  await check(null, '/login?confirmado=ok', { has: ['E-mail confirmado', 'Entrar'] });
+  await check(null, '/login?confirmado=erro', { has: ['venceu ou já foi usado'] });
   await check(null, '/', { has: ['Oss', 'Entrar', 'Começar agora'] });
   await check(null, '/login', { has: ['Esqueci minha senha'] });
   await check(null, '/login?senha=ok', { has: ['Entrar'] });

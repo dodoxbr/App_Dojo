@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Alert } from "@/components/ui";
+import { redirect } from "next/navigation";
 import { Icon } from "./landing-icons";
 import styles from "./home.module.css";
 
@@ -34,11 +34,12 @@ const security = [
 ];
 
 // Página inicial pública (visual aprovado no Claude Design). O link de confirmação do e-mail de cadastro também cai aqui
-// (`?code=` = e-mail confirmado, `?error=` = link vencido). Só textos fixos: nada da URL é exibido. As telas dos celulares são ILUSTRAÇÃO
+// (`?code=` = e-mail confirmado, `?error=` = link vencido) e é redirecionado para /login. Só textos fixos: nada da URL é exibido. As telas dos celulares são ILUSTRAÇÃO
 // (dados fictícios); não há depoimentos, números de clientes nem preços: o produto está em alpha.
 export default async function Home({ searchParams }: { searchParams: Promise<{ code?: string; error?: string; error_code?: string }> }) {
   const { code, error, error_code } = await searchParams;
-  const failed = Boolean(error || error_code);
+  // O link de confirmação do e-mail cai aqui (Site URL do Supabase): quem clica vai direto para a tela de entrada, com o aviso.
+  if (code || error || error_code) redirect(`/login?confirmado=${error || error_code ? "erro" : "ok"}`);
 
   return (
     <div className={styles.page} id="inicio">
@@ -59,17 +60,6 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ c
       <main>
         <section className={styles.hero}>
           <div className={styles.heroText}>
-            {code && !failed && (
-              <Alert tone="success">
-                E-mail confirmado. Agora <Link href="/login">entre com o seu e-mail e a sua senha</Link>.
-              </Alert>
-            )}
-            {failed && (
-              <Alert tone="danger">
-                Este link de confirmação venceu ou já foi usado. Se o seu e-mail já foi confirmado, <Link href="/login">entre com a sua senha</Link>;
-                se não, crie a conta de novo na mesma tela.
-              </Alert>
-            )}
             <h1 className={styles.headline}>Seu treino,<br />sua evolução,<br /><span>sua academia.</span></h1>
             <p className={styles.lead}>A plataforma completa para academias de Jiu-Jitsu. Do controle de presença ao acompanhamento da sua evolução técnica, tudo em um só lugar.</p>
             <ul className={styles.bullets}>

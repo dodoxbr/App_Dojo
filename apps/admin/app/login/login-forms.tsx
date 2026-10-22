@@ -19,7 +19,7 @@ function Feedback({ state }: { state: FormState }) {
   return null;
 }
 
-function SignInForm({ next, passwordChanged, notice }: { next: string; passwordChanged: boolean; notice?: { message: string; email: string } }) {
+function SignInForm({ next, passwordChanged, notice, confirmed }: { next: string; passwordChanged: boolean; notice?: { message: string; email: string }; confirmed?: "ok" | "erro" }) {
   const [saved, setSaved] = useState<Saved>({});
   const [state, action, pending] = useActionState<FormState, FormData>((prev, formData) => {
     setSaved(keep(formData, ["email"]));
@@ -31,6 +31,8 @@ function SignInForm({ next, passwordChanged, notice }: { next: string; passwordC
       <TextField key={notice?.email ?? "e"} label="E-mail" name="email" type="email" autoComplete="email" inputMode="email" placeholder="voce@exemplo.com" defaultValue={saved.email ?? notice?.email ?? ""} required />
       <PasswordField label="Senha" name="password" autoComplete="current-password" minLength={8} required />
       <Link href="/recuperar-senha" className={styles.forgot}>Esqueci minha senha</Link>
+      {confirmed === "ok" && !state.error && <Alert tone="success">E-mail confirmado. Agora entre com o seu e-mail e a sua senha.</Alert>}
+      {confirmed === "erro" && <Alert tone="danger">Este link de confirmação venceu ou já foi usado. Se o seu e-mail já foi confirmado, entre com a sua senha; se não, crie a conta de novo na aba Criar conta.</Alert>}
       {notice && <Alert tone="success">{notice.message}</Alert>}
       {passwordChanged && !state.error && <Alert tone="success">Senha alterada. Entre com a nova senha.</Alert>}
       <Feedback state={state} />
@@ -77,7 +79,7 @@ function SignUpForm({ onDone }: { onDone: (message: string, email: string) => vo
   );
 }
 
-export function LoginForms({ next, initialTab = "entrar", passwordChanged = false }: { next: string; initialTab?: "entrar" | "criar"; passwordChanged?: boolean }) {
+export function LoginForms({ next, initialTab = "entrar", passwordChanged = false, confirmed }: { next: string; initialTab?: "entrar" | "criar"; passwordChanged?: boolean; confirmed?: "ok" | "erro" }) {
   const [tab, setTab] = useState<string>(initialTab);
   const [notice, setNotice] = useState<{ message: string; email: string }>();
   return (
@@ -86,7 +88,7 @@ export function LoginForms({ next, initialTab = "entrar", passwordChanged = fals
       selected={tab}
       onSelect={setTab}
       items={[
-        { id: "entrar", label: "Entrar", content: <SignInForm next={next} passwordChanged={passwordChanged} notice={notice} /> },
+        { id: "entrar", label: "Entrar", content: <SignInForm next={next} passwordChanged={passwordChanged} notice={notice} confirmed={confirmed} /> },
         { id: "criar", label: "Criar conta", content: <SignUpForm onDone={(message, email) => { setNotice({ message, email }); setTab("entrar"); }} /> },
       ]}
     />
