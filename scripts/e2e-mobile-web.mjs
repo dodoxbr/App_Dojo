@@ -55,7 +55,7 @@ const text = () => br.text();
 const clickLabel = (label) => br.eval(`(() => { const el = [...document.querySelectorAll('[aria-label]')].find((e) => e.getAttribute('aria-label') === ${JSON.stringify(label)} && e.offsetParent !== null); if (!el) return false; el.click(); return true; })()`);
 const clickText = (t) => br.eval(`(() => { const el = [...document.querySelectorAll('[role=button],[role=tab],a')].find((e) => e.textContent.trim() === ${JSON.stringify(t)} && e.offsetParent !== null); if (!el) return false; el.click(); return true; })()`);
 const field = (label) => `input[aria-label="${label}"],textarea[aria-label="${label}"]`;
-const waitText = (t, ms = 15000) => br.waitFor(`document.body.innerText.includes(${JSON.stringify(t)})`, ms, `texto "${t}"`);
+const waitText = (t, ms = 15000) => br.waitFor(`document.body.innerText.toLowerCase().includes(${JSON.stringify(t.toLowerCase())})`, ms, `texto "${t}"`);
 
 try {
   // 1. login com senha errada, depois certo
@@ -82,6 +82,7 @@ try {
   // 3. registrar treino
   assert(await clickLabel('Registrar treino'), 'botão Registrar treino');
   await waitText('Técnicas praticadas');
+  await br.fill(field('Horário de início'), '00:01'); // o horário do treino é obrigatório (migration 034)
   await br.fill(field('Anotações'), 'treino do app mobile (teste)');
   await br.fill(field('Buscar técnica'), 'tesoura');
   await br.waitFor("[...document.querySelectorAll('[aria-label]')].some((e) => e.getAttribute('aria-label').startsWith('Adicionar Tesoura'))", 10000, 'resultado da busca de técnica');
