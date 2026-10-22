@@ -284,6 +284,7 @@ try {
   await check('manager', `${A}/membros`, { has: ['Menor de páginas', 'Menor · falta conferir o responsável', 'Ficha'] });
   await check('manager', `${A}/membros/${student.id}`, { has: ['Ficha de Smoke aluno', 'Rua Ficticia', '(11) 99999-0000', 'registrada na auditoria', 'Contato de emergência', 'Contato de Emergencia', 'Observações de saúde'] });
   await check('manager', `${A}/responsaveis`, { has: ['Menores e responsáveis', 'Aguardando conferência', 'Menor de páginas', 'Smoke responsavel', 'Confirmar conferência'] });
+  await check('manager', A, { has: ['PAR-Q obrigatório', 'Bloqueio por PAR-Q vencido'] });
   await check('manager', `${A}/saude`, { has: ['PAR-Q dos alunos', 'atestado médico'] });
   await check('manager', `${A}/financeiro`, { has: ['Financeiro —', 'Resumo do mês', 'Gerar as mensalidades do mês', 'Smoke aluno', 'Marcar como pago', 'Controle manual', 'Geração automática', 'Ligar a geração automática'] });
   await check('manager', `${A}/financeiro/planos`, { has: ['Planos dos alunos', 'Smoke aluno', 'Salvar plano', 'hoje:', 'Desconto (R$, opcional)', 'Motivo do desconto'] });

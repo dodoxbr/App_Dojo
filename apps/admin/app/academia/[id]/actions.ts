@@ -43,6 +43,14 @@ export async function updateLegal(academyId: string, _prev: FormState, formData:
   return { message: "Dados da empresa salvos. Eles já aparecem nos termos da academia." };
 }
 
+// Liga ou desliga o PAR-Q obrigatório: ligado, quem tem o PAR-Q vencido (ou nunca respondeu) não consegue pedir check-in até responder de novo.
+export async function setParqRequired(academyId: string, formData: FormData): Promise<void> {
+  const { supabase } = await getCaller();
+  await supabase.rpc("set_parq_required", { p_academy_id: academyId, p_on: formData.get("on") === "true" });
+  revalidatePath(`/academia/${academyId}`);
+  revalidatePath(`/academia/${academyId}/saude`);
+}
+
 export async function setPermission(academyId: string, permission: string, granted: boolean) {
   const parsed = instructorPermissionSchema.safeParse(permission);
   if (!parsed.success) return;

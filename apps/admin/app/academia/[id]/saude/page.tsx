@@ -9,7 +9,7 @@ export default async function SaudePage({ params }: { params: Promise<{ id: stri
   const { id } = await params;
   const { supabase, managedAcademies } = await getCaller();
   if (!managedAcademies.some((a) => a.id === id)) redirect("/perfil");
-  const { data: academy } = await supabase.from("academies").select("id, name").eq("id", id).maybeSingle();
+  const { data: academy } = await supabase.from("academies").select("id, name, parq_required").eq("id", id).maybeSingle();
   if (!academy) notFound();
   const { data: raw } = await supabase.rpc("list_health_notes", { p_academy_id: id });
   const rows = ((raw ?? []) as unknown[]).map((x) => healthNoteSchema.safeParse(x)).flatMap((r) => (r.success ? [r.data] : []));
@@ -39,7 +39,7 @@ export default async function SaudePage({ params }: { params: Promise<{ id: stri
       />
       <Alert tone="info">Dados sensíveis informados pelos próprios alunos (ou pelos responsáveis dos menores) com consentimento. Os instrutores com a permissão &quot;ver observações de saúde&quot; veem estes dados na tela da aula. Cada consulta é registrada.</Alert>
       <h2 style={{ margin: "var(--space-2) 0 0", fontSize: "var(--text-lg)" }}>PAR-Q dos alunos</h2>
-      <Alert tone="info">Qualquer &quot;sim&quot; no PAR-Q exige atestado médico físico: ao conferir o atestado, marque na tela de respostas. O PAR-Q vale por 12 meses. Abrir as respostas é registrado.</Alert>
+      <Alert tone="info">Qualquer &quot;sim&quot; no PAR-Q exige atestado médico físico: ao conferir o atestado, marque na tela de respostas. O PAR-Q vale por 12 meses. Abrir as respostas é registrado. {academy.parq_required ? "O bloqueio está LIGADO: quem não tem PAR-Q válido não consegue pedir check-in." : "O bloqueio por PAR-Q vencido está desligado (ligue na tela da academia)."}</Alert>
       {parqRows.length === 0 ? (
         <EmptyState title="Nenhum aluno aprovado">Os alunos aparecem aqui depois de aprovados.</EmptyState>
       ) : (

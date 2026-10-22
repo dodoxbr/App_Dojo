@@ -7,7 +7,7 @@ import { getCaller } from "@/lib/context";
 import { LegalForm } from "./legal-form";
 import { LogoUpload } from "./logo-upload";
 import { SettingsForm } from "./settings-form";
-import { setPermission } from "./actions";
+import { setParqRequired, setPermission } from "./actions";
 import styles from "./academia.module.css";
 
 export default async function AcademiaPage({ params }: { params: Promise<{ id: string }> }) {
@@ -18,7 +18,7 @@ export default async function AcademiaPage({ params }: { params: Promise<{ id: s
 
   const { data: academy } = await supabase
     .from("academies")
-    .select("id, name, slug, theme_primary, theme_secondary, legal_name, cnpj")
+    .select("id, name, slug, theme_primary, theme_secondary, legal_name, cnpj, parq_required")
     .eq("id", id)
     .maybeSingle();
   if (!academy) notFound();
@@ -66,6 +66,18 @@ export default async function AcademiaPage({ params }: { params: Promise<{ id: s
 
       <Section title="Logo da academia" hint="A logo vira o fundo e o selo do perfil da academia (esta tela, o início da equipe e o link de entrada dos alunos).">
         <LogoUpload academyId={academy.id} hasLogo={logoUrl !== null} />
+      </Section>
+
+      <Section
+        title="PAR-Q obrigatório"
+        hint="Ligado, quem tem o PAR-Q vencido (mais de 12 meses) ou nunca respondeu não consegue pedir check-in nas aulas. Ao responder de novo, o check-in libera na hora. O professor continua podendo validar presenças. Desligado, o PAR-Q só informa."
+      >
+        <form action={setParqRequired.bind(null, academy.id)} className={styles.permForm}>
+          <input type="hidden" name="on" value={academy.parq_required ? "false" : "true"} />
+          <span className={styles.permName}>Bloqueio por PAR-Q vencido</span>
+          <Badge tone={academy.parq_required ? "success" : "neutral"}>{academy.parq_required ? "Ligado" : "Desligado"}</Badge>
+          <Button type="submit" variant="secondary">{academy.parq_required ? "Desligar" : "Ligar"}</Button>
+        </form>
       </Section>
 
       <Section title="Identidade visual">

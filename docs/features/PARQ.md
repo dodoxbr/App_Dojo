@@ -12,7 +12,10 @@ O menor é respondido pelo **responsável legal**. Validade: 12 meses (depois, v
 Respostas e observação (dado de saúde, privado), assinatura em PNG, **hora do banco**, quem assinou (conta autenticada), versão do texto e **hash SHA-256 do texto do termo** (prova qual texto foi aceito), **IP** e **navegador** informados pelo servidor do painel. A auditoria guarda só o resultado (nunca respostas nem assinatura). Quem lê: a própria pessoa, o responsável, e quem tem a permissão de ver saúde (gestor, instrutor com `view_health`); abrir as respostas é registrado.
 
 ## Atestado
-"Sim" em qualquer pergunta = **atestado médico pendente** até o gestor/professor marcar que conferiu (`mark_medical_certificate`, auditado). A situação aparece em Saúde (tabela "PAR-Q dos alunos") e no aviso do início do aluno. **Nada é bloqueado** por enquanto (só informa).
+"Sim" em qualquer pergunta = **atestado médico pendente** até o gestor/professor marcar que conferiu (`mark_medical_certificate`, auditado). A situação aparece em Saúde (tabela "PAR-Q dos alunos") e no aviso do início do aluno. 
+
+## Bloqueio por PAR-Q vencido (opcional por academia)
+"Vencido tem que bloquear; na minha academia bloqueia; aí eu respondo de novo e volta a liberar." Em **Academia > PAR-Q obrigatório** o gestor liga (padrão: desligado). Ligado, quem **nunca respondeu** ou está **vencido (mais de 12 meses)** não consegue **pedir check-in** nas aulas daquela academia; o aluno vê o aviso na agenda, no início e na tela do PAR-Q; **ao responder de novo, libera na hora**. O professor continua podendo validar presença (decisão dele). Atestado pendente (com "sim") **não** bloqueia, só informa. Banco: migration 045 (`set_parq_required`, `parq_block_reason`, `my_parq_blocks`, e o `request_check_in` confere); pgTAP `parq_block.test.sql` (13). No app (Expo) o check-in já recusa e mostra a mensagem; o PAR-Q em si ainda é respondido pelo painel.
 
 ## Validade jurídica (resumo honesto; não é parecer jurídico)
 - **Data e hora:** vêm do **banco** (`clock_timestamp()`), não do aparelho, que o usuário pode alterar.

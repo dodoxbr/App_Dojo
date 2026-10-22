@@ -12,6 +12,7 @@ export function rpcErrorMessage(
       return options.conflict ?? "A operação conflita com o estado atual (por exemplo, já decidido ou não alterável).";
     case "22023": {
       const m = error.message ?? "";
+      if (m.includes("parq required")) return "Seu PAR-Q está vencido ou ainda não foi respondido. Responda o PAR-Q para liberar o check-in.";
       if (m.includes("contrast")) return "Contraste insuficiente entre as cores (mínimo 4,5:1).";
       if (m.includes("instructor")) return "O instrutor precisa ser instrutor ou gestor aprovado desta academia.";
       if (m.includes("class inactive")) return "Esta turma está inativa. Ative-a para agendar aulas.";

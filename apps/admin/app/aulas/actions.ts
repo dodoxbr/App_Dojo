@@ -21,6 +21,7 @@ export async function requestCheckIn(sessionId: string, token: string | null): P
     if (error.code === "22023" && error.message.includes("token")) {
       return { error: "O QR code é inválido ou expirou. Peça um novo ao professor." };
     }
+    if (error.code === "22023" && error.message.includes("parq")) return { error: "Seu PAR-Q está vencido ou ainda não foi respondido. Responda o PAR-Q para liberar o check-in." };
     if (error.code === "22023") return { error: "O check-in só abre 1 hora antes do início e fecha 1 hora depois do fim da aula." };
     if (error.code === "23505") return { error: "Sua presença nesta aula foi revogada. Fale com o professor." };
     return { error: rpcErrorMessage(error) };

@@ -1,6 +1,7 @@
 import { attendanceStatusLabels, isCheckInOpen } from "@dojo/contracts/attendance";
 import { formatSessionRange } from "@dojo/contracts/classes";
-import { Badge, ButtonLink, EmptyState, ItemLink, ItemList, Page, PageHeader } from "@/components/ui";
+import Link from "next/link";
+import { Alert, Badge, ButtonLink, EmptyState, ItemLink, ItemList, Page, PageHeader } from "@/components/ui";
 import { getCaller } from "@/lib/context";
 import { CheckInButton } from "./check-in-button";
 import styles from "./aulas.module.css";
@@ -11,6 +12,8 @@ const currentTimeMs = () => Date.now();
 // Agenda of the academies where the caller is an approved member (next 30 days), check-in and own attendance.
 export default async function AulasPage() {
   const { supabase, userId } = await getCaller();
+  const { data: blocksRaw } = await supabase.rpc("my_parq_blocks");
+  const parqBlocks = (blocksRaw ?? []) as { academy_id: string; academy_name: string; reason: string }[];
 
   const { data: mem } = await supabase.from("memberships").select("academy_id").eq("user_id", userId).eq("status", "approved");
   const academyIds = (mem ?? []).map((m) => m.academy_id as string);
@@ -42,6 +45,11 @@ export default async function AulasPage() {
 
   return (
     <Page width="narrow">
+      {parqBlocks.length > 0 && (
+        <Alert tone="danger">
+          O check-in está <strong>bloqueado</strong> em {parqBlocks.map((b) => b.academy_name).join(", ")}: o seu PAR-Q {parqBlocks.some((b) => b.reason === "missing") ? "não foi respondido" : "está vencido"}. <Link href="/parq">Responder o PAR-Q</Link> para liberar.
+        </Alert>
+      )}
       <PageHeader title="Agenda de aulas" subtitle="Só a presença confirmada pelo professor conta. Registrar o treino no diário não conta como presença." />
 
       {(mine ?? []).length > 0 && (

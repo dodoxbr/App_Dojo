@@ -22,7 +22,7 @@ export default function Aulas() {
     setBusy(sessionId);
     const { error: err } = await supabase.rpc('request_check_in', { p_session_id: sessionId, p_token: null });
     setBusy(null);
-    if (err) return setFailed('Não foi possível pedir o check-in. A aula pode não estar mais aberta para isso.');
+    if (err) return setFailed(err.message?.includes('parq') ? 'Seu PAR-Q está vencido ou ainda não foi respondido. Abra o painel (pelo navegador) em Perfil > PAR-Q e termo de saúde, responda de novo e o check-in volta a liberar.' : 'Não foi possível pedir o check-in. A aula pode não estar mais aberta para isso.');
     setSent(new Set(sent).add(sessionId));
     reload();
   }
