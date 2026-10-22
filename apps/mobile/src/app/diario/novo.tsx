@@ -13,6 +13,8 @@ export default function NovoRegistro() {
   const userId = useSession()?.user.id ?? '';
   const { data: member } = useLoad(() => loadMemberships(userId), userId);
   const [date, setDate] = useState(todayLocal());
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
   const [academyId, setAcademyId] = useState<string>('');
   const [notes, setNotes] = useState('');
   const [query, setQuery] = useState('');
@@ -36,8 +38,8 @@ export default function NovoRegistro() {
 
   async function save() {
     setError(null);
-    const parsed = saveTrainingLogSchema.safeParse({ academyId, trainedDate: date, notes, techniqueIds: chosen.map((t) => t.id), clientKey });
-    if (!parsed.success) return setError('Revise a data (AAAA-MM-DD, não pode ser futura), as anotações e as técnicas escolhidas.');
+    const parsed = saveTrainingLogSchema.safeParse({ academyId, trainedDate: date, startTime, endTime, notes, techniqueIds: chosen.map((t) => t.id), clientKey });
+    if (!parsed.success) return setError('Revise a data (AAAA-MM-DD, não pode ser futura), o horário (início obrigatório, no formato 07:00; o término vem depois do início), as anotações e as técnicas.');
     setBusy(true);
     const { data, error: err } = await supabase.rpc('save_training_log', {
       p_academy_id: parsed.data.academyId ?? null,
@@ -46,6 +48,8 @@ export default function NovoRegistro() {
       p_technique_ids: parsed.data.techniqueIds,
       p_client_key: parsed.data.clientKey,
       p_log_id: null,
+      p_start_time: parsed.data.startTime,
+      p_end_time: parsed.data.endTime ?? null,
     });
     setBusy(false);
     if (err || !data) return setError('Não foi possível salvar o registro. Tente de novo.');
@@ -57,6 +61,8 @@ export default function NovoRegistro() {
       <Heading title="Registrar treino" subtitle="O diário é privado: só você vê. Não conta como presença na academia." />
       <Card>
         <TextField label="Data do treino" value={date} onChangeText={setDate} placeholder="AAAA-MM-DD" hint="Formato AAAA-MM-DD." keyboardType="numbers-and-punctuation" autoCorrect={false} />
+        <TextField label="Horário de início" value={startTime} onChangeText={setStartTime} placeholder="07:00" hint="Formato HH:MM, por exemplo 07:00." keyboardType="numbers-and-punctuation" autoCorrect={false} />
+        <TextField label="Término (opcional)" value={endTime} onChangeText={setEndTime} placeholder="08:30" keyboardType="numbers-and-punctuation" autoCorrect={false} />
         {academies.length > 0 ? (
           <>
             <SectionTitle>Onde foi</SectionTitle>

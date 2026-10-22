@@ -4,13 +4,14 @@ import { useActionState, useState } from "react";
 import { beltSuggestions } from "@dojo/contracts/belts";
 import { assessManual, correctPromotion, grantPromotion, registerRank, saveMilestoneSetting } from "./actions";
 import type { FormState } from "../../../login/actions";
+import { PreservingForm } from "@/components/ui/PreservingForm";
 
 export function RegisterRankForm({ academyId, userId }: { academyId: string; userId: string }) {
   const [state, action, pending] = useActionState<FormState, FormData>((prev, formData) => registerRank(academyId, userId, prev, formData), {});
   const [key] = useState(() => crypto.randomUUID());
   const today = new Date().toISOString().slice(0, 10);
   return (
-    <form action={action} style={{ display: "inline" }}>
+    <PreservingForm action={action} state={state} style={{ display: "inline" }}>
       <input type="hidden" name="idempotencyKey" value={key} />
       <input name="beltCode" list="belt-suggestions" placeholder="faixa" maxLength={40} required aria-label="Faixa" /><datalist id="belt-suggestions">{beltSuggestions.map((b) => <option key={b} value={b} />)}</datalist>{" "}
       <input name="degree" type="number" min={0} max={20} defaultValue={0} required aria-label="Grau" style={{ width: 60 }} />{" "}
@@ -18,7 +19,7 @@ export function RegisterRankForm({ academyId, userId }: { academyId: string; use
       <button type="submit" disabled={pending}>{pending ? "Salvando…" : "Registrar graduação atual"}</button>
       {state.error && <span role="alert"> {state.error}</span>}
       {state.message && <span role="status"> {state.message}</span>}
-    </form>
+    </PreservingForm>
   );
 }
 
@@ -27,7 +28,7 @@ export function ManualCriterionForm({ academyId, userId, label }: { academyId: s
   // New key whenever a field changes: a double click repeats the same request, a different choice is a new one.
   const [key, setKey] = useState(() => crypto.randomUUID());
   return (
-    <form action={action} onChange={() => setKey(crypto.randomUUID())} style={{ display: "inline" }}>
+    <PreservingForm action={action} state={state} onChange={() => setKey(crypto.randomUUID())} style={{ display: "inline" }}>
       <input type="hidden" name="idempotencyKey" value={key} />
       <select name="met" defaultValue="true" aria-label={`Avaliação: ${label}`}>
         <option value="true">Atende</option>
@@ -37,7 +38,7 @@ export function ManualCriterionForm({ academyId, userId, label }: { academyId: s
       <button type="submit" disabled={pending}>{pending ? "Salvando…" : "Salvar"}</button>
       {state.error && <span role="alert"> {state.error}</span>}
       {state.message && <span role="status"> {state.message}</span>}
-    </form>
+    </PreservingForm>
   );
 }
 
@@ -48,7 +49,7 @@ export function GrantPromotionForm({ academyId, userId, current }: { academyId: 
   const [key, setKey] = useState(() => crypto.randomUUID());
   const today = new Date().toISOString().slice(0, 10);
   return (
-    <form action={action} onChange={() => setKey(crypto.randomUUID())}>
+    <PreservingForm action={action} state={state} onChange={() => setKey(crypto.randomUUID())}>
       <input type="hidden" name="idempotencyKey" value={key} />
       <label>Nova faixa <input name="beltCode" list="belt-suggestions" defaultValue={current.beltCode} maxLength={40} required /></label>
       <datalist id="belt-suggestions">{beltSuggestions.map((b) => <option key={b} value={b} />)}</datalist>
@@ -58,7 +59,7 @@ export function GrantPromotionForm({ academyId, userId, current }: { academyId: 
       <button type="submit" disabled={pending}>{pending ? "Concedendo…" : "Conceder graduação"}</button>
       {state.error && <p role="alert">{state.error}</p>}
       {state.message && <p role="status">{state.message}</p>}
-    </form>
+    </PreservingForm>
   );
 }
 
@@ -67,7 +68,7 @@ export function CorrectPromotionForm({ academyId, promotionId, current }: { acad
   const [key, setKey] = useState(() => crypto.randomUUID());
   const today = new Date().toISOString().slice(0, 10);
   return (
-    <form action={action} onChange={() => setKey(crypto.randomUUID())}>
+    <PreservingForm action={action} state={state} onChange={() => setKey(crypto.randomUUID())}>
       <input type="hidden" name="idempotencyKey" value={key} />
       <label>Faixa correta <input name="beltCode" list="belt-suggestions" defaultValue={current.beltCode} maxLength={40} required /></label>
       <datalist id="belt-suggestions">{beltSuggestions.map((b) => <option key={b} value={b} />)}</datalist>
@@ -77,19 +78,19 @@ export function CorrectPromotionForm({ academyId, promotionId, current }: { acad
       <button type="submit" disabled={pending}>{pending ? "Retificando…" : "Retificar registro"}</button>
       {state.error && <p role="alert">{state.error}</p>}
       {state.message && <p role="status">{state.message}</p>}
-    </form>
+    </PreservingForm>
   );
 }
 
 export function MilestoneSettingForm({ academyId, threshold, enabled }: { academyId: string; threshold: number; enabled: boolean }) {
   const [state, action, pending] = useActionState<FormState, FormData>((prev, formData) => saveMilestoneSetting(academyId, prev, formData), {});
   return (
-    <form action={action}>
+    <PreservingForm action={action} state={state}>
       <label>Avisar aos <input name="threshold" type="number" min={1} max={1000} defaultValue={threshold} required style={{ width: 90 }} /> treinos desde a última graduação</label>
       <label><input type="checkbox" name="enabled" defaultChecked={enabled} /> Aviso ligado</label>
       <button type="submit" disabled={pending}>{pending ? "Salvando…" : "Salvar o meu número"}</button>
       {state.error && <p role="alert">{state.error}</p>}
       {state.message && <p role="status">{state.message}</p>}
-    </form>
+    </PreservingForm>
   );
 }

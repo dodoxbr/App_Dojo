@@ -1,6 +1,6 @@
 -- US-006: private diary. Synthetic data only.
 begin;
-select plan(36);
+select plan(41);
 
 -- Fixtures (as postgres)
 -- a1 platform admin | m1 manager ac01 | i1 instructor ac01 | s1, s2 students ac01 | x1 student ac02 | n1 no academy
@@ -94,6 +94,13 @@ select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000
 select is((select count(*)::int from public.training_logs), 3, 'dono continua lendo os proprios registros');
 select lives_ok($$delete from public.training_logs where client_key = '44444444-4444-4444-4444-444444444444'$$, 'dono exclui o proprio registro');
 select is((select count(*)::int from public.training_log_techniques), 0, 'vinculos removidos junto');
+
+-- Horário do treino (migration 034)
+select lives_ok($$select public.save_training_log(null, now() - interval '3 days', 'treino das 7', '{}'::uuid[], '66666666-6666-6666-6666-666666666666', null, '07:00', '08:30')$$, 'registra treino com inicio e termino');
+select is((select start_time::text || '-' || end_time::text from public.training_logs where client_key = '66666666-6666-6666-6666-666666666666'), '07:00:00-08:30:00', 'horario gravado');
+select throws_ok($$select public.save_training_log(null, now(), 'x', '{}'::uuid[], gen_random_uuid(), null, '09:00', '08:00')$$, '22023', null, 'termino antes do inicio rejeitado');
+select throws_ok($$select public.save_training_log(null, now(), 'x', '{}'::uuid[], gen_random_uuid(), null, null, '08:00')$$, '22023', null, 'termino sem inicio rejeitado');
+select lives_ok($$select public.save_training_log(null, now() - interval '3 days', 'sem horario', '{}'::uuid[], '77777777-7777-7777-7777-777777777777')$$, 'registro sem horario continua permitido (antigos e app)');
 
 select * from finish();
 rollback;

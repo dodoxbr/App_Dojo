@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { ButtonLink, Page, PageHeader, Section } from "@/components/ui";
 import { getCaller } from "@/lib/context";
 import { approvedAcademies } from "@/lib/diary";
 import { LogForm } from "../log-form";
@@ -9,10 +9,15 @@ export default async function NovoRegistroPage() {
   const today = new Date().toISOString().slice(0, 10);
 
   return (
-    <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 640 }}>
-      <p><Link href="/diario">← Meu diário</Link></p>
-      <h1>Registrar treino</h1>
-      <LogForm academies={academies} initial={{ academyId: "", trainedDate: today, notes: "", techniques: [] }} />
-    </main>
+    <Page width="narrow">
+      <PageHeader
+        title="Registrar treino"
+        subtitle="Anote quando e o que você treinou. O diário é só seu."
+        actions={<ButtonLink href="/diario" variant="secondary">← Meu diário</ButtonLink>}
+      />
+      <Section title="Dados do treino">
+        <LogForm academies={academies} initial={{ academyId: "", trainedDate: today, startTime: "", endTime: "", notes: "", techniques: [] }} />
+      </Section>
+    </Page>
   );
 }

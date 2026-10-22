@@ -5,6 +5,7 @@ import { beltSuggestions } from "@dojo/contracts/belts";
 import { criterionKindLabels, criterionKinds, type CriterionKind } from "@dojo/contracts/graduation";
 import { createRule } from "./actions";
 import type { FormState } from "../../../login/actions";
+import { PreservingForm } from "@/components/ui/PreservingForm";
 
 type Row = {
   kind: CriterionKind;
@@ -52,7 +53,7 @@ export function RuleBuilder({ academyId, curricula, initial }: Props) {
   const today = new Date().toISOString().slice(0, 10);
 
   return (
-    <form action={action} onChange={() => setKey(crypto.randomUUID())}>
+    <PreservingForm action={action} state={state} onChange={() => setKey(crypto.randomUUID())}>
       <input type="hidden" name="idempotencyKey" value={key} />
       <input type="hidden" name="criteria" value={JSON.stringify(toPayload(rows))} />
 
@@ -104,6 +105,6 @@ export function RuleBuilder({ academyId, curricula, initial }: Props) {
 
       <button type="submit" disabled={pending}>{pending ? "Salvando…" : "Salvar regra (nova versão)"}</button>
       {state.error && <p role="alert">{state.error}</p>}
-    </form>
+    </PreservingForm>
   );
 }

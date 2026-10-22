@@ -4,17 +4,19 @@ import { useActionState } from "react";
 import { saveContact } from "./actions";
 import { BRAZIL_UFS, formatPhone, formatPostalCode, type ContactRow } from "@dojo/contracts/contacts";
 import type { FormState } from "../../login/actions";
+import { PreservingForm } from "@/components/ui/PreservingForm";
 
-export function ContactForm({ userId, current, suggestedName }: { userId: string; current: ContactRow | null; suggestedName: string }) {
+export function ContactForm({ userId, current, suggestedName, backTo = "/perfil" }: { userId: string; current: ContactRow | null; suggestedName: string; backTo?: string }) {
   const [state, action, pending] = useActionState<FormState, FormData>((prev, formData) => saveContact(userId, prev, formData), {});
   return (
-    <form action={action}>
+    <PreservingForm action={action} state={state}>
+      <input type="hidden" name="next" value={backTo} />
       {/* Os campos remontam quando a ficha salva muda (volta o valor salvo); a mensagem fica fora para não sumir. */}
       <div key={current?.updated_at ?? "novo"} style={{ display: "contents" }}>
       <label>Nome completo <input name="fullName" minLength={2} maxLength={160} autoComplete="name" defaultValue={current?.full_name ?? suggestedName} required /></label>
       <label>Telefone com DDD <input name="phone" type="tel" inputMode="tel" autoComplete="tel" defaultValue={current ? formatPhone(current.phone) : ""} required /></label>
       <label>CEP <input name="postalCode" inputMode="numeric" autoComplete="postal-code" defaultValue={current ? formatPostalCode(current.postal_code) : ""} required /></label>
-      <label>Rua <input name="street" maxLength={160} autoComplete="address-line1" defaultValue={current?.street ?? ""} required /></label>
+      <label>Endereço (rua, quadra, conjunto, travessa…) <input name="street" maxLength={160} autoComplete="address-line1" defaultValue={current?.street ?? ""} required /></label>
       <label>Número <input name="number" maxLength={20} defaultValue={current?.number ?? ""} required /></label>
       <label>Complemento (opcional) <input name="complement" maxLength={80} defaultValue={current?.complement ?? ""} /></label>
       <label>Bairro <input name="neighborhood" maxLength={80} defaultValue={current?.neighborhood ?? ""} required /></label>
@@ -41,6 +43,6 @@ export function ContactForm({ userId, current, suggestedName }: { userId: string
       <button type="submit" disabled={pending}>{pending ? "Salvando…" : "Salvar ficha"}</button>
       {state.error && <p role="alert">{state.error}</p>}
       {state.message && <p role="status">{state.message}</p>}
-    </form>
+    </PreservingForm>
   );
 }

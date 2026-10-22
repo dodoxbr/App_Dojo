@@ -1,5 +1,5 @@
 import { Alert, Badge, ButtonLink, EmptyState, ItemLink, ItemList, Page, PageHeader } from "@/components/ui";
-import { DIARY_PAGE_SIZE } from "@dojo/contracts/diary";
+import { DIARY_PAGE_SIZE, formatTrainingTime } from "@dojo/contracts/diary";
 import { getCaller } from "@/lib/context";
 import { approvedAcademies, techniquesByLog } from "@/lib/diary";
 
@@ -11,7 +11,7 @@ export default async function DiarioPage({ searchParams }: { searchParams: Promi
 
   const { data, error } = await supabase
     .from("training_logs")
-    .select("id, academy_id, trained_at, notes")
+    .select("id, academy_id, trained_at, start_time, end_time, notes")
     .eq("user_id", userId)
     .order("trained_at", { ascending: false })
     .range((page - 1) * DIARY_PAGE_SIZE, page * DIARY_PAGE_SIZE); // one extra row = next page exists
@@ -49,7 +49,7 @@ export default async function DiarioPage({ searchParams }: { searchParams: Promi
                 <ItemLink
                   href={`/diario/${l.id as string}`}
                   title={new Date(l.trained_at as string).toLocaleDateString("pt-BR", { timeZone: "UTC" })}
-                  meta={l.academy_id ? (academyName.get(l.academy_id as string) ?? "Academia") : "Treino pessoal"}
+                  meta={[formatTrainingTime(l.start_time as string | null, l.end_time as string | null), l.academy_id ? (academyName.get(l.academy_id as string) ?? "Academia") : "Treino pessoal"].filter(Boolean).join(" · ")}
                   badges={names.length > 0 ? names.map((n) => <Badge key={n} tone="accent">{n}</Badge>) : undefined}
                 >
                   {notes ? `${notes.slice(0, 140)}${notes.length > 140 ? "…" : ""}` : null}

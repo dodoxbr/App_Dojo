@@ -90,7 +90,7 @@ async function pass(who, user, routes) {
 
 // ---- aluno -------------------------------------------------------------------------------------------------------
 let b = await pass('aluno', student, [
-  ['/inicio', ['Oss,', 'Meu progresso', 'Registrar treino', 'Esta semana']], ['/perfil', ['Meu perfil', '30 treinos!', 'Converse com o seu professor']], ['/perfil/ficha', ['Minha ficha de cadastro']], ['/diario', ['Meu diário']], ['/diario/novo', ['Registrar treino']],
+  ['/inicio', ['Oss,', 'Meu progresso', 'Registrar treino', 'Esta semana']], ['/perfil', ['Sair', '30 treinos!', 'Converse com o seu professor']], ['/perfil/ficha', ['Minha ficha de cadastro']], ['/diario', ['Meu diário']], ['/diario/novo', ['Registrar treino']],
   ['/tecnicas', ['Catálogo']], ['/aulas', ['Agenda']], ['/trilha', []], ['/graduacao', []], ['/desafios', ['Desafios']], ['/desafios/novo', ['Criar desafio']],
   ['/financeiro', ['Meu financeiro']], [`/feed/${academyId}`, ['Feed']], ['/termos', ['Termos de uso']], [`/entrar/${slug}`, ['Academia Navegador']],
 ]);
@@ -101,7 +101,7 @@ if (b) {
   for (const [name, value] of Object.entries(fields)) { try { await b.fill(`[name=${name}]`, value); } catch { note('aluno', '/perfil/ficha', `campo ${name} não encontrado`); } }
   try { await b.fill('[name=state]', 'SP'); } catch { /* nome pode variar */ }
   await b.clickButton('Salvar ficha');
-  try { await b.waitFor("document.body.innerText.includes('salv')", 8000); } catch { note('aluno', '/perfil/ficha', 'depois de salvar não apareceu confirmação'); }
+  try { await b.waitFor("location.pathname === '/perfil'", 8000); } catch { note('aluno', '/perfil/ficha', 'depois de salvar não voltou para o perfil'); }
   await b.screenshot(path.join(SHOTS, `${String(++shotN).padStart(2, '0')}-aluno-ficha-salva.png`));
   await b.close();
 }
@@ -144,7 +144,7 @@ if (b) {
 
 // ---- gestor ------------------------------------------------------------------------------------------------------
 b = await pass('gestor', master, [
-  [`${A}/inicio`, ['Alunos ativos', 'Ações rápidas']], ['/perfil', ['Meu perfil']], [A, ['Academia Navegador']], [`${A}/membros`, ['Membros']], [`${A}/responsaveis`, []], [`${A}/financeiro`, ['Financeiro']],
+  [`${A}/inicio`, ['Alunos ativos', 'Ações rápidas']], ['/perfil', ['Sair']], [A, ['Academia Navegador']], [`${A}/membros`, ['Membros']], [`${A}/responsaveis`, []], [`${A}/financeiro`, ['Financeiro']],
   [`${A}/financeiro/planos`, ['Planos']], [`${A}/saude`, []], [`${A}/turmas`, ['Turmas']], [`${A}/curriculos`, []], [`${A}/graduacao`, []], [`${A}/graduacao/nova`, []],
   [`${A}/painel`, []], ['/academias/nova', ['Criar academia']], ['/tecnicas/nova', []], [`/feed/${academyId}`, ['Feed']],
 ]);

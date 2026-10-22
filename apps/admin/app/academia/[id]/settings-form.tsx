@@ -4,6 +4,7 @@ import { useActionState, useState } from "react";
 import { MIN_THEME_CONTRAST, contrastRatio } from "@dojo/contracts/academy";
 import { updateSettings } from "./actions";
 import type { FormState } from "../../login/actions";
+import { PreservingForm } from "@/components/ui/PreservingForm";
 
 type Props = { academyId: string; name: string; themePrimary: string; themeSecondary: string };
 
@@ -15,7 +16,7 @@ export function SettingsForm({ academyId, name, themePrimary, themeSecondary }: 
   const ok = ratio >= MIN_THEME_CONTRAST;
 
   return (
-    <form action={action}>
+    <PreservingForm action={action} state={state}>
       <label>Nome <input name="name" defaultValue={name} minLength={2} maxLength={160} required /></label>
       <label>Cor primária <input name="themePrimary" type="color" value={primary} onChange={(e) => setPrimary(e.target.value.toUpperCase())} /></label>
       <label>Cor secundária <input name="themeSecondary" type="color" value={secondary} onChange={(e) => setSecondary(e.target.value.toUpperCase())} /></label>
@@ -25,6 +26,6 @@ export function SettingsForm({ academyId, name, themePrimary, themeSecondary }: 
       <button type="submit" disabled={pending || !ok}>{pending ? "Salvando…" : "Salvar"}</button>
       {state.error && <p role="alert">{state.error}</p>}
       {state.message && <p role="status">{state.message}</p>}
-    </form>
+    </PreservingForm>
   );
 }

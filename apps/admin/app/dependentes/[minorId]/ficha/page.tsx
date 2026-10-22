@@ -22,7 +22,7 @@ export default async function FichaDependentePage({ params }: { params: Promise<
       <p><Link href={`/dependentes/${minorId}`}>← {dep.minor_name}</Link></p>
       <h1>Ficha de {dep.minor_name}</h1>
       <p>Telefone e endereço de contato do menor (em geral, os do responsável). Dados privados: só você e o gestor das academias em que o menor tem vínculo conseguem ver.</p>
-      <ContactForm userId={minorId} current={parsed.success ? parsed.data : null} suggestedName={dep.minor_name} />
+      <ContactForm userId={minorId} current={parsed.success ? parsed.data : null} suggestedName={dep.minor_name} backTo={`/dependentes/${minorId}`} />
     </main>
   );
 }

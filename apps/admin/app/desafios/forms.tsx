@@ -4,6 +4,7 @@ import { useActionState, useState } from "react";
 import { challengeMetricLabels, challengeMetrics, type ChallengeMetric } from "@dojo/contracts/challenges";
 import { addEntry, createChallenge } from "./actions";
 import type { FormState } from "../login/actions";
+import { PreservingForm } from "@/components/ui/PreservingForm";
 
 type Option = { id: string; label: string };
 
@@ -13,7 +14,7 @@ export function CreateChallengeForm({ academies, techniques }: { academies: Opti
   const [metric, setMetric] = useState<ChallengeMetric>("training");
   const today = new Date().toISOString().slice(0, 10);
   return (
-    <form action={action}>
+    <PreservingForm action={action} state={state}>
       <input type="hidden" name="idempotencyKey" value={key} />
       {academies.length > 1 ? (
         <label>
@@ -62,7 +63,7 @@ export function CreateChallengeForm({ academies, techniques }: { academies: Opti
       <label><input type="checkbox" name="join" defaultChecked /> Participar também</label>
       <button type="submit" disabled={pending}>{pending ? "Criando…" : "Criar desafio"}</button>
       {state.error && <p role="alert">{state.error}</p>}
-    </form>
+    </PreservingForm>
   );
 }
 
@@ -71,7 +72,7 @@ export function EntryForm({ challengeId, metric, today }: { challengeId: string;
   // The key changes with the data: a double click repeats the same request, another day/time is a new one.
   const [key, setKey] = useState(() => crypto.randomUUID());
   return (
-    <form action={action} onChange={() => setKey(crypto.randomUUID())}>
+    <PreservingForm action={action} state={state} onChange={() => setKey(crypto.randomUUID())}>
       <input type="hidden" name="clientKey" value={key} />
       <label>Dia em que treinou <input name="date" type="date" max={today} defaultValue={today} required /></label>
       <label>Hora <input name="time" type="time" required /></label>
@@ -82,6 +83,6 @@ export function EntryForm({ challengeId, metric, today }: { challengeId: string;
       <button type="submit" disabled={pending}>{pending ? "Salvando…" : "Registrar"}</button>
       {state.error && <p role="alert">{state.error}</p>}
       {state.message && <p role="status">{state.message}</p>}
-    </form>
+    </PreservingForm>
   );
 }

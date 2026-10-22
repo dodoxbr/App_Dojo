@@ -3,14 +3,15 @@
 import { useActionState } from "react";
 import { CHECK_IN_TOKEN_MINUTES } from "@dojo/contracts/attendance";
 import { generateQr, type QrState } from "./actions";
+import { PreservingForm } from "@/components/ui/PreservingForm";
 
 export function QrBlock({ classId, sessionId }: { classId: string; sessionId: string }) {
   const [state, action, pending] = useActionState<QrState, FormData>(() => generateQr(classId, sessionId), {});
   return (
     <div>
-      <form action={action}>
+      <PreservingForm action={action} state={state}>
         <button type="submit" disabled={pending}>{pending ? "Gerando…" : "Gerar QR de check-in"}</button>
-      </form>
+      </PreservingForm>
       {state.error && <p role="alert">{state.error}</p>}
       {state.qrSvgDataUrl && (
         <div>

@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { addAlias, updateTechnique } from "../actions";
 import type { FormState } from "../../login/actions";
+import { PreservingForm } from "@/components/ui/PreservingForm";
 
 type Props = {
   techniqueId: string; name: string; category: string; level: string; description: string;
@@ -12,7 +13,7 @@ type Props = {
 export function EditForm({ techniqueId, name, category, level, description, type, position }: Props) {
   const [state, action, pending] = useActionState<FormState, FormData>((prev, formData) => updateTechnique(techniqueId, prev, formData), {});
   return (
-    <form action={action}>
+    <PreservingForm action={action} state={state}>
       <label>Nome <input name="name" defaultValue={name} minLength={2} maxLength={160} required /></label>
       <label>Categoria <input name="category" defaultValue={category} minLength={2} maxLength={80} required /></label>
       <label>Nível <input name="level" defaultValue={level} maxLength={40} /></label>
@@ -22,18 +23,18 @@ export function EditForm({ techniqueId, name, category, level, description, type
       <button type="submit" disabled={pending}>{pending ? "Salvando…" : "Salvar"}</button>
       {state.error && <p role="alert">{state.error}</p>}
       {state.message && <p role="status">{state.message}</p>}
-    </form>
+    </PreservingForm>
   );
 }
 
 export function AliasForm({ techniqueId }: { techniqueId: string }) {
   const [state, action, pending] = useActionState<FormState, FormData>((prev, formData) => addAlias(techniqueId, prev, formData), {});
   return (
-    <form action={action}>
+    <PreservingForm action={action} state={state}>
       <label>Novo sinônimo <input name="alias" minLength={2} maxLength={120} required /></label>
       <button type="submit" disabled={pending}>{pending ? "Adicionando…" : "Adicionar"}</button>
       {state.error && <p role="alert">{state.error}</p>}
       {state.message && <p role="status">{state.message}</p>}
-    </form>
+    </PreservingForm>
   );
 }

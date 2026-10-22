@@ -3,15 +3,16 @@
 import { useActionState } from "react";
 import { updateDisplayName } from "./actions";
 import type { FormState } from "../login/actions";
+import { PreservingForm } from "@/components/ui/PreservingForm";
 
 export function ProfileForm({ displayName }: { displayName: string }) {
   const [state, action, pending] = useActionState<FormState, FormData>(updateDisplayName, {});
   return (
-    <form action={action}>
+    <PreservingForm action={action} state={state}>
       <label>Nome <input name="displayName" defaultValue={displayName} minLength={2} maxLength={120} required /></label>
       <button type="submit" disabled={pending}>{pending ? "Salvando…" : "Salvar"}</button>
       {state.error && <p role="alert">{state.error}</p>}
       {state.message && <p role="status">{state.message}</p>}
-    </form>
+    </PreservingForm>
   );
 }

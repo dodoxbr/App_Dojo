@@ -33,7 +33,7 @@ export const saveContactSchema = z.object({
   fullName: text(2, 160, 'o nome completo'),
   phone: phoneSchema,
   postalCode: postalCodeSchema,
-  street: text(2, 160, 'a rua'),
+  street: text(2, 160, 'o endereço'),
   number: text(1, 20, 'o número'),
   complement: z.string().trim().max(80).optional().transform((v) => (v ? v : undefined)),
   neighborhood: text(2, 80, 'o bairro'),

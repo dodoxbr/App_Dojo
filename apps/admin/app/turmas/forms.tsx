@@ -3,6 +3,7 @@
 import { useActionState, useState } from "react";
 import { createClass, createSession, updateClass } from "./actions";
 import type { FormState } from "../login/actions";
+import { PreservingForm } from "@/components/ui/PreservingForm";
 
 type Person = { id: string; name: string };
 
@@ -10,7 +11,7 @@ export function CreateClassForm({ academyId, instructors }: { academyId: string;
   const [state, action, pending] = useActionState<FormState, FormData>(createClass, {});
   const [idempotencyKey] = useState(() => crypto.randomUUID());
   return (
-    <form action={action}>
+    <PreservingForm action={action} state={state}>
       <input type="hidden" name="academyId" value={academyId} />
       <input type="hidden" name="idempotencyKey" value={idempotencyKey} />
       <label>Nome da turma <input name="title" minLength={2} maxLength={120} required /></label>
@@ -23,7 +24,7 @@ export function CreateClassForm({ academyId, instructors }: { academyId: string;
       </label>
       <button type="submit" disabled={pending}>{pending ? "Criando…" : "Criar turma"}</button>
       {state.error && <p role="alert">{state.error}</p>}
-    </form>
+    </PreservingForm>
   );
 }
 
@@ -32,7 +33,7 @@ type EditProps = { classId: string; title: string; instructorUserId: string; isA
 export function EditClassForm({ classId, title, instructorUserId, isActive, instructors }: EditProps) {
   const [state, action, pending] = useActionState<FormState, FormData>((prev, formData) => updateClass(classId, prev, formData), {});
   return (
-    <form action={action}>
+    <PreservingForm action={action} state={state}>
       <label>Nome da turma <input name="title" defaultValue={title} minLength={2} maxLength={120} required /></label>
       <label>
         Instrutor responsável{" "}
@@ -44,7 +45,7 @@ export function EditClassForm({ classId, title, instructorUserId, isActive, inst
       <button type="submit" disabled={pending}>{pending ? "Salvando…" : "Salvar turma"}</button>
       {state.error && <p role="alert">{state.error}</p>}
       {state.message && <p role="status">{state.message}</p>}
-    </form>
+    </PreservingForm>
   );
 }
 
@@ -54,7 +55,7 @@ export function CreateSessionForm({ classId }: { classId: string }) {
   // while a different date/time is always a new request.
   const [idempotencyKey, setKey] = useState(() => crypto.randomUUID());
   return (
-    <form action={action} onChange={() => setKey(crypto.randomUUID())}>
+    <PreservingForm action={action} state={state} onChange={() => setKey(crypto.randomUUID())}>
       <input type="hidden" name="idempotencyKey" value={idempotencyKey} />
       <label>Data <input name="date" type="date" required /></label>
       <label>Início <input name="start" type="time" defaultValue="19:00" required /></label>
@@ -62,6 +63,6 @@ export function CreateSessionForm({ classId }: { classId: string }) {
       <button type="submit" disabled={pending}>{pending ? "Agendando…" : "Agendar aula"}</button>
       {state.error && <p role="alert">{state.error}</p>}
       {state.message && <p role="status">{state.message}</p>}
-    </form>
+    </PreservingForm>
   );
 }

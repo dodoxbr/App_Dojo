@@ -3,6 +3,7 @@
 import { useActionState, useState } from "react";
 import { createTechnique } from "../actions";
 import type { FormState } from "../../login/actions";
+import { PreservingForm } from "@/components/ui/PreservingForm";
 
 type Scope = { id: string; label: string };
 
@@ -10,7 +11,7 @@ export function CreateTechniqueForm({ scopes }: { scopes: Scope[] }) {
   const [state, action, pending] = useActionState<FormState, FormData>(createTechnique, {});
   const [idempotencyKey] = useState(() => crypto.randomUUID());
   return (
-    <form action={action}>
+    <PreservingForm action={action} state={state}>
       <input type="hidden" name="idempotencyKey" value={idempotencyKey} />
       <label>
         Onde cadastrar{" "}
@@ -26,6 +27,6 @@ export function CreateTechniqueForm({ scopes }: { scopes: Scope[] }) {
       <label>Descrição (opcional) <textarea name="description" maxLength={4000} rows={4} /></label>
       <button type="submit" disabled={pending}>{pending ? "Cadastrando…" : "Cadastrar técnica"}</button>
       {state.error && <p role="alert">{state.error}</p>}
-    </form>
+    </PreservingForm>
   );
 }

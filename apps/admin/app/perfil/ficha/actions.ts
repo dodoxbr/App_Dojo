@@ -1,6 +1,8 @@
 "use server";
 
+import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { safeRedirectPath } from "@dojo/contracts/auth";
 import { saveContactSchema } from "@dojo/contracts/contacts";
 import { CURRENT_TERMS_VERSION } from "@dojo/contracts/terms";
 import { getCaller } from "@/lib/context";
@@ -50,7 +52,8 @@ export async function saveContact(userId: string, _prev: FormState, formData: Fo
   if (error) return { error: rpcErrorMessage(error) };
   revalidatePath("/perfil");
   revalidatePath("/dependentes");
-  return { message: "Ficha salva." };
+  // Salvou: volta para onde a pessoa estava (o perfil, ou o menor na ficha do dependente).
+  redirect(safeRedirectPath(formData.get("next"), "/perfil"));
 }
 
 // Accounts created before the terms existed accept the current version here.

@@ -23,11 +23,13 @@ export async function saveLog(_prev: FormState, formData: FormData): Promise<For
     logId: formData.get("logId") ?? undefined,
     academyId: formData.get("academyId") ?? undefined,
     trainedDate: formData.get("trainedDate"),
+    startTime: formData.get("startTime") ?? "",
+    endTime: formData.get("endTime") ?? undefined,
     notes: formData.get("notes") ?? "",
     techniqueIds: formData.getAll("techniqueId"),
     clientKey: formData.get("clientKey"),
   });
-  if (!parsed.success) return { error: "Revise a data (não pode ser futura), as anotações e as técnicas escolhidas." };
+  if (!parsed.success) return { error: "Revise a data (não pode ser futura), o horário (início obrigatório; o término, se informado, é depois do início), as anotações e as técnicas escolhidas." };
 
   const { supabase } = await getCaller();
   const { data, error } = await supabase.rpc("save_training_log", {
@@ -37,6 +39,8 @@ export async function saveLog(_prev: FormState, formData: FormData): Promise<For
     p_technique_ids: parsed.data.techniqueIds,
     p_client_key: parsed.data.clientKey,
     p_log_id: parsed.data.logId ?? null,
+    p_start_time: parsed.data.startTime,
+    p_end_time: parsed.data.endTime ?? null,
   });
   if (error || !data) return { error: rpcErrorMessage(error ?? {}) };
   revalidatePath("/diario");
