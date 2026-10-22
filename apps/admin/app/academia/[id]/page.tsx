@@ -36,6 +36,7 @@ export default async function AcademiaPage({ params }: { params: Promise<{ id: s
   const a = `/academia/${academy.id}`;
   const logoUrl = await academyLogoUrl(supabase, id);
   const links = [
+    { href: `${a}/pagina`, title: "Página pública da academia (contato, endereço e redes)", show: true },
     { href: `${a}/membros`, title: "Membros e pedidos de entrada", show: true },
     { href: `${a}/turmas`, title: "Turmas e aulas", show: true },
     { href: `${a}/graduacao`, title: "Graduação", show: true },

@@ -316,3 +316,8 @@
 - [ ] Botões Google e Apple da referência **não** foram incluídos (não há login social no banco). Se vierem, exigem configuração do provedor.
 - [ ] Os celulares da landing são ilustração com dados fictícios; trocar por capturas reais quando o app estiver estável.
 - [ ] Logo ainda provisória (sem fundo transparente; hoje fundida ao fundo escuro com `mix-blend-mode: lighten`, o que só funciona sobre fundo escuro).
+
+## Página pública da academia (2026-10-22)
+- [ ] Os dados de contato da GFT que apareceram nas imagens de referência (telefone, site) **não foram carregados**: o gestor preenche em `/academia/{id}/pagina`.
+- [ ] Pré-visualização antes de publicar, foto de capa própria e turmas reais na página (hoje é uma grade digitada pelo gestor).
+- [ ] Definir o texto de privacidade/termos da página pública (dados da empresa; revisão jurídica junto com os termos).

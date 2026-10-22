@@ -1,0 +1,18 @@
+.form { display: grid; gap: var(--space-4); margin: 0; }
+.form label { display: grid; gap: var(--space-1); margin: 0; }
+.form fieldset { display: grid; gap: var(--space-3); margin: 0; padding: var(--space-4); }
+.two { display: grid; gap: var(--space-3); grid-template-columns: 1fr; }
+.hint { margin: 0; font-size: var(--text-sm); color: var(--text-muted); }
+.publish { display: flex !important; align-items: flex-start; gap: var(--space-3); padding: var(--space-4); border: 1px solid var(--accent); border-radius: var(--radius-control); background: var(--info-surface); }
+.publish input { margin-top: 4px; }
+@media (min-width: 640px) {
+  .two { grid-template-columns: 1fr 1fr; }
+}
+.group { display: grid; gap: var(--space-3); }
+.line { display: grid; gap: var(--space-3); padding: var(--space-3); border: 1px solid var(--border); border-radius: var(--radius-control); background: var(--bg); }
+.days { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.days .day { display: inline-flex !important; align-items: center; gap: 0; min-height: 40px; padding: 0 var(--space-4); border: 1px solid var(--border-strong); border-radius: var(--radius-pill); background: var(--surface); color: var(--text); font-size: var(--text-sm); font-weight: 600; cursor: pointer; }
+.days .day input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.days .dayOn { background: var(--primary); border-color: var(--primary); color: var(--primary-contrast); }
+.days .day:focus-within { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+.rowActions { display: flex; flex-wrap: wrap; gap: var(--space-2); }

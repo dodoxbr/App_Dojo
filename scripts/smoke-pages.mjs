@@ -142,6 +142,7 @@ try {
   };
 
   // Not signed in
+  await check(null, '/a/nao-existe-smoke', { status: 404 });
   await check(null, '/?code=abc', { redirect: '/login?confirmado=ok' });
   await check(null, '/?error=access_denied&error_code=otp_expired', { redirect: '/login?confirmado=erro' });
   await check(null, '/login?confirmado=ok', { has: ['E-mail confirmado', 'Entrar'] });
