@@ -70,8 +70,9 @@ assert.equal(sess.error, null, 'professor agenda a aula');
 assert.equal((await teacher.client.rpc('validate_attendance', { p_session_id: sess.data, p_user_id: alice.id, p_idempotency_key: crypto.randomUUID() })).data, 'validated');
 const insideLesson = lesson.start; // she says she trained at the start of the lesson
 assert.equal((await entry(alice, insideLesson, 'aula da turma')).error, null, 'alice registra o treino no horário da aula');
-assert.equal((await entry(bob, '06:30', 'treino em casa')).error, null, 'bob registra um treino sem aula (vale ponto, não confirmado)');
-assert.equal((await entry(bob, '06:45')).error?.code, '22023', 'limite de 1 treino por dia');
+// Horários logo após a meia-noite local: nunca caem no futuro, seja qual for a hora em que o teste roda (CI roda de madrugada).
+assert.equal((await entry(bob, '00:00', 'treino em casa')).error, null, 'bob registra um treino sem aula (vale ponto, não confirmado)');
+assert.equal((await entry(bob, '00:01')).error?.code, '22023', 'limite de 1 treino por dia');
 assert.equal((await entry(dave, '07:00')).error?.code, '42501', 'quem não participa não registra');
 const future = await alice.client.rpc('add_challenge_entry', { p_challenge_id: challengeId, p_local_date: localDate(-1), p_local_time: '07:00', p_units: null, p_note: null, p_client_key: crypto.randomUUID() });
 assert.equal(future.error?.code, '22023', 'dia futuro é rejeitado');
