@@ -143,6 +143,7 @@ try {
 
   // Not signed in
   await check(null, '/a/nao-existe-smoke', { status: 404 });
+  await check(null, '/termo-de-imagem', { has: ['Termo de uso de imagem de menor', 'Aprovação pelo professor', 'Rascunho em revisão jurídica'] });
   await check(null, '/?code=abc', { redirect: '/login?confirmado=ok' });
   await check(null, '/?error=access_denied&error_code=otp_expired', { redirect: '/login?confirmado=erro' });
   await check(null, '/login?confirmado=ok', { has: ['E-mail confirmado', 'Entrar'] });
@@ -192,7 +193,8 @@ try {
   // Feed of photos: a REAL upload through the route, then the stored picture is downloaded and inspected
   await check(null, `/feed/${academyId}`, { redirect: '/login?next=' });
   await check('student', '/feed', { redirect: `/feed/${academyId}` });
-  await check('student', `/feed/${academyId}`, { has: ['Feed —', 'Postar uma foto', 'Nenhuma foto ainda', 'Quem aparece na foto', 'somem sozinhas depois de 30 dias'] });
+  await check('student', `/feed/${academyId}`, { has: ['Feed —', 'Postar foto', 'Nenhuma foto ainda', 'somem sozinhas depois de 30 dias', 'respeito vem primeiro'] });
+  await check('student', `/feed/${academyId}/postar`, { has: ['Postar foto', 'Quem aparece na foto', 'respeito vem primeiro', 'Enviar foto'] });
   await check('guardian', `/feed/${academyId}`, { status: 404 });
   const photo = await sharp({ create: { width: 2400, height: 1600, channels: 3, background: { r: 30, g: 90, b: 160 } } })
     .withExif({ IFD0: { Make: 'CameraSecreta', ImageDescription: 'endereco-secreto-da-casa' }, IFD3: { GPSLatitudeRef: 'S', GPSLatitude: '23/1 32/1 0/1' } })

@@ -1,6 +1,6 @@
 -- The legal guardian follows the child through the feed; separate authorization for the social networks. Synthetic data only.
 begin;
-select plan(23);
+select plan(26);
 
 insert into auth.users (id, email, raw_user_meta_data) values
  ('00000000-0000-0000-0000-0000000000a1', 'gestor@example.test', '{"display_name":"Gestor Um","birth_date":"1985-05-05"}'),
@@ -43,6 +43,12 @@ select lives_ok($$select public.create_feed_post('00000000-0000-0000-0000-000000
 select lives_ok($$select public.create_feed_post('00000000-0000-0000-0000-00000000ac01', 'treino do dois (teste)', (select ok from pics), 100, 100, true, '{00000000-0000-0000-0000-0000000000d2}', gen_random_uuid())$$, 'post com o menor 2');
 select lives_ok($$select public.create_feed_post('00000000-0000-0000-0000-00000000ac01', 'treino do tres (teste)', (select ok from pics), 100, 100, true, '{00000000-0000-0000-0000-0000000000d3}', gen_random_uuid())$$, 'post com o menor 3');
 select lives_ok($$select public.create_feed_post('00000000-0000-0000-0000-00000000ac01', 'so adultos (teste)', (select ok from pics), 100, 100, false, '{}', gen_random_uuid())$$, 'post so com adultos');
+-- Foto com menor espera a aprovacao do moderador (migration 038); o gestor aprova as tres.
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000a1","role":"authenticated"}', true);
+select lives_ok($$select public.moderate_feed_post((select id from public.feed_posts where caption = 'treino do um (teste)'), true)$$, 'gestor aprova o post do menor 1');
+select lives_ok($$select public.moderate_feed_post((select id from public.feed_posts where caption = 'treino do dois (teste)'), true)$$, 'gestor aprova o post do menor 2');
+select lives_ok($$select public.moderate_feed_post((select id from public.feed_posts where caption = 'treino do tres (teste)'), true)$$, 'gestor aprova o post do menor 3');
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000b1","role":"authenticated"}', true);
 
 -- Which posts may go to the social networks (shown to the author and the manager)
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000a1","role":"authenticated"}', true);
@@ -56,7 +62,7 @@ select is((select count(*)::int from public.list_dependent_feed('00000000-0000-0
 select is((select count(*)::int from public.list_dependent_feed('00000000-0000-0000-0000-0000000000d2')), 1, 'e do filho 2');
 select is((select count(*)::int from public.feed_posts), 2, 'a tabela (e a foto) so deixa ver os 2 posts dos filhos dele');
 select throws_ok($$select * from public.list_dependent_feed('00000000-0000-0000-0000-0000000000d3')$$, '42501', null, 'nao ve o feed de filho de outro responsavel');
-select throws_ok($$select public.create_feed_post('00000000-0000-0000-0000-00000000ac01', null, (select ok from pics), 100, 100, false, '{}', gen_random_uuid())$$, '42501', null, 'o responsavel acompanha, mas nao e membro: nao posta');
+select throws_ok($$select public.create_feed_post('00000000-0000-0000-0000-00000000ac01', null, (select ok from pics), 100, 100, false, '{}', gen_random_uuid())$$, '22023', null, 'o responsavel (nao e membro) so posta marcando o proprio menor');
 select throws_ok($$select * from public.list_feed('00000000-0000-0000-0000-00000000ac01')$$, '42501', null, 'e nao ve o feed inteiro da academia');
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000e2","role":"authenticated"}', true);
 select throws_ok($$select * from public.list_dependent_feed('00000000-0000-0000-0000-0000000000d1')$$, '42501', null, 'o responsavel financeiro nao acompanha o treino');
@@ -75,7 +81,7 @@ select is((select count(*)::int from public.list_dependent_feed('00000000-0000-0
 
 -- The consent: social networks need the photo authorization
 select throws_ok($$select public.request_dependent_membership('00000000-0000-0000-0000-0000000000d4', '00000000-0000-0000-0000-00000000ac01', false, true)$$, '22023', null, 'redes sociais sem autorizar a foto e rejeitado');
-select lives_ok($$select public.request_dependent_membership('00000000-0000-0000-0000-0000000000d4', '00000000-0000-0000-0000-00000000ac01', true, true)$$, 'foto e redes sociais autorizadas no pedido');
+select lives_ok($$select public.request_dependent_membership('00000000-0000-0000-0000-0000000000d4', '00000000-0000-0000-0000-00000000ac01', true, true, 'Resp Um Teste')$$, 'foto e redes sociais autorizadas no pedido');
 select is((select consent_social from public.guardian_consents where minor_user_id = '00000000-0000-0000-0000-0000000000d4'), true, 'a autorizacao de redes sociais fica registrada');
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000a1","role":"authenticated"}', true);
 select is((select consent_social from public.list_academy_guardian_consents('00000000-0000-0000-0000-00000000ac01') where minor_user_id = '00000000-0000-0000-0000-0000000000d4'), true, 'o gestor ve que foi autorizado');

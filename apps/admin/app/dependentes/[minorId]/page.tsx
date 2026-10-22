@@ -6,7 +6,7 @@ import { consentStepLabel, overviewSchema } from "@dojo/contracts/guardians";
 import { idSchema } from "@dojo/contracts/membership";
 import { Avatar, BeltBar, PageHero } from "@/components/ui";
 import { getCaller } from "@/lib/context";
-import { InviteForm } from "../forms";
+import { InviteForm, SignPhotoTermForm } from "../forms";
 import { revokeConsent } from "../actions";
 
 const fmtWhen = (iso: string) =>
@@ -17,12 +17,14 @@ export default async function DependentePage({ params }: { params: Promise<{ min
   const { minorId } = await params;
   if (!idSchema.safeParse(minorId).success) notFound();
   const { supabase } = await getCaller();
-  const [{ data, error }, { data: contactRows }, { data: medalRows }, { data: milestoneRows }] = await Promise.all([
+  const [{ data, error }, { data: contactRows }, { data: medalRows }, { data: milestoneRows }, { data: termRows }] = await Promise.all([
     supabase.rpc("guardian_overview", { p_minor_id: minorId }),
     supabase.rpc("get_contact", { p_user_id: minorId }),
     supabase.rpc("dependent_medals", { p_minor_id: minorId }),
     supabase.rpc("dependent_milestones", { p_minor_id: minorId }),
+    supabase.rpc("photo_term_status", { p_minor_id: minorId }),
   ]);
+  const termOf = new Map(((termRows ?? []) as { academy_id: string; signed_name: string | null; signed_at: string | null }[]).map((t) => [t.academy_id, t]));
   const milestones = ((milestoneRows ?? []) as unknown[]).map((x) => myMilestoneSchema.safeParse(x)).flatMap((r) => (r.success ? [r.data] : []));
   const medals = ((medalRows ?? []) as unknown[]).map((x) => dependentMedalSchema.safeParse(x)).flatMap((r) => (r.success ? [r.data] : []));
   const hasContact = ((contactRows ?? []) as unknown[]).length > 0;
@@ -63,6 +65,7 @@ export default async function DependentePage({ params }: { params: Promise<{ min
                 <li>Graduação: {a.rank ? `${a.rank.belt_code}, grau ${a.rank.degree} (desde ${new Date(`${a.rank.since}T12:00:00Z`).toLocaleDateString("pt-BR", { timeZone: "UTC" })})` : "ainda sem graduação registrada"}</li>
                 <li>Próximas aulas: {(a.next_sessions ?? []).length === 0 ? "nenhuma agendada" : (a.next_sessions ?? []).map((s) => `${s.title} (${fmtWhen(s.starts_at)})`).join("; ")}</li>
                 <li>Fotos no feed da academia: {a.consent_photos ? "autorizado" : "não autorizado"} · redes sociais (Instagram): {a.consent_social ? "autorizado" : "não autorizado"}</li>
+                {termOf.get(a.academy_id)?.signed_at && <li>Termo de uso de imagem assinado por {termOf.get(a.academy_id)?.signed_name} em {new Date(termOf.get(a.academy_id)?.signed_at as string).toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo" })}.</li>}
               </ul>
             )}
             {a.consent_status === "verified" && a.consent_active && (
@@ -73,6 +76,7 @@ export default async function DependentePage({ params }: { params: Promise<{ min
                 )}
               </>
             )}
+            {a.consent_active && !a.consent_photos && <SignPhotoTermForm minorId={minorId} academyId={a.academy_id} />}
             {a.consent_active && (
               <form action={revokeConsent.bind(null, minorId)}>
                 <input type="hidden" name="consentId" value={a.consent_id} />

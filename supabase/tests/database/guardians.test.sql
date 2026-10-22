@@ -137,7 +137,7 @@ select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000
 select is((select status::text from public.memberships where user_id = (select id from dep)), 'suspended', 'o menor e suspenso na hora');
 select throws_ok($$select public.verify_guardian_consent((select id from public.guardian_consents), true, null)$$, '23505', null, 'consentimento revogado nao e verificado');
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000e1","role":"authenticated"}', true);
-select lives_ok($$select public.request_dependent_membership((select id from dep), '00000000-0000-0000-0000-00000000ac01', true)$$, 'novo consentimento (agora com foto)');
+select lives_ok($$select public.request_dependent_membership((select id from dep), '00000000-0000-0000-0000-00000000ac01', true, false, 'Mae Ficticia Teste')$$, 'novo consentimento (agora com foto)');
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000b1","role":"authenticated"}', true);
 select throws_ok($$select public.decide_membership((select id from public.memberships where user_id = (select id from dep)), 'approved', null, gen_random_uuid())$$, '22023', null, 'depois da revogacao e preciso conferir de novo');
 

@@ -1,0 +1,7 @@
+.person { display: inline-flex; align-items: center; gap: var(--space-3); text-align: left; }
+.name { display: block; font-weight: 600; color: var(--text); text-decoration: none; }
+.name:hover { color: var(--accent-strong); text-decoration: underline; }
+.sub { display: block; color: var(--text-muted); }
+.rank { display: inline-flex; align-items: center; gap: var(--space-3); }
+.rank > :first-child { width: 72px; flex: none; }
+.muted { color: var(--text-muted); }

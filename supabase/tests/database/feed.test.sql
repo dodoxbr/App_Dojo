@@ -1,6 +1,6 @@
 -- US-018: photo feed of the academy. Synthetic data only (the "pictures" are just bytes that start like a JPEG).
 begin;
-select plan(52);
+select plan(53);
 
 insert into auth.users (id, email, raw_user_meta_data) values
  ('00000000-0000-0000-0000-0000000000a1', 'gestor@example.test', '{"display_name":"Gestor Um","birth_date":"1985-05-05"}'),
@@ -60,6 +60,10 @@ select throws_ok($$select public.create_feed_post('00000000-0000-0000-0000-00000
 select throws_ok($$select public.create_feed_post('00000000-0000-0000-0000-00000000ac01', null, (select ok from pics), 100, 100, false, '{00000000-0000-0000-0000-0000000000d2}', gen_random_uuid())$$, '22023', null, 'nem sem declarar: marcar ja exige o consentimento');
 select lives_ok($$select public.create_feed_post('00000000-0000-0000-0000-00000000ac01', 'com o menor (teste)', (select ok from pics), 100, 100, true, '{00000000-0000-0000-0000-0000000000d1}', gen_random_uuid())$$, 'menor com consentimento de foto aparece');
 select is((select has_minors from public.feed_posts where caption = 'com o menor (teste)'), true, 'o post fica marcado como tendo menor');
+-- Desde a migration 038, foto com menor espera a aprovacao do moderador antes de aparecer no feed.
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000a1","role":"authenticated"}', true);
+select lives_ok($$select public.moderate_feed_post((select id from public.feed_posts where caption = 'com o menor (teste)'), true)$$, 'o gestor aprova a foto com o menor');
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000b1","role":"authenticated"}', true);
 
 -- 3. Only members post and see; the platform admin and strangers do not
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000f1","role":"authenticated"}', true);

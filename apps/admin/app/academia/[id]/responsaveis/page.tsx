@@ -43,7 +43,7 @@ export default async function ResponsaveisPage({
               <li key={r.id}>
                 <form action={verifyConsent.bind(null, id)}>
                   <strong>{r.minor_name}</strong> — responsável: {r.guardian_name} ({r.relationship})
-                  {r.consent_photos ? " · autoriza fotos no feed" : " · fotos não autorizadas"}{r.consent_social ? " · autoriza redes sociais (Instagram)" : " · redes sociais não autorizadas"}
+                  {r.consent_photos ? ` · autoriza fotos no feed${r.photo_signed_name ? ` (termo assinado por ${r.photo_signed_name}${r.photo_signed_at ? ` em ${new Date(r.photo_signed_at).toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo" })}` : ""})` : ""}` : " · fotos não autorizadas"}{r.consent_social ? " · autoriza redes sociais (Instagram)" : " · redes sociais não autorizadas"}
                   <input type="hidden" name="consentId" value={r.id} />
                   <label><input type="checkbox" name="documentChecked" required /> Conferi o documento do responsável pessoalmente</label>
                   <label> Observação (opcional) <input name="note" maxLength={500} /></label>

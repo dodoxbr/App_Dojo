@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { daysLeft, dependentPostSchema } from "@dojo/contracts/feed";
 import { idSchema } from "@dojo/contracts/membership";
+import { Alert, ButtonLink } from "@/components/ui";
+import { feedMessage } from "@/lib/feed-ui";
 import { anyAcademyHas, myFeatureMap } from "@/lib/features";
 import { FeatureOff } from "@/components/feature-off";
 import { getCaller } from "@/lib/context";
@@ -14,10 +16,10 @@ export default async function FeedDoDependentePage({
   searchParams,
 }: {
   params: Promise<{ minorId: string }>;
-  searchParams: Promise<{ antes?: string }>;
+  searchParams: Promise<{ antes?: string; ok?: string; erro?: string }>;
 }) {
   const { minorId } = await params;
-  const { antes } = await searchParams;
+  const { antes, ok, erro } = await searchParams;
   if (!idSchema.safeParse(minorId).success) notFound();
   const { supabase } = await getCaller();
   const featureMap = await myFeatureMap(supabase);
@@ -38,6 +40,10 @@ export default async function FeedDoDependentePage({
     <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 960 }}>
       <p><Link href={`/dependentes/${minorId}`}>← {dep.minor_name}</Link></p>
       <h1>Treino de {dep.minor_name}</h1>
+      <p><ButtonLink href={`/dependentes/${minorId}/postar`} variant="accent">Postar foto</ButtonLink></p>
+      {ok === "pendente" && <Alert tone="info">Foto enviada. Ela aparece no feed depois que o professor ou o gestor aprovar.</Alert>}
+      {ok === "1" && <Alert tone="success">Foto publicada.</Alert>}
+      {erro && <Alert tone="danger">{feedMessage(erro)}</Alert>}
       <p role="note"><small>Fotos que os membros da academia postaram e em que {dep.minor_name} aparece, enquanto o seu consentimento de fotos estiver ativo. Elas somem sozinhas depois de 30 dias.</small></p>
       {posts.length === 0 ? (
         <p>Ainda não há fotos com {dep.minor_name}.</p>

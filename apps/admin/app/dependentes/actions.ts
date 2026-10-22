@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { acceptFinancialSchema, createDependentSchema, requestDependentSchema } from "@dojo/contracts/guardians";
 import { idSchema } from "@dojo/contracts/membership";
+import { isValidSignature } from "@dojo/contracts/terms";
 import { getCaller } from "@/lib/context";
 import { rpcErrorMessage } from "@/lib/rpc-errors";
 import type { FormState } from "../login/actions";
@@ -33,19 +34,34 @@ export async function createDependent(_prev: FormState, formData: FormData): Pro
 
 // The legal guardian asks for the minor's place in an academy and gives the consent (photos off unless ticked).
 export async function requestForDependent(minorId: string, academyId: string, _prev: FormState, formData: FormData): Promise<FormState> {
-  const parsed = requestDependentSchema.safeParse({ minorId, academyId, photos: formData.get("photos") === "on", social: formData.get("social") === "on" });
+  const parsed = requestDependentSchema.safeParse({ minorId, academyId, photos: formData.get("photos") === "on", social: formData.get("social") === "on", signature: String(formData.get("signature") ?? "") });
   if (!parsed.success) return { error: "Pedido inválido." };
   if (formData.get("consent") !== "on") return { error: "Marque que você leu e concorda com o termo de consentimento." };
+  if (parsed.data.photos && !isValidSignature(parsed.data.signature)) return { error: "Para autorizar fotos, assine o termo de uso de imagem digitando o seu nome completo (nome e sobrenome)." };
   const { supabase } = await getCaller();
   const { error } = await supabase.rpc("request_dependent_membership", {
     p_minor_id: parsed.data.minorId,
     p_academy_id: parsed.data.academyId,
     p_photos: parsed.data.photos,
     p_social: parsed.data.social,
+    p_signature: parsed.data.signature || null,
   });
   if (error) return { error: rpcErrorMessage(error) };
   revalidatePath(`/dependentes/${minorId}`);
   return { message: "Pedido enviado. Agora leve seu documento à academia: o gestor confere pessoalmente antes de aprovar." };
+}
+
+// Assina o termo de uso de imagem depois do pedido de vaga (quem não autorizou fotos na primeira vez).
+export async function signPhotoTerm(minorId: string, academyId: string, _prev: FormState, formData: FormData): Promise<FormState> {
+  if (!idSchema.safeParse(minorId).success || !idSchema.safeParse(academyId).success) return { error: "Pedido inválido." };
+  if (formData.get("agree") !== "on") return { error: "Marque que você leu e concorda com o termo de uso de imagem." };
+  const signature = String(formData.get("signature") ?? "");
+  if (!isValidSignature(signature)) return { error: "Assine digitando o seu nome completo (nome e sobrenome)." };
+  const { supabase } = await getCaller();
+  const { error } = await supabase.rpc("sign_photo_term", { p_minor_id: minorId, p_academy_id: academyId, p_signature: signature, p_social: formData.get("social") === "on" });
+  if (error) return { error: rpcErrorMessage(error) };
+  revalidatePath(`/dependentes/${minorId}`);
+  return { message: "Termo de uso de imagem assinado." };
 }
 
 export async function revokeConsent(minorId: string, formData: FormData): Promise<void> {

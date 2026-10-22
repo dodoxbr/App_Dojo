@@ -127,3 +127,53 @@ export const privacyPolicy: TermsSection[] = [
     ],
   },
 ];
+
+// ---- Termo de uso de imagem de menor (assinado pelo responsável legal). RASCUNHO até a revisão jurídica (docs/11).
+export const PHOTO_TERM_VERSION = 'rascunho-2026-12';
+
+export const photoTerm: TermsSection[] = [
+  {
+    id: 'objeto',
+    title: '1. O que este termo autoriza',
+    paragraphs: [
+      'Eu, responsável legal, autorizo a academia {{empresa}} a registrar e publicar fotos do menor sob a minha responsabilidade em atividades da academia (aulas, treinos, graduações e eventos).',
+      'A autorização vale somente para a finalidade abaixo, é específica para este menor e para esta academia e não envolve nenhum pagamento.',
+    ],
+  },
+  {
+    id: 'onde',
+    title: '2. Onde as fotos aparecem',
+    paragraphs: [
+      'No feed fechado da academia, visível apenas para os membros dela, por 30 dias; depois disso as fotos são apagadas.',
+      'Nas redes sociais da academia (por exemplo, o Instagram) somente se eu marcar essa opção de forma separada. Sem essa marca, as fotos do menor não vão para redes sociais.',
+    ],
+  },
+  {
+    id: 'moderacao',
+    title: '3. Aprovação pelo professor',
+    paragraphs: [
+      'Toda foto em que o menor aparece só é publicada depois que o professor ou o gestor da academia aprova. Conteúdo sem respeito (zoeira, ofensa, exposição de colega) é recusado.',
+    ],
+  },
+  {
+    id: 'revogacao',
+    title: '4. Posso mudar de ideia',
+    paragraphs: [
+      'Posso revogar esta autorização a qualquer momento na plataforma. Ao revogar, as fotos do menor deixam de aparecer no feed e o menor fica suspenso até nova autorização.',
+      'Fotos já publicadas fora da plataforma (redes sociais) devem ser retiradas pela academia a meu pedido.',
+    ],
+  },
+  {
+    id: 'assinatura',
+    title: '5. Assinatura',
+    paragraphs: [
+      'Ao digitar meu nome completo e confirmar, declaro que li este termo, que sou o responsável legal do menor e que a autorização é dada por mim. A plataforma guarda meu nome, a data e a versão do termo.',
+    ],
+  },
+];
+
+// A assinatura é o nome completo (nome e sobrenome) digitado pelo responsável. As mesmas regras estão no banco (`valid_signature`).
+export function isValidSignature(name: string | null | undefined): boolean {
+  const v = (name ?? '').trim();
+  return v.length >= 5 && v.length <= 120 && /\s/.test(v);
+}

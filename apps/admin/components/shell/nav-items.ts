@@ -35,6 +35,7 @@ export function staffNav(academyId: string, role: StaffRole, permissions: StaffP
       { href: `${a}/inicio`, label: "Início", icon: "home" },
       { href: `${a}/membros`, label: "Membros", icon: "people" },
       { href: `${a}/turmas`, label: "Turmas", icon: "classes" },
+      { href: `${a}/presenca`, label: "Presença", icon: "classes", primary: false },
       { href: `${a}/graduacao/alunos`, label: "Graduação", icon: "award" },
       ...(has("dashboard") ? [{ href: `${a}/painel`, label: "Painel", icon: "dashboard" as const, primary: false }] : []),
       { href: `${a}/responsaveis`, label: "Menores", icon: "family", primary: false },
@@ -50,6 +51,7 @@ export function staffNav(academyId: string, role: StaffRole, permissions: StaffP
     { href: `${a}/inicio`, label: "Início", icon: "home" },
     { href: "/aulas", label: "Aulas", icon: "classes" },
   ];
+  if (permissions.validate) items.push({ href: `${a}/presenca`, label: "Presença", icon: "classes", primary: false });
   if (permissions.recommend || permissions.progress) items.push({ href: `${a}/graduacao/alunos`, label: "Alunos", icon: "award" });
   if (permissions.assess && has("curriculum")) items.push({ href: `${a}/avaliacoes`, label: "Avaliações", icon: "progress" });
   if (permissions.progress && has("dashboard")) items.push({ href: `${a}/painel`, label: "Painel", icon: "dashboard", primary: false });

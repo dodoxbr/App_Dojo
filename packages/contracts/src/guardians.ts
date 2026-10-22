@@ -17,6 +17,8 @@ export const requestDependentSchema = z.object({
   academyId: z.uuid(),
   photos: z.boolean(),
   social: z.boolean().default(false),
+  // Nome completo digitado: obrigatório quando se autoriza fotos (termo de uso de imagem).
+  signature: z.string().trim().max(120).optional(),
 });
 
 export const verifyConsentSchema = z.object({
@@ -55,6 +57,8 @@ export const consentRowSchema = z.object({
   consent_social: z.boolean(),
   membership_status: z.string().nullable(),
   created_at: z.string(),
+  photo_signed_name: z.string().nullable().optional(),
+  photo_signed_at: z.string().nullable().optional(),
 });
 
 export const ageFlagSchema = z.object({ user_id: z.uuid(), is_minor: z.boolean(), guardian_ready: z.boolean() });

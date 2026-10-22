@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { AppShell } from "@/components/shell/AppShell";
 import { staffNav, type StaffPermissions, type StaffRole } from "@/components/shell/nav-items";
+import { shellAcademy } from "@/lib/shell-academy";
 import { getCaller } from "@/lib/context";
 import { knownFeatures } from "@dojo/contracts/features";
 
@@ -31,5 +32,6 @@ export default async function AcademiaLayout({ children, params }: { children: R
   if (!role) return <>{children}</>;
   const { data: enabled } = await supabase.rpc("academy_features", { p_academy_id: id });
   const features = new Set(knownFeatures((enabled ?? []) as string[]));
-  return <AppShell items={staffNav(id, role, permissions, features)}>{children}</AppShell>;
+  const academy = await shellAcademy(supabase, id);
+  return <AppShell items={staffNav(id, role, permissions, features)} academy={academy}>{children}</AppShell>;
 }

@@ -1,13 +1,13 @@
 import { notFound } from "next/navigation";
-import { CAPTION_MAX, COMMENT_MAX, commentSchema, daysLeft, FEED_RETENTION_DAYS, feedPersonSchema, feedPostSchema, hiddenReasonLabels, type FeedComment } from "@dojo/contracts/feed";
+import { COMMENT_MAX, commentSchema, daysLeft, FEED_RETENTION_DAYS, feedPostSchema, feedRespectNote, hiddenReasonLabels, type FeedComment, type FeedPost } from "@dojo/contracts/feed";
 import { idSchema } from "@dojo/contracts/membership";
-import { Alert, Avatar, Button, ButtonLink, Card, EmptyState, Page, PageHero } from "@/components/ui";
+import { Alert, Avatar, Badge, Button, ButtonLink, Card, EmptyState, Page, PageHero } from "@/components/ui";
 import { FeatureOff } from "@/components/feature-off";
 import { academyHas } from "@/lib/features";
 import { getCaller } from "@/lib/context";
 import { feedMessage } from "@/lib/feed-ui";
 import styles from "./feed.module.css";
-import { addComment, deleteComment, deletePost, reportComment, reportPost, restoreComment, restorePost, toggleReaction } from "./actions";
+import { addComment, deleteComment, deletePost, moderatePost, reportComment, reportPost, restoreComment, restorePost, toggleReaction } from "./actions";
 
 const PAGE = 20;
 
@@ -28,17 +28,16 @@ export default async function FeedPage({
   const { data: academy } = await supabase.from("academies").select("id, name, timezone").eq("id", academyId).maybeSingle();
   if (!academy) notFound();
   const before = antes && !Number.isNaN(Date.parse(antes)) ? new Date(antes).toISOString() : null;
-  const [{ data: postsRaw, error: feedError }, { data: peopleRaw }] = await Promise.all([
-    supabase.rpc("list_feed", { p_academy_id: academyId, p_before: before, p_limit: PAGE }),
-    supabase.rpc("list_feed_people", { p_academy_id: academyId }),
-  ]);
+  const { data: postsRaw, error: feedError } = await supabase.rpc("list_feed", { p_academy_id: academyId, p_before: before, p_limit: PAGE });
   if (feedError) notFound(); // not a member: same answer as an academy that does not exist
   const posts = ((postsRaw ?? []) as unknown[]).map((x) => feedPostSchema.safeParse(x)).flatMap((r) => (r.success ? [r.data] : []));
-  const people = ((peopleRaw ?? []) as unknown[]).map((x) => feedPersonSchema.safeParse(x)).flatMap((r) => (r.success ? [r.data] : []));
   const tz = (academy.timezone as string) ?? "America/Sao_Paulo";
   const message = feedMessage(erro);
   const fmt = (iso: string) => new Intl.DateTimeFormat("pt-BR", { timeZone: tz, dateStyle: "short", timeStyle: "short" }).format(new Date(iso));
   const last = posts[posts.length - 1];
+  // Fila do professor e do gestor: fotos aguardando aprovação. Quem não é moderador só vê as próprias na lista comum.
+  const queue = posts.filter((p) => p.status === "pending" && p.can_manage);
+  const listed = posts.filter((p) => !queue.includes(p));
 
   // The manager also reads why a post was reported.
   const reportsOf = new Map<string, string[]>();
@@ -70,39 +69,25 @@ export default async function FeedPage({
         eyebrow="Fotos da academia"
         title={`Feed — ${academy.name}`}
         subtitle={`Só os membros desta academia veem estas fotos. Elas somem sozinhas depois de ${FEED_RETENTION_DAYS} dias. Os dados escondidos da foto (como a localização) são removidos antes de salvar.`}
-        actions={<ButtonLink href="/medalhas" variant="secondary">Medalhas</ButtonLink>}
+        actions={<ButtonLink href={`/feed/${academyId}/postar`} variant="accent">Postar foto</ButtonLink>}
       />
       {message && <Alert tone="danger">{message}</Alert>}
-      {ok && <Alert tone="success">Foto publicada.</Alert>}
+      {ok === "pendente" ? <Alert tone="info">Foto enviada. Ela aparece no feed depois que o professor ou o gestor aprovar.</Alert> : ok ? <Alert tone="success">Foto publicada.</Alert> : null}
+      <Alert tone="info">{feedRespectNote}</Alert>
 
-      <Card>
-        <h2 style={{ margin: "0 0 12px", fontSize: "1.25rem" }}>Postar uma foto</h2>
-        <form action="/api/feed/upload" method="post" encType="multipart/form-data">
-          <input type="hidden" name="academyId" value={academyId} />
-          <input type="hidden" name="clientKey" value={crypto.randomUUID()} />
-          <label>Foto (JPEG, PNG ou WebP, até 8 MB) <input name="photo" type="file" accept="image/jpeg,image/png,image/webp" required /></label>
-          <label>Legenda (opcional) <textarea name="caption" rows={2} maxLength={CAPTION_MAX} /></label>
-          <label><input type="checkbox" name="hasMinors" /> Há criança ou adolescente na foto (marque quem aparece abaixo)</label>
-          <fieldset>
-            <legend>Quem aparece na foto (opcional)</legend>
-            {people.length === 0 ? <p>Nenhum membro para marcar.</p> : people.map((p) => (
-              <label key={p.user_id}>
-                <input type="checkbox" name="tagIds" value={p.user_id} disabled={!p.photo_ok} /> {p.person_name}
-                {p.is_minor ? (p.photo_ok ? " (menor, com autorização de foto)" : " (menor, sem autorização de foto do responsável: não pode aparecer)") : ""}
-              </label>
-            ))}
-          </fieldset>
-          <p><small>Ao postar você confirma que pode compartilhar esta imagem com os membros da academia. Foto de menor só com a autorização do responsável.</small></p>
-          <Button type="submit" variant="accent">Publicar</Button>
-        </form>
-      </Card>
+      {queue.length > 0 && (
+        <section style={{ display: "grid", gap: 16 }} aria-labelledby="fila">
+          <h2 id="fila" style={{ margin: 0, fontSize: "1.25rem" }}>Aguardando aprovação ({queue.length})</h2>
+          {queue.map((p) => <QueueCard key={p.id} p={p} academyId={academyId} fmt={fmt} />)}
+        </section>
+      )}
 
       <section style={{ display: "grid", gap: 16 }}>
         <h2 style={{ margin: 0, fontSize: "1.25rem" }}>Fotos</h2>
-        {posts.length === 0 ? (
-          <EmptyState title="Nenhuma foto ainda">Poste a primeira foto do treino.</EmptyState>
+        {listed.length === 0 ? (
+          <EmptyState title="Nenhuma foto ainda" action={<ButtonLink href={`/feed/${academyId}/postar`} variant="accent">Postar foto</ButtonLink>}>Poste a primeira foto do treino.</EmptyState>
         ) : (
-          posts.map((p) => (
+          listed.map((p) => (
             <Card key={p.id} className={styles.post}>
               <div className={styles.author}>
                 <Avatar name={p.author_name} size="sm" />
@@ -111,6 +96,8 @@ export default async function FeedPage({
               {p.status === "hidden" && (
                 <p role="note">Oculta para os outros membros: {hiddenReasonLabels[p.hidden_reason ?? ""] ?? "aguarda o gestor"}.</p>
               )}
+              {p.status === "pending" && <p><Badge tone="info">Aguardando aprovação do professor</Badge></p>}
+              {p.status === "rejected" && <p><Badge tone="danger">Recusada</Badge> {p.hidden_reason ? `Motivo: ${p.hidden_reason}.` : ""} Ela some em breve.</p>}
               {/* Authenticated picture served by our own route; the image optimizer cannot be used for it. */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={`/api/feed/image/${p.id}`} width={p.width} height={p.height} loading="lazy" alt={`Foto postada por ${p.author_name}`} className={styles.photo} />
@@ -193,5 +180,29 @@ export default async function FeedPage({
         {posts.length === PAGE && last && <ButtonLink href={`/feed/${academyId}?antes=${encodeURIComponent(last.created_at)}`} variant="secondary">Fotos mais antigas →</ButtonLink>}
       </section>
     </Page>
+  );
+}
+
+// Cartão da fila de aprovação: a foto, quem postou, quem aparece e os botões de decisão. Recusar exige um motivo.
+function QueueCard({ p, academyId, fmt }: { p: FeedPost; academyId: string; fmt: (iso: string) => string }) {
+  return (
+    <Card className={styles.post}>
+      <div className={styles.author}>
+        <Avatar name={p.author_name} size="sm" />
+        <p><strong>{p.author_name}</strong> · {fmt(p.created_at)} {p.has_minors && <Badge tone="info">Tem menor na foto</Badge>}</p>
+      </div>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={`/api/feed/image/${p.id}`} width={p.width} height={p.height} loading="lazy" alt={`Foto enviada por ${p.author_name}, aguardando aprovação`} className={styles.photo} />
+      {p.caption && <p>{p.caption}</p>}
+      {p.tags.length > 0 && <p><small>Na foto: {p.tags.map((t) => t.name).join(", ")}</small></p>}
+      <form action={moderatePost.bind(null, academyId)} className={styles.decide}>
+        <input type="hidden" name="postId" value={p.id} />
+        <label>Motivo, se for recusar <input name="reason" maxLength={200} placeholder="Ex.: legenda sem respeito, foto de outra pessoa…" /></label>
+        <div className={styles.decideButtons}>
+          <Button type="submit" name="decision" value="approve" variant="accent">Aprovar e publicar</Button>
+          <Button type="submit" name="decision" value="reject" variant="secondary">Recusar</Button>
+        </div>
+      </form>
+    </Card>
   );
 }

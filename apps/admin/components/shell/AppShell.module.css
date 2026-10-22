@@ -10,13 +10,24 @@
 
 .column { min-width: 0; }
 
+/* Cabeçalho de todas as telas logadas: marca (celular) e a academia da pessoa (nome e logo). Fica visível ao rolar. */
 .topbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
   display: flex;
   align-items: center;
-  padding: var(--space-3) var(--space-4);
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4);
   background: var(--dark);
   border-bottom: 1px solid var(--dark-border);
 }
+.topLogo { display: block; line-height: 0; }
+.academyChip { display: inline-flex; align-items: center; gap: var(--space-2); min-width: 0; color: var(--on-dark); font-weight: 600; font-size: var(--text-sm); }
+.academyLogo, .academyInitial { flex: none; width: 34px; height: 34px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.85); background: #ffffff; object-fit: cover; }
+.academyInitial { display: grid; place-items: center; background: var(--primary); color: var(--on-dark); font-family: var(--font-heading); font-weight: 800; }
+.academyName { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 46vw; }
 
 .content { padding: 0 0 96px; }
 
@@ -82,7 +93,10 @@
   }
 
   .brand { padding: 0 var(--space-2); }
-  .topbar { display: none; }
+  .topbar { justify-content: flex-start; padding: var(--space-2) var(--space-5); }
+  .topLogo { display: none; }
+  .noAcademy { display: none; }
+  .academyName { max-width: 60ch; font-size: var(--text-md); }
   .bottomNav { display: none; }
   .content { padding: var(--space-4) var(--space-5) var(--space-6); }
 

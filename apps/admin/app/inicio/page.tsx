@@ -7,6 +7,7 @@ import { trainedDays, weekDays } from "@dojo/contracts/week";
 import { AppShell } from "@/components/shell/AppShell";
 import { Alert, BeltBar, ButtonLink, Card, EmptyState, Hero, ProgressBar, ProgressRing, WeekStrip } from "@/components/ui";
 import { anyAcademyHas, myFeatureMap } from "@/lib/features";
+import { shellAcademy } from "@/lib/shell-academy";
 import { getCaller } from "@/lib/context";
 import { techniquesByLog } from "@/lib/diary";
 import styles from "./inicio.module.css";
@@ -73,6 +74,7 @@ export default async function InicioPage() {
   }
 
   const features = await myFeatureMap(supabase);
+  const headerAcademy = primary ? await shellAcademy(supabase, primary.id) : undefined;
   const has = (f: "challenges" | "medals" | "curriculum") => features.size === 0 || anyAcademyHas(features, f);
   const days = weekDays(now, tz);
   const trained = trainedDays(recentStarts, tz);
@@ -86,7 +88,7 @@ export default async function InicioPage() {
   const fmtDay = (iso: string) => new Intl.DateTimeFormat("pt-BR", { timeZone: tz, day: "2-digit", month: "2-digit" }).format(new Date(iso));
 
   return (
-    <AppShell userName={(profile?.display_name as string | undefined) ?? undefined}>
+    <AppShell userName={(profile?.display_name as string | undefined) ?? undefined} academy={headerAcademy}>
       <main className={styles.home}>
         <Hero>
           <div className={styles.heroTop}>

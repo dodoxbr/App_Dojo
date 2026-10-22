@@ -16,11 +16,13 @@ export async function POST(request: NextRequest) {
 
   const data = await request.formData();
   const academyId = data.get("academyId");
-  const back = (erro?: string) =>
-    NextResponse.redirect(
-      new URL(typeof academyId === "string" && idSchema.safeParse(academyId).success ? `/feed/${academyId}${erro ? `?erro=${erro}` : "?ok=1"}` : `/feed?erro=${erro ?? "fields"}`, request.url),
-      303,
-    );
+  // Para onde voltar: o feed da academia, ou a tela do responsável (só caminhos do próprio site, de feed e dependentes).
+  const rawBack = data.get("back");
+  const target = typeof rawBack === "string" && /^\/(feed|dependentes)\/[0-9a-f-]{36}(\/feed)?$/i.test(rawBack) ? rawBack : null;
+  const back = (erro?: string, ok = "1") => {
+    const base = target ?? (typeof academyId === "string" && idSchema.safeParse(academyId).success ? `/feed/${academyId}` : "/feed");
+    return NextResponse.redirect(new URL(`${base}?${erro ? `erro=${erro}` : `ok=${ok}`}`, request.url), 303);
+  };
 
   const parsed = uploadFieldsSchema.safeParse({
     academyId,
@@ -47,7 +49,7 @@ export async function POST(request: NextRequest) {
 
   const supabase = await createClient();
   const f = parsed.data;
-  const { error } = await supabase.rpc("create_feed_post", {
+  const { data: postId, error } = await supabase.rpc("create_feed_post", {
     p_academy_id: f.academyId,
     p_caption: f.caption ?? null,
     p_image: `\\x${image.data.toString("hex")}`, // PostgREST bytea input
@@ -58,5 +60,7 @@ export async function POST(request: NextRequest) {
     p_client_key: f.clientKey,
   });
   if (error) return back(feedErrorKey(error));
-  return back();
+  // Foto com criança (ou de responsável) espera o professor: avisa a pessoa.
+  const { data: created } = await supabase.from("feed_posts").select("status").eq("id", postId as string).maybeSingle();
+  return back(undefined, created?.status === "pending" ? "pendente" : "1");
 }

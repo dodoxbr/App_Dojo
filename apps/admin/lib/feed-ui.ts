@@ -10,6 +10,8 @@ const messages: Record<string, string> = {
   tags: "Marque só pessoas da academia (máximo 30).",
   "tag minors": "Você disse que há criança ou adolescente na foto: marque quem aparece.",
   "photo consent": "Há um menor marcado sem autorização de foto do responsável. Desmarque-o ou escolha outra foto.",
+  "guardian tags": "Marque o seu menor na foto (só os seus menores podem ser marcados).",
+  "not pending": "Essa foto já foi analisada.",
   "daily limit": "Limite diário atingido (20 posts ou 30 comentários por dia).",
   body: "Escreva o comentário (1 a 300 caracteres).",
   reason: "Informe o motivo da denúncia (3 a 300 caracteres).",

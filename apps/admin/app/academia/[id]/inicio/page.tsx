@@ -28,6 +28,8 @@ export default async function AcademiaInicioPage({ params }: { params: Promise<{
   if (!isManager && !isInstructor) redirect(isPlatformAdmin ? "/plataforma" : "/perfil");
 
   const hasMilestone = await academyHas(supabase, id, "milestone");
+  const hasFeed = await academyHas(supabase, id, "feed");
+  const pendingPhotos = hasFeed ? ((await supabase.rpc("pending_feed_count", { p_academy_id: id })).data as number | null) ?? 0 : 0;
   const { data: academy } = await supabase.from("academies").select("id, name, timezone").eq("id", id).maybeSingle();
   if (!academy) notFound();
 
@@ -76,6 +78,13 @@ export default async function AcademiaInicioPage({ params }: { params: Promise<{
           <p className={styles.statValue}>{pendingAttendances}</p>
           {pendingAttendances > 0 && <Link href="/aulas">Validar nas aulas</Link>}
         </Card>
+        {hasFeed && (
+          <Card className={`${styles.stat} ${styles.amberStat}`}>
+            <p className={styles.statLabel}>Fotos a aprovar</p>
+            <p className={styles.statValue}>{pendingPhotos}</p>
+            {pendingPhotos > 0 && <Link href={`/feed/${id}`}>Moderar no feed</Link>}
+          </Card>
+        )}
         {hasMilestone && <Card className={`${styles.stat} ${styles.purpleStat}`}>
           <p className={styles.statLabel}>No número de treinos</p>
           <p className={styles.statValue}>{atMilestone}</p>

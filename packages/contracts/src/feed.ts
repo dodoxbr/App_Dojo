@@ -24,7 +24,7 @@ export const feedPostSchema = z.object({
   created_at: z.string(),
   expires_at: z.string(),
   has_minors: z.boolean(),
-  status: z.enum(['visible', 'hidden']),
+  status: z.enum(['visible', 'hidden', 'pending', 'rejected']),
   hidden_reason: z.string().nullable(),
   width: z.number(),
   height: z.number(),
@@ -97,6 +97,10 @@ export const medalSchema = z.object({
 
 export const academyMedalSchema = medalSchema.extend({ user_id: z.uuid(), person_name: z.string() });
 export const dependentMedalSchema = medalSchema.extend({ academy_id: z.uuid(), academy_name: z.string() });
+
+// Respeito vem primeiro: o professor aprova antes de a foto com criança aparecer (e a do responsável).
+export const feedRespectNote =
+  'No tatame, respeito vem primeiro: nada de zoeira, ofensa ou exposição de colega. O professor e o gestor moderam o feed, e foto com criança ou adolescente só aparece depois que eles aprovam.';
 
 export const hiddenReasonLabels: Record<string, string> = {
   reported: 'denunciada por um membro; aguarda a decisão do gestor',

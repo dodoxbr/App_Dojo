@@ -29,6 +29,18 @@ export async function reportPost(academyId: string, formData: FormData): Promise
   return back(academyId, error ? feedErrorKey(error) : undefined);
 }
 
+// Professor ou gestor aprova (a foto vai para o feed) ou recusa (com motivo) uma foto que aguardava moderação.
+export async function moderatePost(academyId: string, formData: FormData): Promise<void> {
+  const postId = formData.get("postId");
+  if (!idSchema.safeParse(academyId).success || !idSchema.safeParse(postId).success) return;
+  const approve = formData.get("decision") === "approve";
+  const reason = typeof formData.get("reason") === "string" ? String(formData.get("reason")) : "";
+  if (!approve && reason.trim().length < 3) return back(academyId, "reason");
+  const { supabase } = await getCaller();
+  const { error } = await supabase.rpc("moderate_feed_post", { p_post_id: postId, p_approve: approve, p_reason: approve ? null : reason.trim() });
+  return back(academyId, error ? feedErrorKey(error) : undefined);
+}
+
 export async function restorePost(academyId: string, formData: FormData): Promise<void> {
   const postId = formData.get("postId");
   if (!idSchema.safeParse(academyId).success || !idSchema.safeParse(postId).success) return;

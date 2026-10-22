@@ -1,7 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState, useState } from "react";
-import { acceptInvite, createDependent, createInvite, requestForDependent } from "./actions";
+import { acceptInvite, createDependent, createInvite, requestForDependent, signPhotoTerm } from "./actions";
 import type { FormState } from "../login/actions";
 import { PreservingForm } from "@/components/ui/PreservingForm";
 
@@ -38,9 +39,24 @@ export function RequestForDependentForm({ minorId, academyId }: { minorId: strin
         </small>
       </p>
       <label><input type="checkbox" name="consent" required /> Li e concordo com o termo de consentimento</label>
-      <label><input type="checkbox" name="photos" /> Autorizo fotos do menor no feed da academia, visíveis só para os membros, por 30 dias (opcional; desligado por padrão)</label>
+      <label><input type="checkbox" name="photos" /> Autorizo fotos do menor no feed da academia, visíveis só para os membros, por 30 dias, depois que o professor aprovar cada foto (opcional; desligado por padrão). Exige assinar o <Link href="/termo-de-imagem" target="_blank">termo de uso de imagem</Link> abaixo.</label>
       <label><input type="checkbox" name="social" /> Autorizo também a publicação de fotos do menor nas redes sociais da academia, como o Instagram (opcional; exige a autorização de fotos acima)</label>
+      <label>Assinatura do termo de uso de imagem: digite o seu nome completo (só é necessário se autorizar fotos) <input name="signature" autoComplete="name" maxLength={120} /></label>
       <button type="submit" disabled={pending}>{pending ? "Enviando…" : "Pedir vaga para o menor"}</button>
+      <Status state={state} />
+    </PreservingForm>
+  );
+}
+
+export function SignPhotoTermForm({ minorId, academyId }: { minorId: string; academyId: string }) {
+  const [state, action, pending] = useActionState<FormState, FormData>((prev, formData) => signPhotoTerm(minorId, academyId, prev, formData), {});
+  return (
+    <PreservingForm action={action} state={state}>
+      <p><small>Para poder postar fotos do menor e permitir que a academia as publique no feed (depois que o professor aprovar), assine o <Link href="/termo-de-imagem" target="_blank">termo de uso de imagem</Link> (<strong>rascunho, em revisão jurídica</strong>).</small></p>
+      <label><input type="checkbox" name="agree" required /> Li e concordo com o termo de uso de imagem</label>
+      <label><input type="checkbox" name="social" /> Autorizo também a publicação nas redes sociais da academia (opcional)</label>
+      <label>Assinatura: digite o seu nome completo <input name="signature" autoComplete="name" minLength={5} maxLength={120} required /></label>
+      <button type="submit" disabled={pending}>{pending ? "Assinando…" : "Assinar o termo"}</button>
       <Status state={state} />
     </PreservingForm>
   );

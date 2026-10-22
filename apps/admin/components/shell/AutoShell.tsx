@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { knownFeatures } from "@dojo/contracts/features";
 import { getCaller } from "@/lib/context";
+import { shellAcademy } from "@/lib/shell-academy";
 import { AppShell } from "./AppShell";
 import { staffNav, studentNav, type NavItem, type StaffPermissions } from "./nav-items";
 
@@ -35,5 +36,8 @@ export async function AutoShell({ children }: { children: ReactNode }) {
       items = staffNav(academyId, "instructor", permissions, features);
     }
   }
-  return <AppShell items={items} userName={(profile?.display_name as string | undefined) ?? undefined}>{children}</AppShell>;
+  // A academia do cabeçalho: a de quem trabalha na equipe; senão a primeira em que a pessoa é aluna.
+  const academyId = (staff ?? rows[0])?.academy_id as string | undefined;
+  const academy = academyId ? await shellAcademy(supabase, academyId) : undefined;
+  return <AppShell items={items} userName={(profile?.display_name as string | undefined) ?? undefined} academy={academy}>{children}</AppShell>;
 }

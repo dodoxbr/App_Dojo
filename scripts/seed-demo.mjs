@@ -94,7 +94,7 @@ console.log('Responsável e menor…');
 const minorId = (await responsavel.client.rpc('create_dependent', { p_display_name: 'Pedro Pereira (demo)', p_birth_date: localDate(365 * 9 + 60), p_relationship: 'pai', p_idempotency_key: key() })).data;
 assert(minorId, 'menor criado');
 assert.equal((await saveContact(responsavel.client, minorId, 'Pedro Pereira (demo)')).error, null);
-const minorReq = await responsavel.client.rpc('request_dependent_membership', { p_minor_id: minorId, p_academy_id: academyId, p_photos: true });
+const minorReq = await responsavel.client.rpc('request_dependent_membership', { p_minor_id: minorId, p_academy_id: academyId, p_photos: true, p_signature: 'Responsavel Ficticio Demo' });
 assert(minorReq.data, 'vaga do menor pedida');
 const consent = ((await gestor.client.rpc('list_academy_guardian_consents', { p_academy_id: academyId })).data ?? [])[0];
 assert(consent, 'consentimento listado');

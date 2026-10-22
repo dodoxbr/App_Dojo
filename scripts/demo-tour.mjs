@@ -24,7 +24,7 @@ let n = 0;
 const tours = [
   { who: 'aluno-ana', email: 'demo-a1@example.test', mobile: true, routes: ['/inicio', '/diario', '/tecnicas', '/graduacao', '/medalhas', `/feed/${academy.id}`, '/desafios', '/financeiro', '/perfil'] },
   { who: 'responsavel', email: 'demo-responsavel@example.test', mobile: true, routes: ['/dependentes', '/financeiro'] },
-  { who: 'gestor', email: 'demo-gestor@example.test', mobile: false, routes: [`${A}/inicio`, `${A}/membros`, `${A}/painel`, `${A}/financeiro`, `${A}/graduacao/alunos`, `${A}/saude`, `${A}/responsaveis`] },
+  { who: 'gestor', email: 'demo-gestor@example.test', mobile: false, routes: [`${A}/inicio`, `${A}/membros`, `${A}/painel`, `${A}/financeiro`, `${A}/graduacao/alunos`, `${A}/presenca`, `${A}/saude`, `${A}/responsaveis`] },
   { who: 'professor', email: 'demo-prof1@example.test', mobile: false, routes: [`${A}/inicio`, '/aulas', `${A}/graduacao/alunos`] },
   { who: 'dono', email: 'demo-dono@example.test', mobile: false, routes: ['/plataforma'] },
 ];
