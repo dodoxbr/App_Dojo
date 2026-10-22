@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { formatPhone, healthNoteSchema } from "@dojo/contracts/contacts";
+import { Alert, Avatar, Badge, ButtonLink, Card, EmptyState, Page, PageHeader } from "@/components/ui";
 import { getCaller } from "@/lib/context";
 
 // Everyone in the academy who has health notes, with the emergency contact (manager). Teachers see the same data per lesson.
@@ -14,23 +14,32 @@ export default async function SaudePage({ params }: { params: Promise<{ id: stri
   const rows = ((raw ?? []) as unknown[]).map((x) => healthNoteSchema.safeParse(x)).flatMap((r) => (r.success ? [r.data] : []));
 
   return (
-    <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 960 }}>
-      <p><Link href={`/academia/${id}`}>← {academy.name}</Link></p>
-      <h1>Saúde e contato de emergência</h1>
-      <p role="note"><small>Dados sensíveis informados pelos próprios alunos (ou pelos responsáveis dos menores) com consentimento. Os instrutores com a permissão &quot;ver observações de saúde&quot; veem estes dados na tela da aula. Cada consulta é registrada.</small></p>
+    <Page>
+      <PageHeader
+        title="Saúde e contato de emergência"
+        subtitle={academy.name}
+        actions={<ButtonLink href={`/academia/${id}`} variant="secondary">← {academy.name}</ButtonLink>}
+      />
+      <Alert tone="info">Dados sensíveis informados pelos próprios alunos (ou pelos responsáveis dos menores) com consentimento. Os instrutores com a permissão &quot;ver observações de saúde&quot; veem estes dados na tela da aula. Cada consulta é registrada.</Alert>
       {rows.length === 0 ? (
-        <p>Nenhum aluno informou observações de saúde.</p>
+        <EmptyState title="Nenhuma observação de saúde">Nenhum aluno informou observações de saúde.</EmptyState>
       ) : (
-        <ul>
+        <div style={{ display: "grid", gap: 12 }}>
           {rows.map((r) => (
-            <li key={r.user_id}>
-              <strong>{r.person_name}</strong>{r.is_minor ? " (menor)" : ""}: {r.health_notes}
-              <br />
-              Emergência: {r.emergency_name ?? "—"}{r.emergency_relationship ? ` (${r.emergency_relationship})` : ""} {r.emergency_phone ? formatPhone(r.emergency_phone) : ""}
-            </li>
+            <Card key={r.user_id}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+                <Avatar name={r.person_name} />
+                <strong>{r.person_name}</strong>
+                {r.is_minor && <Badge tone="info">Menor</Badge>}
+              </div>
+              <p style={{ margin: "12px 0 4px" }}>{r.health_notes}</p>
+              <p style={{ margin: 0, fontSize: "0.875rem", color: "var(--text-muted)" }}>
+                Emergência: {r.emergency_name ?? "—"}{r.emergency_relationship ? ` (${r.emergency_relationship})` : ""} {r.emergency_phone ? formatPhone(r.emergency_phone) : ""}
+              </p>
+            </Card>
           ))}
-        </ul>
+        </div>
       )}
-    </main>
+    </Page>
   );
 }
