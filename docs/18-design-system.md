@@ -40,4 +40,4 @@ Raios: controles e botões 10px (`--radius-control`), cartões 14px (`--radius-c
 7. Nada de depoimentos, números de clientes ou preços inventados em telas públicas.
 
 ## Telas ainda no visual antigo
-As páginas que ainda não usam os componentes continuam dentro da "ponte" do shell (herdam cores e fontes dos tokens). Ao tocar numa delas, migre-a para os componentes acima.
+Já migradas: landing, login, início/membros/turmas/saúde/painel/financeiro da academia, e as telas do aluno (início, diário, técnicas, graduação, medalhas, desafios, feed, perfil, financeiro, dependentes). As demais páginas de gestão (planos e ficha do aluno no financeiro, currículos, avaliações, graduação, responsáveis, plataforma, turmas/aula, entrar, check-in, formulários de diário e técnica, termos) continuam dentro da "ponte" do shell (herdam cores e fontes dos tokens). Ao tocar numa delas, migre-a para os componentes acima.

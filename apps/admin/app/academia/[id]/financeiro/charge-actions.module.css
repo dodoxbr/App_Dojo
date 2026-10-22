@@ -1,0 +1,19 @@
+.actions { display: grid; gap: var(--space-3); }
+.pay { display: grid; gap: var(--space-3); grid-template-columns: 1fr; align-items: end; }
+.form { display: grid; gap: var(--space-3); grid-template-columns: 1fr; align-items: end; margin-top: var(--space-3); }
+.pay label, .form label { display: grid; gap: var(--space-1); font-size: var(--text-sm); font-weight: 600; color: var(--text); }
+.pay input:not([type="hidden"]), .pay select, .form input:not([type="hidden"]) {
+  min-height: var(--control-height);
+  padding: 0 var(--space-3);
+  font: inherit;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-control);
+}
+.more summary { cursor: pointer; font-size: var(--text-sm); font-weight: 600; color: var(--primary); }
+.moreBody { display: grid; gap: var(--space-3); }
+@media (min-width: 900px) {
+  .pay { grid-template-columns: 9rem 10rem 1fr auto; }
+  .form { grid-template-columns: 1fr auto; }
+}

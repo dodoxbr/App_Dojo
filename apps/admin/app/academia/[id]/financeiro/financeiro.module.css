@@ -1,0 +1,17 @@
+.h2 { margin: var(--space-2) 0 0; font-size: var(--text-lg); color: var(--text); }
+.kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
+.kpi { display: grid; gap: var(--space-1); border-top: 3px solid var(--accent); }
+.late { border-top-color: var(--danger); }
+.kpiLabel { font-size: var(--text-sm); color: var(--text-muted); }
+.kpiValue { font-family: var(--font-heading); font-size: var(--text-xl); line-height: 1.1; color: var(--text); }
+.kpiHint { font-size: var(--text-xs); color: var(--text-muted); }
+.muted { margin: 0; color: var(--text-muted); font-size: var(--text-sm); }
+.buttons { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+.buttons form { margin: 0; }
+.charges { display: grid; gap: var(--space-3); }
+.charge { display: grid; gap: var(--space-3); }
+.chargeHead { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+.amount { margin-left: auto; font-family: var(--font-heading); font-weight: 800; font-size: var(--text-lg); color: var(--text); }
+@media (min-width: 900px) {
+  .kpis { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}

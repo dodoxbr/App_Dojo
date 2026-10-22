@@ -2,8 +2,10 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { activationLabels, dashboardSchema, parsePeriod, retentionRate } from "@dojo/contracts/dashboard";
 import { FeatureOff } from "@/components/feature-off";
+import { Alert, Badge, ButtonLink, Card, EmptyState, Page, PageHeader, ProgressBar, Section } from "@/components/ui";
 import { academyHas } from "@/lib/features";
 import { getCaller } from "@/lib/context";
+import styles from "./painel.module.css";
 
 const PERIODS = [7, 30, 90];
 const fmtDate = (d: string) => new Date(`${d}T12:00:00Z`).toLocaleDateString("pt-BR", { timeZone: "UTC" });
@@ -38,84 +40,92 @@ export default async function PainelPage({
   const ids = eligibleRows.map((e) => e.user_id);
   const { data: profiles } = ids.length ? await supabase.from("profiles").select("id, display_name").in("id", ids) : { data: [] };
   const nameOf = new Map((profiles ?? []).map((p) => [p.id as string, p.display_name as string]));
+  const data = error || !parsed.success ? null : parsed.data;
 
   return (
-    <main style={{ padding: 16, display: "grid", gap: 24, maxWidth: 960 }}>
-      <p><Link href={`/academia/${id}`}>← {academy.name}</Link></p>
-      <h1>Painel de frequência e indicadores</h1>
-      <nav aria-label="Período">
-        Período:{" "}
+    <Page>
+      <PageHeader
+        title="Painel de frequência e indicadores"
+        subtitle={academy.name}
+        actions={<ButtonLink href={`/academia/${id}`} variant="secondary">← {academy.name}</ButtonLink>}
+      />
+      <nav aria-label="Período" className={styles.period}>
+        <span className={styles.periodLabel}>Período:</span>
         {PERIODS.map((p) => (
-          p === days ? <strong key={p}>{p} dias </strong> : <span key={p}><Link href={`/academia/${id}/painel?dias=${p}`}>{p} dias</Link>{" "}</span>
+          p === days
+            ? <strong key={p} className={styles.periodOn}>{p} dias</strong>
+            : <Link key={p} href={`/academia/${id}/painel?dias=${p}`} className={styles.periodLink}>{p} dias</Link>
         ))}
       </nav>
-      <p role="note">
+      <Alert tone="info">
         Medição para acompanhar o piloto: <strong>sem metas</strong>. Só contam presenças <strong>validadas e não revogadas</strong>.
         O diário continua privado: o painel mostra apenas quantos alunos registraram, nunca o conteúdo.
-      </p>
+      </Alert>
 
-      {error || !parsed.success ? (
-        <p role="alert">Não foi possível calcular os indicadores.</p>
+      {!data ? (
+        <Alert tone="danger">Não foi possível calcular os indicadores.</Alert>
       ) : (
         <>
-          <section>
-            <h2>Ativação</h2>
-            <ul>
-              {Object.entries(parsed.data.activation).map(([status, n]) => <li key={status}>{activationLabels[status] ?? status}: {n}</li>)}
-              {Object.keys(parsed.data.activation).length === 0 && <li>Nenhuma filiação ainda.</li>}
-            </ul>
-          </section>
+          <div className={styles.kpis}>
+            <Card className={styles.kpi}><span className={styles.kpiLabel}>Presenças validadas</span><strong className={styles.kpiValue}>{data.attendance.validated}</strong><span className={styles.kpiHint}>aguardando: {data.attendance.pending} · revogadas: {data.attendance.revoked}</span></Card>
+            <Card className={styles.kpi}><span className={styles.kpiLabel}>Aulas realizadas</span><strong className={styles.kpiValue}>{data.attendance.sessions_held}</strong><span className={styles.kpiHint}>canceladas: {data.attendance.sessions_cancelled}</span></Card>
+            <Card className={styles.kpi}><span className={styles.kpiLabel}>Média por aula</span><strong className={styles.kpiValue}>{num(data.attendance.avg_validated_per_session)}</strong><span className={styles.kpiHint}>presenças validadas</span></Card>
+            <Card className={styles.kpi}><span className={styles.kpiLabel}>Confirmação (mediana)</span><strong className={styles.kpiValue}>{num(data.attendance.median_minutes_to_validate, " min")}</strong><span className={styles.kpiHint}>do pedido até o professor</span></Card>
+          </div>
 
-          <section>
-            <h2>Frequência (últimos {parsed.data.period_days} dias)</h2>
-            <ul>
-              <li>Aulas realizadas: {parsed.data.attendance.sessions_held} (canceladas: {parsed.data.attendance.sessions_cancelled})</li>
-              <li>Presenças validadas: {parsed.data.attendance.validated} · aguardando confirmação: {parsed.data.attendance.pending} · revogadas: {parsed.data.attendance.revoked}</li>
-              <li>Média de presenças validadas por aula: {num(parsed.data.attendance.avg_validated_per_session)}</li>
-              <li>Tempo até o professor confirmar o pedido (mediana): {num(parsed.data.attendance.median_minutes_to_validate, " min")}</li>
-            </ul>
-            <h3>Por turma</h3>
-            {parsed.data.by_class.length === 0 ? <p>Nenhuma turma.</p> : (
-              <ul>
-                {parsed.data.by_class.map((c) => (
-                  <li key={c.class_id}>{c.title}: {c.sessions_held} aulas · {c.validated} presenças validadas · média {num(c.avg_validated_per_session)}</li>
+          <Section title="Ativação">
+            <div className={styles.chips}>
+              {Object.entries(data.activation).map(([status, n]) => <Badge key={status} tone="accent">{activationLabels[status] ?? status}: {n}</Badge>)}
+              {Object.keys(data.activation).length === 0 && <p className={styles.muted}>Nenhuma filiação ainda.</p>}
+            </div>
+          </Section>
+
+          <Section title={`Frequência (últimos ${data.period_days} dias)`}>
+            <h3 className={styles.h3}>Por turma</h3>
+            {data.by_class.length === 0 ? <p className={styles.muted}>Nenhuma turma.</p> : (
+              <ul className={styles.rows}>
+                {data.by_class.map((c) => (
+                  <li key={c.class_id} className={styles.row}>
+                    <strong>{c.title}</strong>
+                    <span className={styles.muted}>{c.sessions_held} aulas · {c.validated} presenças validadas · média {num(c.avg_validated_per_session)}</span>
+                  </li>
                 ))}
               </ul>
             )}
-          </section>
+          </Section>
 
-          <section>
-            <h2>Retenção semanal</h2>
-            <p>Entre quem teve presença validada numa semana, quantos voltaram na semana seguinte.</p>
-            {parsed.data.retention.every((r) => r.active === 0) ? <p>Ainda sem dados suficientes.</p> : (
-              <ul>
-                {parsed.data.retention.filter((r) => r.active > 0).map((r) => (
-                  <li key={r.week_start}>Semana de {fmtDate(r.week_start)}: {r.active} ativos · {r.retained_next_week} voltaram ({num(retentionRate(r), "%")})</li>
+          <Section title="Retenção semanal" hint="Entre quem teve presença validada numa semana, quantos voltaram na semana seguinte.">
+            {data.retention.every((r) => r.active === 0) ? <p className={styles.muted}>Ainda sem dados suficientes.</p> : (
+              <ul className={styles.rows}>
+                {data.retention.filter((r) => r.active > 0).map((r) => (
+                  <li key={r.week_start} className={styles.row}>
+                    <span>Semana de {fmtDate(r.week_start)}: {r.active} ativos · {r.retained_next_week} voltaram ({num(retentionRate(r), "%")})</span>
+                    <ProgressBar value={r.retained_next_week} max={r.active} label={`Retenção da semana de ${fmtDate(r.week_start)}`} />
+                  </li>
                 ))}
               </ul>
             )}
-          </section>
+          </Section>
 
-          <section>
-            <h2>Diário e técnicas mais consultadas</h2>
-            {!parsed.data.privacy.enough_members ? (
-              <p role="status">
-                Para proteger a privacidade, estes indicadores só aparecem quando a academia tem pelo menos {parsed.data.privacy.min_group_size} alunos
-                aprovados (hoje: {parsed.data.privacy.students}).
-              </p>
+          <Section title="Diário e técnicas mais consultadas">
+            {!data.privacy.enough_members ? (
+              <Alert tone="info">
+                Para proteger a privacidade, estes indicadores só aparecem quando a academia tem pelo menos {data.privacy.min_group_size} alunos
+                aprovados (hoje: {data.privacy.students}).
+              </Alert>
             ) : (
               <>
-                {parsed.data.diary && (
-                  <p>Diário: {parsed.data.diary.with_entry_last_7_days} de {parsed.data.diary.students} alunos registraram treino nos últimos 7 dias ({num(parsed.data.diary.percent, "%")}).</p>
+                {data.diary && (
+                  <p>Diário: {data.diary.with_entry_last_7_days} de {data.diary.students} alunos registraram treino nos últimos 7 dias ({num(data.diary.percent, "%")}).</p>
                 )}
-                {parsed.data.techniques && (
+                {data.techniques && (
                   <>
-                    <h3>Técnicas mais consultadas ({parsed.data.techniques.total_views} consultas)</h3>
-                    <p><small>Contagem agregada por dia: não guarda quem consultou.</small></p>
-                    {parsed.data.techniques.top.length === 0 ? <p>Ainda sem consultas.</p> : (
-                      <ol>
-                        {parsed.data.techniques.top.map((t) => (
-                          <li key={t.technique_id}><Link href={`/tecnicas/${t.technique_id}`}>{t.name}</Link> — {t.category}: {t.views}</li>
+                    <h3 className={styles.h3}>Técnicas mais consultadas ({data.techniques.total_views} consultas)</h3>
+                    <p className={styles.muted}>Contagem agregada por dia: não guarda quem consultou.</p>
+                    {data.techniques.top.length === 0 ? <p className={styles.muted}>Ainda sem consultas.</p> : (
+                      <ol className={styles.rows}>
+                        {data.techniques.top.map((t) => (
+                          <li key={t.technique_id} className={styles.row}><Link href={`/tecnicas/${t.technique_id}`}>{t.name}</Link><span className={styles.muted}>{t.category}: {t.views}</span></li>
                         ))}
                       </ol>
                     )}
@@ -123,23 +133,22 @@ export default async function PainelPage({
                 )}
               </>
             )}
-          </section>
+          </Section>
         </>
       )}
 
-      <section>
-        <h2>Alunos com recomendação de graduação</h2>
-        <p>Lista calculada pelas regras da academia. É uma recomendação: a promoção é decisão do gestor.</p>
-        {eligibleRows.length === 0 ? <p>Nenhum aluno elegível agora.</p> : (
-          <ul>
+      <Section title="Alunos com recomendação de graduação" hint="Lista calculada pelas regras da academia. É uma recomendação: a promoção é decisão do gestor.">
+        {eligibleRows.length === 0 ? <EmptyState title="Nenhum aluno elegível agora">Quando alguém cumprir os critérios, aparece aqui.</EmptyState> : (
+          <ul className={styles.rows}>
             {eligibleRows.map((e) => (
-              <li key={e.user_id}>
-                <Link href={`/academia/${id}/graduacao/alunos/${e.user_id}`}>{nameOf.get(e.user_id) ?? "Aluno"}</Link> — {e.belt_code} · grau {e.degree} (regra v{e.rule_version})
+              <li key={e.user_id} className={styles.row}>
+                <Link href={`/academia/${id}/graduacao/alunos/${e.user_id}`}>{nameOf.get(e.user_id) ?? "Aluno"}</Link>
+                <span className={styles.muted}>{e.belt_code} · grau {e.degree} (regra v{e.rule_version})</span>
               </li>
             ))}
           </ul>
         )}
-      </section>
-    </main>
+      </Section>
+    </Page>
   );
 }

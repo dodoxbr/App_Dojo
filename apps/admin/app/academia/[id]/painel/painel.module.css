@@ -1,0 +1,22 @@
+.period { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+.periodLabel { color: var(--text-muted); font-size: var(--text-sm); margin-right: var(--space-1); }
+.periodOn, .periodLink { display: inline-flex; align-items: center; min-height: 36px; padding: 0 var(--space-4); border-radius: var(--radius-pill); font-size: var(--text-sm); font-weight: 600; }
+.periodOn { background: var(--primary); color: var(--primary-contrast); }
+.periodLink { background: var(--surface); border: 1px solid var(--border-strong); color: var(--primary); text-decoration: none; }
+.periodLink:hover { border-color: var(--primary); }
+
+.kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
+.kpi { display: grid; gap: var(--space-1); border-top: 3px solid var(--accent); }
+.kpiLabel { font-size: var(--text-sm); color: var(--text-muted); }
+.kpiValue { font-family: var(--font-heading); font-size: var(--text-2xl); line-height: 1; color: var(--text); }
+.kpiHint { font-size: var(--text-xs); color: var(--text-muted); }
+
+.chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.h3 { margin: 0; font-size: var(--text-md); color: var(--text); }
+.muted { margin: 0; color: var(--text-muted); font-size: var(--text-sm); }
+.rows { display: grid; gap: var(--space-2); margin: 0; padding: 0; list-style: none; }
+.row { display: grid; gap: var(--space-1); margin: 0; padding: var(--space-3) var(--space-4); border: 1px solid var(--border); border-radius: var(--radius-control); background: var(--bg); }
+
+@media (min-width: 900px) {
+  .kpis { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
