@@ -321,3 +321,10 @@
 - [ ] Os dados de contato da GFT que apareceram nas imagens de referência (telefone, site) **não foram carregados**: o gestor preenche em `/academia/{id}/pagina`.
 - [ ] Pré-visualização antes de publicar, foto de capa própria e turmas reais na página (hoje é uma grade digitada pelo gestor).
 - [ ] Definir o texto de privacidade/termos da página pública (dados da empresa; revisão jurídica junto com os termos).
+
+## PAR-Q e termo de saúde (2026-10-22)
+- [ ] **Regras do Distrito Federal NÃO validadas.** O dono do produto trouxe, de uma resposta de assistente de IA, estas "regras do DF": validade de 12 meses; atestado médico só para idosos a partir de 70 anos ou quando houver "sim" no PAR-Q; multa de até R$ 4.876,06 (dobra na reincidência) para academia com aluno sem PAR-Q; bloquear novos agendamentos quando vencer. Uma busca na web **não encontrou** lei do DF sobre isso (achou regras de outros lugares: Mato Grosso, Pernambuco, Campinas, e projeto de lei no Ceará). Confirmar com advogado e com o conselho de classe antes de tratar como regra. Hoje o sistema só **informa**: validade de 12 meses, atestado quando há "sim".
+- [ ] Não implementado (aguarda a confirmação legal): exigir atestado para quem tem 70 anos ou mais; **bloquear agendamento/presença** com PAR-Q vencido ou ausente (hoje não bloqueia nada); lembrete antes de vencer.
+- [ ] Texto das 7 perguntas é o do PAR-Q padrão (versão em português usada no Brasil), em revisão por profissional de saúde; o termo de responsabilidade de saúde é texto padrão fictício a revisar com advogado.
+- [ ] App (Expo): o fluxo de PAR-Q com assinatura desenhada ainda só existe no painel (que funciona no navegador do celular). No app exige biblioteca de desenho (ex.: `react-native-svg` e gestos): ADR antes.
+- [ ] Assinatura eletrônica **simples**, não ICP-Brasil (ver `docs/features/PARQ.md`). Retenção das assinaturas e das evidências (IP, navegador) a definir com o jurídico (LGPD).

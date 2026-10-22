@@ -73,6 +73,9 @@ export default async function InicioPage() {
     }
   }
 
+  const { data: parqRows } = isStudent ? await supabase.rpc("my_parq", { p_user_id: userId }) : { data: [] };
+  const lastParq = ((parqRows ?? []) as { expired: boolean }[])[0];
+  const parqMissing = isStudent && (!lastParq || lastParq.expired);
   const features = await myFeatureMap(supabase);
   const headerAcademy = primary ? await shellAcademy(supabase, primary.id) : undefined;
   const has = (f: "challenges" | "medals" | "curriculum") => features.size === 0 || anyAcademyHas(features, f);
@@ -108,6 +111,12 @@ export default async function InicioPage() {
           </div>
           {primary && <p className={styles.heroNote}>Só contam treinos confirmados pelo professor. A graduação só muda com a aprovação do mestre.</p>}
         </Hero>
+
+        {parqMissing && (
+          <Alert tone="info">
+            Falta responder o PAR-Q (questionário de prontidão para atividade física) e assinar o termo de saúde. <Link href="/parq">Responder agora</Link>.
+          </Alert>
+        )}
 
         {staffIds.length > 0 && (
           <Alert tone="info">

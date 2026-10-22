@@ -179,6 +179,7 @@ try {
   await check('student', `/checkin/${sessionId}`, { has: ['Check-in', 'Turma de páginas'] });
   await check('student', '/trilha', { has: ['Minha trilha', 'Tesoura'] });
   await check('student', '/graduacao/idades', { has: ['Idades mínimas por faixa', 'Vermelha e Branca', 'nada aqui bloqueia'] });
+  await check('student', '/parq', { has: ['PAR-Q e termo de saúde', 'Responder o PAR-Q', 'Questionário', 'Assinatura'] });
   await check('student', '/graduacao', { has: ['Minha graduação', 'Faixa Teste A', 'Histórico de graduações'] });
   await check('student', `/entrar/${slug}`, { has: 'Academia Páginas' });
   await check('student', '/desafios', { has: ['Desafios', 'Desafio de páginas', 'Em andamento'] });
@@ -283,6 +284,7 @@ try {
   await check('manager', `${A}/membros`, { has: ['Menor de páginas', 'Menor · falta conferir o responsável', 'Ficha'] });
   await check('manager', `${A}/membros/${student.id}`, { has: ['Ficha de Smoke aluno', 'Rua Ficticia', '(11) 99999-0000', 'registrada na auditoria', 'Contato de emergência', 'Contato de Emergencia', 'Observações de saúde'] });
   await check('manager', `${A}/responsaveis`, { has: ['Menores e responsáveis', 'Aguardando conferência', 'Menor de páginas', 'Smoke responsavel', 'Confirmar conferência'] });
+  await check('manager', `${A}/saude`, { has: ['PAR-Q dos alunos', 'atestado médico'] });
   await check('manager', `${A}/financeiro`, { has: ['Financeiro —', 'Resumo do mês', 'Gerar as mensalidades do mês', 'Smoke aluno', 'Marcar como pago', 'Controle manual', 'Geração automática', 'Ligar a geração automática'] });
   await check('manager', `${A}/financeiro/planos`, { has: ['Planos dos alunos', 'Smoke aluno', 'Salvar plano', 'hoje:', 'Desconto (R$, opcional)', 'Motivo do desconto'] });
   await check('manager', `${A}/saude`, { has: ['Saúde e contato de emergência', 'Smoke aluno', 'asma leve (dado de teste)', 'Contato de Emergencia'] });

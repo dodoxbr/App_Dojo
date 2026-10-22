@@ -44,6 +44,8 @@ export default async function DependentePage({ params }: { params: Promise<{ min
         <Link href={`/dependentes/${minorId}/ficha`}>{hasContact ? "Ver ou editar a ficha" : "Preencher a ficha"}</Link>
       </p>
 
+      <p><Link href={`/dependentes/${minorId}/parq`}>PAR-Q e termo de saúde de {o.minor?.display_name}</Link> (questionário de prontidão, com a sua assinatura)</p>
+
       {milestones.map((m) => (
         <p key={m.academy_id} role="status">
           {o.minor?.display_name} chegou a {m.attendances} treinos confirmados na {m.academy_name} desde a última graduação ({rankLabel(m.belt_code, m.degree, m.rank_since)}). Converse com o professor. Quem decide a graduação é o professor e o gestor.

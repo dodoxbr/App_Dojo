@@ -204,3 +204,52 @@ export const healthDeclaration: TermsSection[] = [
     ],
   },
 ];
+
+// ---- Termo de responsabilidade de saúde (lido até o fim e assinado junto do PAR-Q). TEXTO PADRÃO/FICTÍCIO até a revisão jurídica (docs/11).
+export const healthResponsibilityTerm: TermsSection[] = [
+  {
+    id: 'ciencia',
+    title: '1. Ciência dos riscos',
+    paragraphs: [
+      'Estou ciente de que o Jiu-Jitsu é um esporte de contato e de que a sua prática envolve risco de lesões, como contusões, torções, luxações e fraturas, mesmo com a supervisão do professor.',
+      'Participo por livre e espontânea vontade e me comprometo a respeitar as orientações do professor e as regras de segurança da academia.',
+    ],
+  },
+  {
+    id: 'saude',
+    title: '2. Declaração de saúde',
+    paragraphs: [
+      'Declaro que respondi o questionário PAR-Q com sinceridade e que não conheço nenhuma condição de saúde que me impeça de praticar atividade física além das que informei.',
+      'Se eu respondi "sim" a alguma pergunta do PAR-Q, entendo que preciso apresentar um atestado médico físico à academia e que a academia pode condicionar a minha participação à entrega dele.',
+      'Comprometo-me a avisar imediatamente o professor sobre qualquer lesão, mal-estar, gravidez, uso de medicamento ou mudança no meu estado de saúde, e a interromper o treino se me sentir mal.',
+    ],
+  },
+  {
+    id: 'responsabilidade',
+    title: '3. Responsabilidade',
+    paragraphs: [
+      'Assumo a responsabilidade pelas informações de saúde que forneci. A academia e os professores não respondem por problemas decorrentes de condições de saúde que eu não tenha informado.',
+      'Este termo não substitui a avaliação de um médico. Recomendo a mim mesmo fazer avaliações médicas periódicas.',
+    ],
+  },
+  {
+    id: 'dados',
+    title: '4. Meus dados de saúde',
+    paragraphs: [
+      'Estou ciente de que as minhas respostas são dado de saúde (sensível), usado apenas para a minha segurança nos treinos. Só eu, o gestor e o professor com permissão de ver saúde podemos vê-las, e cada consulta é registrada.',
+      'A minha assinatura, a data e a hora, o texto do termo (por meio de uma impressão digital dele), o meu IP e o meu navegador ficam guardados como prova deste aceite.',
+    ],
+  },
+  {
+    id: 'validade',
+    title: '5. Validade',
+    paragraphs: [
+      'O PAR-Q e este termo valem por 12 meses. Depois disso, devo responder de novo. Posso refazer o PAR-Q a qualquer momento se a minha saúde mudar.',
+    ],
+  },
+];
+
+// O texto inteiro do termo (para o hash que prova qual texto foi assinado). Muda o texto, muda o hash.
+export function healthResponsibilityText(): string {
+  return healthResponsibilityTerm.map((s) => `${s.title}\n${s.paragraphs.join('\n')}`).join('\n\n');
+}

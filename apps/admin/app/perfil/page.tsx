@@ -114,6 +114,7 @@ export default async function PerfilPage() {
       <section aria-labelledby="atalhos" style={{ display: "grid", gap: 12 }}>
         <h2 id="atalhos" style={{ margin: 0, fontSize: "1.25rem" }}>Atalhos</h2>
         <ItemList>
+          <li><ItemLink href="/parq" title="PAR-Q e termo de saúde" meta="Questionário de prontidão e assinatura" /></li>
           <li><ItemLink href="/perfil/ficha" title={hasContact ? "Minha ficha de cadastro" : "Preencher minha ficha de cadastro"} meta="Contato, endereço e saúde" /></li>
           {has("feed") && <li><ItemLink href="/feed" title="Feed da academia (fotos)" /></li>}
           {has("medals") && <li><ItemLink href="/medalhas" title="Medalhas" /></li>}

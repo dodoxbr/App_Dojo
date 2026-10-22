@@ -15,6 +15,7 @@
     "./graduation": "./src/graduation.ts",
     "./belts": "./src/belts.ts",
     "./academy-page": "./src/academy-page.ts",
+    "./parq": "./src/parq.ts",
     "./dashboard": "./src/dashboard.ts",
     "./challenges": "./src/challenges.ts",
     "./guardians": "./src/guardians.ts",
