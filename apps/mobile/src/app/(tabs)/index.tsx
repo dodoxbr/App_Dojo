@@ -39,7 +39,7 @@ export default function Home() {
             {data.primary ? <Text style={{ color: 'rgba(255,255,255,0.9)', fontWeight: '600' }}>{data.rank ? `${data.rank.belt_code} · grau ${data.rank.degree}` : 'Sem graduação registrada'}</Text> : null}
           </View>
           {overall !== null ? (
-            <View accessible accessibilityLabel={`Progresso geral nos critérios: ${overall} por cento`} style={{ alignItems: 'center', justifyContent: 'center', width: 78, height: 78, borderRadius: 39, borderWidth: 7, borderColor: '#14B8A6', backgroundColor: 'rgba(255,255,255,0.08)' }}>
+            <View accessible accessibilityLabel={`Progresso geral nos critérios: ${overall} por cento`} style={{ alignItems: 'center', justifyContent: 'center', width: 78, height: 78, borderRadius: 39, borderWidth: 7, borderColor: '#4CC9B8', backgroundColor: 'rgba(255,255,255,0.08)' }}>
               <Text style={{ color: '#FFFFFF', fontSize: font.lg, fontWeight: '800' }}>{overall}%</Text>
             </View>
           ) : null}
@@ -70,7 +70,7 @@ export default function Home() {
             <WeekStrip days={days} trained={trained} />
           </Card>
 
-          <Card style={{ borderLeftWidth: 4, borderLeftColor: '#14B8A6' }}>
+          <Card style={{ borderLeftWidth: 4, borderLeftColor: '#4CC9B8' }}>
             <SectionTitle>Próximo treino</SectionTitle>
             {data.next ? (
               <>

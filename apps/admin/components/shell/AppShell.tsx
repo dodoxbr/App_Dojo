@@ -10,7 +10,7 @@ export function AppShell({ children, items = studentNav, userName }: { children:
   return (
     <div className={styles.shell}>
       <aside className={styles.sidebar}>
-        <div className={styles.brand}><BrandLogo tone="light" /></div>
+        <div className={styles.brand}><BrandLogo /></div>
         <NavLinks items={items} variant="side" />
         {userName && (
           <p className={styles.user}><span className={styles.avatar} aria-hidden="true">{userName.trim().charAt(0).toUpperCase()}</span>{userName}</p>
@@ -18,7 +18,7 @@ export function AppShell({ children, items = studentNav, userName }: { children:
       </aside>
       <div className={styles.column}>
         <header className={styles.topbar}>
-          <BrandLogo tone="light" />
+          <BrandLogo size={44} />
         </header>
         <div className={styles.content}>{children}</div>
       </div>

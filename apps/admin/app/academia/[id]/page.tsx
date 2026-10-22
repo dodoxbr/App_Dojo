@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { instructorPermissionLabels, instructorPermissions } from "@dojo/contracts/academy";
+import { formatCnpj, instructorPermissionLabels, instructorPermissions } from "@dojo/contracts/academy";
+import { Badge, Button, ButtonLink, ItemLink, ItemList, Page, PageHero, Section } from "@/components/ui";
 import { getCaller } from "@/lib/context";
-import { formatCnpj } from "@dojo/contracts/academy";
 import { LegalForm } from "./legal-form";
 import { SettingsForm } from "./settings-form";
 import { setPermission } from "./actions";
+import styles from "./academia.module.css";
 
 export default async function AcademiaPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -26,50 +27,72 @@ export default async function AcademiaPage({ params }: { params: Promise<{ id: s
     .eq("academy_id", id)
     .eq("role", "instructor");
   const enabled = new Set((granted ?? []).map((p) => p.permission));
+  const { data: featuresRaw } = await supabase.rpc("academy_features", { p_academy_id: id });
+  const features = new Set((featuresRaw ?? []) as string[]);
+  const has = (f: string) => features.size === 0 || features.has(f);
+
+  const a = `/academia/${academy.id}`;
+  const links = [
+    { href: `${a}/membros`, title: "Membros e pedidos de entrada", show: true },
+    { href: `${a}/turmas`, title: "Turmas e aulas", show: true },
+    { href: `${a}/graduacao`, title: "Graduação", show: true },
+    { href: `${a}/responsaveis`, title: "Menores e responsáveis", show: true },
+    { href: `${a}/saude`, title: "Saúde dos alunos", show: true },
+    { href: `${a}/financeiro`, title: "Financeiro", show: has("finance") },
+    { href: `${a}/curriculos`, title: "Currículos (trilhas)", show: has("curriculum") },
+    { href: `${a}/avaliacoes`, title: "Avaliações de domínio", show: has("curriculum") },
+    { href: `${a}/painel`, title: "Painel e indicadores", show: has("dashboard") },
+    { href: `/feed/${academy.id}`, title: "Feed de fotos", show: has("feed") },
+  ].filter((l) => l.show);
 
   return (
-    <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 560 }}>
-      <p><Link href="/perfil">← Meu perfil</Link></p>
-      <h1>{academy.name}</h1>
-      <p>Endereço: <code>{academy.slug}</code></p>
-      <p>Link para os alunos: <code>/entrar/{academy.slug}</code> (use o endereço do painel antes dele)</p>
-      <p><Link href={`/academia/${academy.id}/membros`}>Membros e pedidos de entrada</Link> · <Link href={`/academia/${academy.id}/responsaveis`}>Menores e responsáveis</Link> · <Link href={`/academia/${academy.id}/financeiro`}>Financeiro</Link> · <Link href={`/academia/${academy.id}/saude`}>Saúde dos alunos</Link> · <Link href={`/feed/${academy.id}`}>Feed de fotos</Link></p>
-      <p><Link href={`/academia/${academy.id}/turmas`}>Turmas e aulas</Link></p>
-      <p><Link href={`/academia/${academy.id}/curriculos`}>Currículos (trilhas)</Link> · <Link href={`/academia/${academy.id}/avaliacoes`}>Avaliações de domínio</Link> · <Link href={`/academia/${academy.id}/graduacao`}>Graduação</Link> · <Link href={`/academia/${academy.id}/painel`}>Painel e indicadores</Link></p>
+    <Page width="narrow">
+      <PageHero
+        eyebrow="Academia"
+        title={academy.name}
+        subtitle={<>Link para os alunos: <code>/entrar/{academy.slug}</code> (use o endereço do painel antes dele)</>}
+        actions={<ButtonLink href="/perfil" variant="secondary">← Meu perfil</ButtonLink>}
+      />
 
-      <section>
-        <h2>Identidade visual</h2>
+      <ItemList>
+        {links.map((l) => <li key={l.href}><ItemLink href={l.href} title={l.title} /></li>)}
+      </ItemList>
+
+      <Section title="Identidade visual">
         <SettingsForm
           academyId={academy.id}
           name={academy.name}
           themePrimary={academy.theme_primary}
           themeSecondary={academy.theme_secondary}
         />
-      </section>
+      </Section>
 
-      <section>
-        <h2>Dados da empresa</h2>
-        <p>Aparecem nos termos de uso e na política de privacidade da academia (<Link href={`/termos/${academy.slug}`}>ver os termos</Link>).</p>
+      <Section
+        title="Dados da empresa"
+        hint={<>Aparecem nos termos de uso e na política de privacidade da academia (<Link href={`/termos/${academy.slug}`}>ver os termos</Link>).</>}
+      >
         <LegalForm academyId={academy.id} legalName={(academy.legal_name as string | null) ?? ""} cnpj={academy.cnpj ? formatCnpj(academy.cnpj as string) : ""} />
-      </section>
+      </Section>
 
-      <section>
-        <h2>O que o instrutor pode fazer</h2>
-        <p>Você, como gestor, tem acesso geral. Defina aqui o que os instrutores podem acessar. O diário de treino do aluno nunca é liberado por esta lista.</p>
-        <ul>
+      <Section
+        title="O que o instrutor pode fazer"
+        hint="Você, como gestor, tem acesso geral. Defina aqui o que os instrutores podem acessar. O diário de treino do aluno nunca é liberado por esta lista."
+      >
+        <ul className={styles.perms}>
           {instructorPermissions.map((permission) => {
             const on = enabled.has(permission);
             return (
-              <li key={permission}>
-                <form action={setPermission.bind(null, id, permission, !on)}>
-                  {instructorPermissionLabels[permission]}: <strong>{on ? "permitido" : "não permitido"}</strong>{" "}
-                  <button type="submit">{on ? "Remover" : "Permitir"}</button>
+              <li key={permission} className={styles.perm}>
+                <form action={setPermission.bind(null, id, permission, !on)} className={styles.permForm}>
+                  <span className={styles.permName}>{instructorPermissionLabels[permission]}</span>
+                  <Badge tone={on ? "success" : "neutral"}>{on ? "Permitido" : "Não permitido"}</Badge>
+                  <Button type="submit" variant="secondary">{on ? "Remover" : "Permitir"}</Button>
                 </form>
               </li>
             );
           })}
         </ul>
-      </section>
-    </main>
+      </Section>
+    </Page>
   );
 }

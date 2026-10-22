@@ -35,7 +35,7 @@ export default function Evolucao() {
                 <Text accessibilityRole="header" style={{ color: '#FFFFFF', fontSize: font.xl, fontWeight: '800', letterSpacing: -0.5 }}>{rank ? `${rank.belt_code} · grau ${rank.degree}` : 'Sem graduação registrada'}</Text>
               </View>
               {overall !== null ? (
-                <View accessible accessibilityLabel={`Progresso geral nos critérios: ${overall} por cento`} style={{ alignItems: 'center', justifyContent: 'center', width: 72, height: 72, borderRadius: 36, borderWidth: 6, borderColor: '#14B8A6', backgroundColor: 'rgba(255,255,255,0.08)' }}>
+                <View accessible accessibilityLabel={`Progresso geral nos critérios: ${overall} por cento`} style={{ alignItems: 'center', justifyContent: 'center', width: 72, height: 72, borderRadius: 36, borderWidth: 6, borderColor: '#4CC9B8', backgroundColor: 'rgba(255,255,255,0.08)' }}>
                   <Text style={{ color: '#FFFFFF', fontSize: font.md, fontWeight: '800' }}>{overall}%</Text>
                 </View>
               ) : null}

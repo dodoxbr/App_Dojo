@@ -1,12 +1,13 @@
-import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { contactStatusSchema } from "@dojo/contracts/contacts";
 import { ageFlagSchema } from "@dojo/contracts/guardians";
 import { membershipRoleLabels, membershipStatusLabels } from "@dojo/contracts/membership";
+import { Alert, Avatar, Badge, Button, ButtonLink, EmptyState, Page, PageHeader, Section } from "@/components/ui";
 import { getCaller } from "@/lib/context";
 import { errorFromCode } from "@/lib/rpc-errors";
 import { AddMemberForm } from "./add-member-form";
 import { decide, endMembership } from "./actions";
+import styles from "./membros.module.css";
 
 export default async function MembrosPage({
   params,
@@ -42,85 +43,109 @@ export default async function MembrosPage({
   const hasFicha = new Map(
     ((contactRaw ?? []) as unknown[]).map((x) => contactStatusSchema.safeParse(x)).flatMap((r) => (r.success ? [[r.data.user_id, r.data.has_contact] as const] : [])),
   );
-  const minorTag = (userId: string) => {
+  const tags = (userId: string) => {
     const f = flags.get(userId);
-    const age = f?.is_minor ? (f.guardian_ready ? " (menor · responsável conferido)" : " (menor · falta conferir o responsável)") : "";
-    return `${age}${hasFicha.get(userId) === false ? " · ficha pendente" : ""}`;
+    return (
+      <>
+        {f?.is_minor && <Badge tone={f.guardian_ready ? "info" : "danger"}>{f.guardian_ready ? "Menor · responsável conferido" : "Menor · falta conferir o responsável"}</Badge>}
+        {hasFicha.get(userId) === false && <Badge tone="neutral">Ficha pendente</Badge>}
+      </>
+    );
   };
 
   const pending = (members ?? []).filter((m) => m.status === "pending");
   const active = (members ?? []).filter((m) => m.status === "approved" || m.status === "suspended");
   const closed = (members ?? []).filter((m) => m.status === "rejected" || m.status === "ended");
   const message = errorFromCode(erro);
+  const nameFor = (userId: string) => nameOf.get(userId) ?? "Pessoa";
 
   return (
-    <main style={{ padding: 16, display: "grid", gap: 16, maxWidth: 640 }}>
-      <p><Link href={`/academia/${id}`}>← {academy.name}</Link></p>
-      <h1>Membros</h1>
-      {message && <p role="alert">{message}</p>}
+    <Page width="narrow">
+      <PageHeader
+        title="Membros"
+        subtitle={academy.name}
+        actions={<ButtonLink href={`/academia/${id}`} variant="secondary">← {academy.name}</ButtonLink>}
+      />
+      {message && <Alert tone="danger">{message}</Alert>}
 
-      <section>
-        <h2>Pedidos de entrada</h2>
+      <Section title="Pedidos de entrada">
         {pending.length === 0 ? (
-          <p>Nenhum pedido pendente.</p>
+          <p className={styles.empty}>Nenhum pedido pendente.</p>
         ) : (
-          <ul>
+          <ul className={styles.list}>
             {pending.map((m) => (
-              <li key={m.id as string}>
-                <form action={decide.bind(null, id)}>
-                  <strong>{nameOf.get(m.user_id as string) ?? "Pessoa"}</strong>{minorTag(m.user_id as string)}
+              <li key={m.id as string} className={styles.row}>
+                <form action={decide.bind(null, id)} className={styles.decide}>
+                  <div className={styles.who}>
+                    <Avatar name={nameFor(m.user_id as string)} />
+                    <strong>{nameFor(m.user_id as string)}</strong>
+                    {tags(m.user_id as string)}
+                  </div>
                   <input type="hidden" name="membershipId" value={m.id as string} />
                   <input type="hidden" name="idempotencyKey" value={crypto.randomUUID()} />
-                  <label> Justificativa (opcional) <input name="reason" maxLength={500} /></label>
-                  <button type="submit" name="decision" value="approved">Aprovar</button>
-                  <button type="submit" name="decision" value="rejected">Rejeitar</button>
+                  <label className={styles.reason}>Justificativa (opcional) <input name="reason" maxLength={500} /></label>
+                  <div className={styles.actions}>
+                    <Button type="submit" name="decision" value="approved">Aprovar</Button>
+                    <Button type="submit" name="decision" value="rejected" variant="secondary">Rejeitar</Button>
+                  </div>
                 </form>
               </li>
             ))}
           </ul>
         )}
-      </section>
+      </Section>
 
-      <section>
-        <h2>Cadastrar aluno ou colaborador</h2>
+      <Section title="Cadastrar aluno ou colaborador">
         <AddMemberForm academyId={id} />
-      </section>
+      </Section>
 
-      <section>
-        <h2>Membros</h2>
+      <Section title="Membros">
         {active.length === 0 ? (
-          <p>Nenhum membro ainda.</p>
+          <EmptyState title="Nenhum membro ainda">Cadastre o primeiro aluno ou colaborador acima, ou compartilhe o link de entrada da academia.</EmptyState>
         ) : (
-          <ul>
+          <ul className={styles.list}>
             {active.map((m) => (
-              <li key={m.id as string}>
-                {nameOf.get(m.user_id as string) ?? "Pessoa"}{minorTag(m.user_id as string)} — {membershipRoleLabels[m.role as string]} ·{" "}
-                {membershipStatusLabels[m.status as string]}
-                {" "}<Link href={`/academia/${id}/membros/${m.user_id as string}`}>Ficha</Link>{m.role === "student" && m.status === "approved" && <> · <Link href={`/academia/${id}/financeiro/alunos/${m.user_id as string}`}>Financeiro</Link></>}
-                {m.role !== "manager" && (
-                  <form action={endMembership.bind(null, id)} style={{ display: "inline", marginLeft: 8 }}>
-                    <input type="hidden" name="membershipId" value={m.id as string} />
-                    <button type="submit">Encerrar vínculo</button>
-                  </form>
-                )}
+              <li key={m.id as string} className={styles.row}>
+                <div className={styles.who}>
+                  <Avatar name={nameFor(m.user_id as string)} />
+                  <strong>{nameFor(m.user_id as string)}</strong>
+                  <Badge tone="accent">{membershipRoleLabels[m.role as string]}</Badge>
+                  <Badge tone={m.status === "approved" ? "success" : "neutral"}>{membershipStatusLabels[m.status as string]}</Badge>
+                  {tags(m.user_id as string)}
+                </div>
+                <div className={styles.actions}>
+                  <ButtonLink href={`/academia/${id}/membros/${m.user_id as string}`} variant="secondary">Ficha</ButtonLink>
+                  {m.role === "student" && m.status === "approved" && (
+                    <ButtonLink href={`/academia/${id}/financeiro/alunos/${m.user_id as string}`} variant="secondary">Financeiro</ButtonLink>
+                  )}
+                  {m.role !== "manager" && (
+                    <form action={endMembership.bind(null, id)}>
+                      <input type="hidden" name="membershipId" value={m.id as string} />
+                      <Button type="submit" variant="secondary">Encerrar vínculo</Button>
+                    </form>
+                  )}
+                </div>
               </li>
             ))}
           </ul>
         )}
-      </section>
+      </Section>
 
       {closed.length > 0 && (
-        <section>
-          <h2>Encerrados e rejeitados</h2>
-          <ul>
+        <Section title="Encerrados e rejeitados">
+          <ul className={styles.list}>
             {closed.map((m) => (
-              <li key={m.id as string}>
-                {nameOf.get(m.user_id as string) ?? "Pessoa"} — {membershipStatusLabels[m.status as string]}
+              <li key={m.id as string} className={styles.row}>
+                <div className={styles.who}>
+                  <Avatar name={nameFor(m.user_id as string)} />
+                  <strong>{nameFor(m.user_id as string)}</strong>
+                  <Badge tone="neutral">{membershipStatusLabels[m.status as string]}</Badge>
+                </div>
               </li>
             ))}
           </ul>
-        </section>
+        </Section>
       )}
-    </main>
+    </Page>
   );
 }

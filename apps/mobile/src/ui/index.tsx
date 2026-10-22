@@ -76,7 +76,7 @@ export function Button({
     primary: { bg: colors.primary, fg: colors.primaryContrast, border: colors.primary },
     secondary: { bg: colors.surface, fg: colors.primary, border: colors.borderStrong },
     danger: { bg: colors.surface, fg: colors.danger, border: colors.danger },
-    accent: { bg: '#14B8A6', fg: '#052E2A', border: '#14B8A6' },
+    accent: { bg: '#4CC9B8', fg: '#04201C', border: '#4CC9B8' },
   }[variant];
   return (
     <Pressable

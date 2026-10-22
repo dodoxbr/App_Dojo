@@ -272,7 +272,7 @@ try {
   await check('manager', '/perfil', { has: ['Meu perfil', 'Gerenciar: Academia Páginas', 'Criar academia'] });
   await check('manager', A, { has: ['Academia Páginas', 'Identidade visual', 'O que o instrutor pode fazer', 'Dados da empresa', 'Academia Páginas Ltda (teste)', '11.222.333/0001-81', 'Ver observações de saúde e contato de emergência dos alunos', 'Saúde dos alunos'] });
   await check('manager', `${A}/membros`, { has: ['Membros', 'Cadastrar aluno ou colaborador'] });
-  await check('manager', `${A}/membros`, { has: ['Menor de páginas', 'menor · falta conferir o responsável', 'Ficha'] });
+  await check('manager', `${A}/membros`, { has: ['Menor de páginas', 'Menor · falta conferir o responsável', 'Ficha'] });
   await check('manager', `${A}/membros/${student.id}`, { has: ['Ficha de Smoke aluno', 'Rua Ficticia', '(11) 99999-0000', 'registrada na auditoria', 'Contato de emergência', 'Contato de Emergencia', 'Observações de saúde'] });
   await check('manager', `${A}/responsaveis`, { has: ['Menores e responsáveis', 'Aguardando conferência', 'Menor de páginas', 'Smoke responsavel', 'Confirmar conferência'] });
   await check('manager', `${A}/financeiro`, { has: ['Financeiro —', 'Resumo do mês', 'Gerar as mensalidades do mês', 'Smoke aluno', 'Marcar como pago', 'Controle manual', 'Geração automática', 'Ligar a geração automática'] });

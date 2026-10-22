@@ -15,6 +15,7 @@ Você é responsável por implementar um SaaS multiacademia de Jiu-Jitsu seguind
 10. Nunca rodar migrações destrutivas ou publicar dados reais sem autorização; use migrações versionadas, lint, testes e revisão.
 11. Não instalar dependências ou alterar arquitetura sem registrar ADR e justificar.
 12. Ao concluir uma história, entregue resumo, comandos executados, testes aprovados/falhos e pendências.
+13. Interface: siga o padrão visual oficial em `docs/18-design-system.md` (tokens em `apps/admin/styles/tokens.css`); não crie cores, fontes ou estilos fora dele.
 
 ## Sequência
 `docs/10-backlog.md` → história → migration/RLS → testes → interface → revisão. Comece por `prompts/01-primeira-sessao.md`.

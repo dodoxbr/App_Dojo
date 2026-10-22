@@ -42,8 +42,8 @@ export default function Perfil() {
     <Screen onRefresh={reload} refreshing={loading}>
       <Hero>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: space[4] }}>
-          <View style={{ width: 64, height: 64, borderRadius: 32, backgroundColor: '#14B8A6', alignItems: 'center', justifyContent: 'center' }}>
-            <Text style={{ fontSize: font.xl, fontWeight: '800', color: '#052E2A' }}>{(name.trim().charAt(0) || '?').toUpperCase()}</Text>
+          <View style={{ width: 64, height: 64, borderRadius: 32, backgroundColor: '#4CC9B8', alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={{ fontSize: font.xl, fontWeight: '800', color: '#04201C' }}>{(name.trim().charAt(0) || '?').toUpperCase()}</Text>
           </View>
           <View style={{ flex: 1, gap: 2 }}>
             <Text style={{ color: 'rgba(255,255,255,0.75)', fontSize: font.xs, fontWeight: '700', letterSpacing: 0.6, textTransform: 'uppercase' }}>Meu perfil</Text>

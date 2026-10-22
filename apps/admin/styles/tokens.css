@@ -1,18 +1,20 @@
-/* Design tokens do Dojo Platform (brief de UI/UX). Valores base + tokens SEMÂNTICOS: as telas usam só os semânticos, e a cor
+/* Design tokens do Oss — PADRÃO VISUAL OFICIAL (docs/18-design-system.md; ADR-027). Paleta e fontes aprovadas no Claude Design
+   (landing e login). Não use cores, fontes ou raios fora destes tokens.
+   Origem: brief de UI/UX. Valores base + tokens SEMÂNTICOS: as telas usam só os semânticos, e a cor
    de uma academia (futuro AcademyThemeProvider) troca apenas --primary/--accent, nunca as cores de erro/sucesso/aviso.
    Espaçamento em escala 4/8/12/16/24/32; contraste mínimo WCAG AA. Tema escuro: redefinir os semânticos mais tarde. */
 
 :root {
   /* paleta base */
-  --color-brand: #183b63;
-  --color-brand-strong: #102840;
-  --color-accent: #0e9488;
-  --color-accent-strong: #0b756b;
-  --color-bg: #f5f7fa;
+  --color-brand: #14243a;
+  --color-brand-strong: #070e17;
+  --color-accent: #2fa898;
+  --color-accent-strong: #1f7f73;
+  --color-bg: #f4f6f9;
   --color-surface: #ffffff;
-  --color-text: #142235;
-  --color-muted: #5a6a80;
-  --color-border: #dfe5ed;
+  --color-text: #0e1a27;
+  --color-muted: #4a5a69;
+  --color-border: #dce2e8;
   --color-border-strong: #8a97a8;
   --color-danger: #c43b47;
   --color-danger-bg: #fdecee;
@@ -27,7 +29,14 @@
   --primary-contrast: #ffffff;
   --accent: var(--color-accent);
   --accent-strong: var(--color-accent-strong);
-  --accent-bright: #14b8a6;
+  --accent-bright: #4cc9b8;
+  --accent-bright-hover: #6ad6c7;
+  --on-accent-bright: #04201c;
+  --dark: #070e17;
+  --dark-card: #0f1a26;
+  --dark-border: rgba(255, 255, 255, 0.07);
+  --on-dark: #e8eef3;
+  --on-dark-muted: #a9b8c6;
   --bg: var(--color-bg);
   --surface: var(--color-surface);
   --text: var(--color-text);
@@ -52,16 +61,17 @@
   --space-7: 48px;
 
   /* forma e sombra */
-  --radius-card: 16px;
+  --radius-card: 14px;
   --radius-control: 10px;
   --radius-pill: 999px;
   --radius-hero: 24px;
-  --shadow-hero: 0 18px 44px rgba(16, 40, 64, 0.28);
-  --shadow-card: 0 8px 28px rgba(16, 40, 64, 0.07);
+  --shadow-hero: 0 18px 44px rgba(0, 0, 0, 0.4);
+  --shadow-card: 0 8px 28px rgba(14, 26, 39, 0.07);
   --control-height: 48px;
 
-  /* tipografia: Inter se estiver instalada, senão a fonte do sistema (nada é baixado de terceiros) */
-  --font-sans: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* tipografia: Figtree (texto) e Archivo (títulos), servidas pelo próprio site via next/font (ADR-026); a do sistema é o reserva */
+  --font-sans: var(--font-body), system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-heading: var(--font-display), var(--font-sans);
   --text-xs: 0.8125rem;
   --text-sm: 0.875rem;
   --text-md: 1rem;
@@ -71,3 +81,6 @@
   --leading-tight: 1.2;
   --leading-body: 1.5;
 }
+
+/* Títulos no padrão da marca (Archivo). Sem camada: vence o CSS antigo (@layer legacy). */
+h1, h2, h3 { font-family: var(--font-heading); }

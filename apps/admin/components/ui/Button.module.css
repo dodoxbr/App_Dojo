@@ -27,8 +27,8 @@
 .secondary { background: var(--surface); border-color: var(--border-strong); color: var(--primary); }
 .secondary:hover:not(:disabled) { background: var(--bg); }
 
-.accent { background: var(--accent-bright); border-color: var(--accent-bright); color: #052e2a; font-weight: 700; box-shadow: 0 6px 18px rgba(20, 184, 166, 0.35); }
-.accent:hover:not(:disabled) { background: #2dd4bf; border-color: #2dd4bf; }
+.accent { background: var(--accent-bright); border-color: var(--accent-bright); color: var(--on-accent-bright); font-weight: 700; }
+.accent:hover:not(:disabled) { background: var(--accent-bright-hover); border-color: var(--accent-bright-hover); }
 
 .ghost { background: transparent; border-color: transparent; color: var(--primary); }
 .ghost:hover:not(:disabled) { background: var(--bg); }

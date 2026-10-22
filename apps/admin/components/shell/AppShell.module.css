@@ -14,8 +14,8 @@
   display: flex;
   align-items: center;
   padding: var(--space-3) var(--space-4);
-  background: linear-gradient(135deg, var(--primary-strong), var(--primary));
-  box-shadow: 0 4px 16px rgba(16, 40, 64, 0.25);
+  background: var(--dark);
+  border-bottom: 1px solid var(--dark-border);
 }
 
 .content { padding: 0 0 96px; }
@@ -77,8 +77,8 @@
     gap: var(--space-5);
     height: 100vh;
     padding: var(--space-5) var(--space-4);
-    background: linear-gradient(180deg, var(--primary-strong) 0%, #0b1c30 100%);
-    box-shadow: 4px 0 24px rgba(16, 40, 64, 0.18);
+    background: var(--dark);
+    border-right: 1px solid var(--dark-border);
   }
 
   .brand { padding: 0 var(--space-2); }

@@ -1,3 +1,75 @@
 .section { display: grid; gap: var(--space-3); padding: var(--space-5); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); }
 .title { margin: 0; font-size: var(--text-lg); color: var(--text); }
 .hint { margin: 0; font-size: var(--text-sm); color: var(--text-muted); }
+
+/* Formulários e listas antigos dentro do bloco herdam o visual do padrão (mesmas regras da ponte do shell). */
+.section :global(small) { color: var(--text-muted); }
+
+.section :global(a:not([class])) { color: var(--primary); font-weight: 600; text-underline-offset: 3px; }
+.section :global(a:not([class]):hover) { color: var(--accent-strong); }
+.section :global(a:not([class]):focus-visible) { outline: 3px solid var(--focus-ring); outline-offset: 2px; border-radius: 4px; }
+
+.section :global(label:not([class])) { font-size: var(--text-sm); font-weight: 600; color: var(--text); }
+
+.section :global(input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="file"]):not([type="color"])),
+.section :global(select:not([class])),
+.section :global(textarea:not([class])) {
+  min-height: var(--control-height);
+  padding: 0 var(--space-3);
+  font-family: inherit;
+  font-size: var(--text-md);
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-control);
+}
+
+.section :global(textarea:not([class])) { padding: var(--space-3); }
+.section :global(input:not([class]):hover),
+.section :global(select:not([class]):hover),
+.section :global(textarea:not([class]):hover) { border-color: var(--primary); }
+.section :global(input:not([class]):focus-visible),
+.section :global(select:not([class]):focus-visible),
+.section :global(textarea:not([class]):focus-visible) { outline: 3px solid var(--focus-ring); outline-offset: 1px; border-color: var(--primary); }
+
+.section :global(button:not([class])) {
+  min-height: var(--control-height);
+  padding: 0 var(--space-5);
+  font-family: inherit;
+  font-size: var(--text-md);
+  font-weight: 600;
+  color: var(--primary-contrast);
+  background: var(--primary);
+  border: 1px solid var(--primary);
+  border-radius: var(--radius-control);
+}
+
+.section :global(button:not([class]):hover:not(:disabled)) { background: var(--primary-strong); border-color: var(--primary-strong); filter: none; }
+.section :global(button:not([class]):focus-visible) { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+
+.section :global(fieldset) { border-color: var(--border); border-radius: var(--radius-control); }
+.section :global(legend) { font-size: var(--text-sm); color: var(--text); }
+
+.section :global([role="alert"]:not([class])) { background: var(--danger-surface); border-color: var(--danger); color: #5f1a21; border-radius: var(--radius-control); }
+.section :global([role="status"]:not([class])) { background: var(--success-surface); border-color: var(--success); color: #123f27; border-radius: var(--radius-control); }
+.section :global([role="note"]:not([class])) { background: var(--info-surface); border-color: var(--info); color: #12305a; border-radius: var(--radius-control); }
+
+.section :global(th) { background: var(--bg); color: var(--text); font-size: var(--text-sm); }
+.section :global(th),
+.section :global(td) { border-bottom-color: var(--border); }
+.section :global(code) { background: var(--bg); color: var(--text); }
+
+/* Botões dentro de listas e tabelas (ações por linha, como "Encerrar vínculo") ficam secundários, para não competir com a ação principal. */
+.section :global(li button:not([class])),
+.section :global(td button:not([class])) {
+  min-height: 40px;
+  padding: 0 var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--primary);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+}
+
+.section :global(li button:not([class]):hover:not(:disabled)),
+.section :global(td button:not([class]):hover:not(:disabled)) { background: var(--bg); border-color: var(--primary); }
+
