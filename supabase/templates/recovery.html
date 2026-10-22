@@ -1,11 +1,31 @@
 <!doctype html>
 <html lang="pt-BR">
-  <body style="font-family: Arial, Helvetica, sans-serif; color: #142235; line-height: 1.5;">
-    <h2 style="color: #183b63;">Redefinir a sua senha</h2>
-    <p>Recebemos um pedido para redefinir a senha da sua conta no Oss.</p>
-    <p><a href="{{ .ConfirmationURL }}" style="display: inline-block; padding: 12px 20px; color: #ffffff; background: #183b63; border-radius: 8px; text-decoration: none; font-weight: bold;">Escolher uma nova senha</a></p>
-    <p>O link vale por pouco tempo e só pode ser usado uma vez. Se o botão não abrir, copie e cole este endereço no navegador:</p>
-    <p style="word-break: break-all;">{{ .ConfirmationURL }}</p>
-    <p>Se você não pediu isso, ignore esta mensagem: a sua senha continua a mesma.</p>
+  <body style="margin: 0; padding: 0; background: #f4f6f9; font-family: Figtree, Arial, Helvetica, sans-serif; color: #0e1a27; line-height: 1.55;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background: #f4f6f9; padding: 24px 12px;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width: 560px; width: 100%; background: #ffffff; border-radius: 14px; overflow: hidden; border: 1px solid #dce2e8;">
+            <tr>
+              <td align="center" style="background: #050d15; padding: 20px;">
+                <img src="{{ .SiteURL }}/brand/oss-email-logo.png" width="220" alt="Oss, seu companheiro de treino" style="display: block; border: 0; max-width: 100%; height: auto;">
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 32px 28px;">
+                <h2 style="margin: 0 0 12px; font-size: 24px; color: #0e1a27;">Redefinir a sua senha</h2>
+                <p style="margin: 0 0 20px; color: #4a5a69;">Recebemos um pedido para redefinir a senha da sua conta no Oss.</p>
+                <p style="margin: 0 0 24px;"><a href="{{ .ConfirmationURL }}" style="display: inline-block; padding: 14px 26px; color: #ffffff; background: #14243a; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 16px;">Escolher uma nova senha</a></p>
+                <p style="margin: 0 0 8px; font-size: 14px; color: #4a5a69;">O link vale por pouco tempo e só pode ser usado uma vez. Se o botão não abrir, copie e cole este endereço no navegador:</p>
+                <p style="margin: 0 0 20px; font-size: 13px; word-break: break-all; color: #1f7f73;">{{ .ConfirmationURL }}</p>
+                <p style="margin: 0; font-size: 14px; color: #4a5a69;">Se você não pediu isso, ignore esta mensagem: a sua senha continua a mesma.</p>
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="background: #f4f6f9; padding: 16px; font-size: 12px; color: #4a5a69;">Oss, a saudação do tatame.</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
   </body>
 </html>
