@@ -299,7 +299,8 @@
 
 ## Logotipo (2026-10-21)
 - [x] Logotipo enviado pelo dono do produto aplicado como **provisório**: tela de entrada do painel (cartão no painel da marca), tela de entrada do app, ícone do site, ícone, splash e ícone adaptativo do app. O resto da interface segue com o símbolo desenhado em código (`BrandLogo`), que combina com fundos claros e escuros.
-- [ ] **A logo será corrigida pelo dono do produto** (a faixa aparece metade branca e metade preta; definir uma só cor). Para trocar: substitua `apps/admin/public/brand/oss-logo.png` e rode `node scripts/build-brand-assets.mjs`; os recortes do painel e os arquivos do app são regerados.
+- [x] Logo corrigida (2026-10-22): nova versão com a faixa branca e preta aplicada como provisória (original 1774x887; recortes do script ajustados).
+- [ ] (antigo) A logo será corrigida pelo dono do produto (a faixa aparecia metade branca e metade preta). Para trocar: substitua `apps/admin/public/brand/oss-logo.png` e rode `node scripts/build-brand-assets.mjs`; os recortes do painel e os arquivos do app são regerados.
 - [ ] **Pedir a versão final com fundo transparente** (três arquivos: para fundo escuro, para fundo claro e o ícone quadrado). A versão atual traz o fundo escuro com degradê dentro da imagem, então só serve em cartão escuro e não pode ser usada direto sobre outras cores (barra lateral, topo, e-mails).
 - [ ] **Direitos e registro da marca:** confirmar a autoria e os direitos de uso da arte (se foi gerada por ferramenta de imagem, isso pode limitar o registro) e fazer a busca de marca "Oss" no INPI antes de divulgar. Ainda não foi feito nada disso.
 - [ ] Os arquivos de imagem são pesados (o recorte principal tem cerca de 700 KB); otimizar na versão final.

@@ -31,7 +31,7 @@ export function AuthShell({ title, subtitle, children }: { title: string; subtit
       <aside className={styles.brand}>
         {/* Logotipo enviado pelo dono do produto (provisório até a versão final): arquivos em public/brand, gerados por scripts/build-brand-assets.mjs */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/brand/oss-lockup.png" alt="Oss, seu companheiro de treino" width={900} height={566} className={styles.lockup} />
+        <img src="/brand/oss-lockup.png" alt="Oss, seu companheiro de treino" width={900} height={476} className={styles.lockup} />
         <div className={styles.pitch}>
           <h2 className={styles.headline}>Seu treino, sua evolução, sua academia.</h2>
           <p className={styles.lead}>A plataforma das academias de Jiu-Jitsu: acompanhe seus treinos e a sua jornada com a confiança de quem valida cada passo.</p>
