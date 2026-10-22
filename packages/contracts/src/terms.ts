@@ -172,6 +172,18 @@ export const photoTerm: TermsSection[] = [
   },
 ];
 
+// Texto curto para o ADULTO autorizar a própria imagem no feed interno da academia. RASCUNHO até a revisão jurídica.
+export const adultImageTerm: TermsSection[] = [
+  {
+    id: 'adulto',
+    title: 'Autorização de imagem (adulto)',
+    paragraphs: [
+      'Autorizo que a minha imagem apareça em fotos postadas no feed fechado da academia {{empresa}}, visível apenas para os membros dela, por 30 dias. A autorização vale só para esta academia e não envolve pagamento.',
+      'Posso revogar a qualquer momento na plataforma: as fotos em que estou marcado saem do feed. Fotos já publicadas fora da plataforma devem ser retiradas pela academia a meu pedido.',
+    ],
+  },
+];
+
 // A assinatura é o nome completo (nome e sobrenome) digitado pelo responsável. As mesmas regras estão no banco (`valid_signature`).
 export function isValidSignature(name: string | null | undefined): boolean {
   const v = (name ?? '').trim();

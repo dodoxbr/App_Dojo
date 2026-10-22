@@ -19,3 +19,6 @@ Migrations 038 (moderação) e 039 (assinatura). pgTAP: `feed_moderation.test.sq
 
 ## Pendências
 Aprovar **todas** as fotos por opção da academia; notificação ao professor; moderação de comentários pelo professor no app; revisão jurídica do termo.
+
+## Autorização de imagem dos adultos (2026-10-22)
+"Como é um feed interno é mais tranquilo, mas vamos pedir a permissão das pessoas": cada **adulto** autoriza (por academia, em Perfil > Autorização de imagem, com o nome completo digitado, data e versão do texto) que a imagem dele apareça no feed fechado. **Só quem autorizou pode ser marcado** numa foto (quem posta pode marcar a si mesmo). Revogar tira do feed as fotos em que a pessoa está marcada. Foto só de adultos continua publicando direto (o professor modera). Banco: migration 040, pgTAP `adult_image_consent.test.sql` (12). Texto: rascunho em `/termo-de-imagem` ("Para adultos").

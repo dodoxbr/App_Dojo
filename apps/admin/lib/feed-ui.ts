@@ -9,7 +9,7 @@ const messages: Record<string, string> = {
   caption: "A legenda pode ter até 500 caracteres.",
   tags: "Marque só pessoas da academia (máximo 30).",
   "tag minors": "Você disse que há criança ou adolescente na foto: marque quem aparece.",
-  "photo consent": "Há um menor marcado sem autorização de foto do responsável. Desmarque-o ou escolha outra foto.",
+  "photo consent": "Há alguém marcado que não autorizou o uso da imagem (menor sem a autorização do responsável, ou adulto que ainda não autorizou). Desmarque a pessoa ou escolha outra foto.",
   "guardian tags": "Marque o seu menor na foto (só os seus menores podem ser marcados).",
   "not pending": "Essa foto já foi analisada.",
   "daily limit": "Limite diário atingido (20 posts ou 30 comentários por dia).",

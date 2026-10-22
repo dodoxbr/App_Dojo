@@ -9,6 +9,7 @@ import { BirthDateForm } from "./birth-date-form";
 import { acceptTerms } from "./ficha/actions";
 import { ProfileForm } from "./profile-form";
 import { signOut } from "./actions";
+import { ImageConsentItem, type ImageConsentRow } from "./image-consent";
 
 export default async function PerfilPage() {
   const { supabase, userId, isPlatformAdmin, canCreateAcademy, managedAcademies } = await getCaller();
@@ -19,6 +20,8 @@ export default async function PerfilPage() {
     supabase.rpc("get_contact", { p_user_id: userId }),
   ]);
   const hasContact = ((contactRows ?? []) as unknown[]).length > 0;
+  const { data: imageRows } = await supabase.rpc("my_image_consents");
+  const imageConsents = (imageRows ?? []) as ImageConsentRow[];
   const features = await myFeatureMap(supabase);
   const has = (f: "feed" | "medals" | "finance" | "challenges" | "curriculum" | "milestone") => features.size === 0 || anyAcademyHas(features, f);
   // US-020: aviso de 30 treinos desde a última graduação (do aluno e, para o professor, de quem chegou lá)
@@ -100,6 +103,16 @@ export default async function PerfilPage() {
           </ul>
         )}
       </Card>
+
+      {imageConsents.length > 0 && (
+        <Card>
+          <h2 style={{ margin: "0 0 4px", fontSize: "1.25rem" }}>Autorização de imagem</h2>
+          <p style={{ margin: "0 0 12px", color: "var(--text-muted)" }}>Para os colegas poderem te marcar em fotos do feed da academia, você precisa autorizar. É por academia e você muda de ideia quando quiser.</p>
+          <div style={{ display: "grid", gap: 16 }}>
+            {imageConsents.map((r) => <ImageConsentItem key={r.academy_id} row={r} />)}
+          </div>
+        </Card>
+      )}
 
       <section aria-labelledby="atalhos" style={{ display: "grid", gap: 12 }}>
         <h2 id="atalhos" style={{ margin: 0, fontSize: "1.25rem" }}>Atalhos</h2>

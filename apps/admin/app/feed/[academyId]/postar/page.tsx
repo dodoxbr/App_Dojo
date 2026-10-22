@@ -48,7 +48,7 @@ export default async function PostarPage({
             {people.length === 0 ? <p>Nenhum membro para marcar.</p> : people.map((p) => (
               <label key={p.user_id}>
                 <input type="checkbox" name="tagIds" value={p.user_id} disabled={!p.photo_ok} /> {p.person_name}
-                {p.is_minor ? (p.photo_ok ? " (menor, com autorização de foto)" : " (menor, sem autorização de foto do responsável: não pode aparecer)") : ""}
+                {p.is_minor ? (p.photo_ok ? " (menor, com autorização de foto)" : " (menor, sem autorização de foto do responsável: não pode aparecer)") : (p.photo_ok ? "" : " (ainda não autorizou o uso da imagem)")}
               </label>
             ))}
           </fieldset>
