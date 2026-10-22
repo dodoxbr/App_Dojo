@@ -143,6 +143,13 @@ try {
 
   // Not signed in
   await check(null, '/', { has: ['Dojo Platform', 'Entrar', 'Criar conta'] });
+  await check(null, '/login', { has: ['Esqueci minha senha'] });
+  await check(null, '/login?senha=ok', { has: ['Entrar'] });
+  await check(null, '/recuperar-senha', { has: ['Recuperar a senha', 'E-mail da sua conta', 'Enviar o link', 'Voltar para entrar'] });
+  await check(null, '/recuperar-senha?erro=link', { has: ['Recuperar a senha'] });
+  await check(null, '/redefinir-senha', { redirect: '/recuperar-senha?erro=link' });
+  await check(null, '/auth/callback', { redirect: '/recuperar-senha?erro=link' });
+  await check(null, '/auth/callback?code=codigo-invalido&next=//evil.example', { redirect: '/recuperar-senha?erro=link' });
   await check(null, '/login', { has: ['Entrar', 'cuidar de um menor de idade', 'Li e aceito os'] });
   await check(null, `/termos/${slug}`, { has: ['Academia Páginas Ltda (teste)', '11.222.333/0001-81', 'Termos de uso'] });
   await check(null, '/termos', { has: ['Termos de uso', 'Política de privacidade', 'Rascunho em revisão jurídica', 'Crianças e adolescentes', 'Instagram', 'Fotos e vídeos dos treinos'] });

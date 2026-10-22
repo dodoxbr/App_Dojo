@@ -1,7 +1,24 @@
 project_id = "dojo-platform-local"
 
 [auth]
+# O painel roda em localhost:3000. O link do e-mail (confirmar conta, redefinir senha) volta para cá; /auth/callback troca o código
+# do link pela sessão. Em hospedagem real, troque pelos endereços de produção no painel do Supabase (docs/15).
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["http://localhost:3000/auth/callback", "http://127.0.0.1:3000/auth/callback"]
 minimum_password_length = 8
+
+[auth.rate_limit]
+# Só no ambiente local: o padrão (2 e-mails por hora) atrapalha testar cadastro e redefinição de senha.
+email_sent = 30
 
 [auth.email]
 enable_confirmations = true
+
+# Textos dos e-mails em português. Em hospedagem real, cole o mesmo conteúdo no painel do Supabase (Authentication > Email Templates).
+[auth.email.template.confirmation]
+subject = "Confirme o seu cadastro no Dojo Platform"
+content_path = "./supabase/templates/confirmation.html"
+
+[auth.email.template.recovery]
+subject = "Redefinir a sua senha no Dojo Platform"
+content_path = "./supabase/templates/recovery.html"

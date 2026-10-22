@@ -1,5 +1,6 @@
 // Componentes reutilizáveis do Design System (brief de UI/UX). Tokens em apps/admin/styles/tokens.css.
 export { Alert } from "./Alert";
+export { AuthShell } from "./AuthShell";
 export { Badge } from "./Badge";
 export { BrandLogo } from "./BrandLogo";
 export { Button, ButtonLink, type ButtonProps } from "./Button";

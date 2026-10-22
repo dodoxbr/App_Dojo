@@ -42,6 +42,14 @@ export const signUpSchema = signInSchema.extend({
   dependentBirthDate: z.union([birthDateSchema, z.literal('')]).optional().transform((v) => (v ? v : undefined)),
 });
 
+// Recuperação de senha: o pedido só leva o e-mail; a nova senha segue a mesma regra do cadastro e precisa ser repetida.
+export const passwordResetRequestSchema = z.object({ email: z.string().trim().toLowerCase().pipe(z.email()) });
+
+const NEW_PASSWORD_LENGTH = 'A senha precisa ter de 8 a 72 caracteres.';
+export const newPasswordSchema = z
+  .object({ password: z.string().min(8, NEW_PASSWORD_LENGTH).max(72, NEW_PASSWORD_LENGTH), confirmPassword: z.string() })
+  .refine((v) => v.password === v.confirmPassword, { path: ['confirmPassword'], message: 'As senhas não conferem. Digite a mesma senha nos dois campos.' });
+
 // Post-login redirect target: internal paths only (prevents open redirects).
 export function safeRedirectPath(value: unknown, fallback = '/perfil'): string {
   if (typeof value !== 'string') return fallback;

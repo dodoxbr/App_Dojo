@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { birthDateSchema, displayNameSchema, isAdultOn, signInSchema, signUpSchema } from '../src/auth.ts';
+import { birthDateSchema, displayNameSchema, isAdultOn, newPasswordSchema, passwordResetRequestSchema, signInSchema, signUpSchema } from '../src/auth.ts';
 
 test('display name is trimmed and bounded 2..120', () => {
   assert.equal(displayNameSchema.parse('  Aluno Teste  '), 'Aluno Teste');
@@ -40,4 +40,25 @@ test('adult means 18 or more on the given day (the day of the 18th birthday alre
   assert.equal(isAdultOn('2008-10-19', today), true);
   assert.equal(isAdultOn('2017-01-01', today), false);
   assert.equal(isAdultOn('1990-01-01', today), true);
+});
+
+test('pedido de redefinição de senha normaliza o e-mail e recusa e-mail inválido', () => {
+  assert.equal(passwordResetRequestSchema.parse({ email: ' A@Example.TEST ' }).email, 'a@example.test');
+  assert.equal(passwordResetRequestSchema.safeParse({ email: 'nao-e-email' }).success, false);
+  assert.equal(passwordResetRequestSchema.safeParse({}).success, false);
+});
+
+test('a nova senha tem de ter 8 a 72 caracteres e ser repetida igual', () => {
+  assert.equal(newPasswordSchema.safeParse({ password: '12345678', confirmPassword: '12345678' }).success, true);
+  assert.equal(newPasswordSchema.safeParse({ password: '1234567', confirmPassword: '1234567' }).success, false, 'curta demais');
+  assert.equal(newPasswordSchema.safeParse({ password: 'x'.repeat(73), confirmPassword: 'x'.repeat(73) }).success, false, 'longa demais');
+  const diff = newPasswordSchema.safeParse({ password: '12345678', confirmPassword: '87654321' });
+  assert.equal(diff.success, false);
+  assert.equal(diff.success ? '' : diff.error.issues[0]?.path.join('.'), 'confirmPassword');
+});
+
+test('a nova senha curta demais devolve mensagem em português', () => {
+  const r = newPasswordSchema.safeParse({ password: '123', confirmPassword: '123' });
+  assert.equal(r.success, false);
+  assert.equal(r.success ? '' : r.error.issues[0]?.message, 'A senha precisa ter de 8 a 72 caracteres.');
 });

@@ -19,7 +19,7 @@ function Feedback({ state }: { state: FormState }) {
   return null;
 }
 
-function SignInForm({ next }: { next: string }) {
+function SignInForm({ next, passwordChanged }: { next: string; passwordChanged: boolean }) {
   const [saved, setSaved] = useState<Saved>({});
   const [state, action, pending] = useActionState<FormState, FormData>((prev, formData) => {
     setSaved(keep(formData, ["email"]));
@@ -30,6 +30,8 @@ function SignInForm({ next }: { next: string }) {
       <input type="hidden" name="next" value={next} />
       <TextField label="E-mail" name="email" type="email" autoComplete="email" inputMode="email" placeholder="voce@exemplo.com" defaultValue={saved.email ?? ""} required />
       <PasswordField label="Senha" name="password" autoComplete="current-password" minLength={8} required />
+      <Link href="/recuperar-senha" className={styles.forgot}>Esqueci minha senha</Link>
+      {passwordChanged && !state.error && <Alert tone="success">Senha alterada. Entre com a nova senha.</Alert>}
       <Feedback state={state} />
       <Button type="submit" fullWidth loading={pending}>{pending ? "Entrando…" : "Entrar"}</Button>
     </form>
@@ -70,13 +72,13 @@ function SignUpForm() {
   );
 }
 
-export function LoginForms({ next, initialTab = "entrar" }: { next: string; initialTab?: "entrar" | "criar" }) {
+export function LoginForms({ next, initialTab = "entrar", passwordChanged = false }: { next: string; initialTab?: "entrar" | "criar"; passwordChanged?: boolean }) {
   return (
     <Tabs
       label="Entrar ou criar conta"
       initial={initialTab}
       items={[
-        { id: "entrar", label: "Entrar", content: <SignInForm next={next} /> },
+        { id: "entrar", label: "Entrar", content: <SignInForm next={next} passwordChanged={passwordChanged} /> },
         { id: "criar", label: "Criar conta", content: <SignUpForm /> },
       ]}
     />
